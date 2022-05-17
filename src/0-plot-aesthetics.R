@@ -94,3 +94,19 @@ theme_update(
   panel.grid.minor = element_blank(),
   panel.background = element_rect(fill = "gray97", color = "transparent")
 )
+
+#' opções gerais do relatório
+set.seed(1014)
+
+knitr::knit_hooks$set(inline = function(x) prettyNum(x, big.mark = ".", decimal.mark = ","))
+
+options(
+  digits = 1,
+  scipen = 999,
+  OutDec = ",",
+  knitr.kable.NA = "",
+  radian.auto_match = FALSE
+)
+
+Sys.setenv(LANGUAGE = "pt-br")
+Sys.setlocale("LC_TIME", "pt_BR")
