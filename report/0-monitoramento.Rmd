@@ -41,7 +41,7 @@ source(here("src/0-plot-aesthetics.R"), encoding = "UTF-8")
 `%notin%` <- function(x, y) !(x %in% y)
 ```
 
-```{r read-data}
+```{r data-pedidos-cgu}
 pedidos_cgu <- "data/base-cgu.rds" %>%
   here() %>%
   readRDS() %>% 
@@ -54,7 +54,7 @@ pedidos_cgu <- "data/base-cgu.rds" %>%
     esfera == "Federal",
     !str_detect(orgao, "refeitura|Órgão para Teste")
   ) %>% 
-  select(id_pedido, data_registro, data_resposta, decisao, orgao)
+  select(id_pedido, data_registro, data_resposta, prazo, ts_registro, ts_resposta, decisao, orgao)
 ```
 
 </br></br>
@@ -661,7 +661,7 @@ top_opacos2 %>%
 
 #### Mediana da taxa interna de acessos negados por órgão (2012-2022)
 
-```{r plot-acessos-negados-interno}
+```{r plot-mediana-acessos-negados-interno}
 taxas %>% 
   #filter(decisao == "Acesso Negado") %>% 
   mutate(
@@ -688,7 +688,7 @@ taxas %>%
 
 #### Distribuição das taxas internas de acessos negados por órgão
 
-```{r fig.height=6}
+```{r plot-distribuicao-acessos-negados, fig.height=6}
 taxas %>% 
   filter(decisao == "Acesso Negado") %>% 
   mutate(
@@ -733,4 +733,99 @@ taxas %>%
     color = NULL
   )
 ```
+
+</br></br>
+
+### Tempo de resposta dos pedidos - em dias corridos (2012-2022)
+
+```{r data-tempo-resposta}
+cores <- colorRampPalette(c(
+  cores_aep[["marrom"]],
+  cores_aep[["rosa"]],
+  cores_aep[["laranja"]],
+  cores_tb[["laranja"]],
+  cores_tb[["azul"]]
+  ))(8)
+
+pedidos_prazo <- pedidos_cgu %>% 
+  filter(
+    decisao %notin% c(
+      "Pergunta Duplicada/Repetida",
+      "Não se trata de solicitação de informação" 
+  )) %>% 
+  transmute(
+    id_pedido, 
+    orgao,
+    data_registro = dmy(ts_registro),
+    data_resposta = dmy(ts_resposta),
+    dias_corridos = dmy(ts_resposta) - dmy(ts_registro),
+    dias_corridos_fx = case_when(
+      dias_corridos == 0 ~  " 0 dias corridos",
+      dias_corridos <= 5 ~  " 1 até 5 dias",
+      dias_corridos <= 10 ~ " 6 até 10 dias",
+      dias_corridos <= 15 ~ "11 até 15 dias",
+      dias_corridos <= 20 ~ "16 até 20 dias",
+      dias_corridos <= 25 ~ "21 até 25 dias",
+      dias_corridos <= 30 ~ "26 até 30 dias",
+      TRUE ~  "Acima de 30 dias"
+    ),
+    dias_corridos_fx = ordered(dias_corridos_fx, levels = c(
+      " 0 dias corridos",
+      " 1 até 5 dias",
+      " 6 até 10 dias",
+      "11 até 15 dias",
+      "16 até 20 dias",
+      "21 até 25 dias",
+      "26 até 30 dias",
+      "Acima de 30 dias"
+    )),
+    prazo = lubridate::dmy(prazo)
+  )
+```
+
+```{r fig.height=10}
+pedidos_prazo %>% 
+  count(name = 'n_pedidos_ano_prazo', dias_corridos_fx, ano = year(data_registro), sort = TRUE) %>%
+  add_count(name = 'n_pedidos_ano', ano, wt = n_pedidos_ano_prazo) %>% 
+  mutate(per = n_pedidos_ano_prazo / n_pedidos_ano) %>% 
+  ggplot(aes(x = reorder(ano, -ano), y = per, fill = dias_corridos_fx, group = dias_corridos_fx)) +
+  # geom_col(position = "dodge", show.legend = FALSE) +
+  geom_line() +
+  geom_point(shape = 21, size = 2, show.legend = FALSE) +
+  geom_text(aes(label = my_lbl(per)), vjust = -1, size = 2.5) +
+  scale_fill_manual(values = cores) +
+  scale_y_percent(expand = c(0, 0), limits = c(0,.5)) +
+  facet_wrap(~ dias_corridos_fx, ncol = 1, scales = "free_x") +
+  labs(
+    fill = "Dias corridos",
+    x = "Ano de registro do pedido",
+    y = "% de pedidos atendidos no prazo de referência"
+  ) +
+  theme(
+    strip.text = element_text(face = "bold", hjust = 0)
+  )
+```
+
+</br></br>
+
+## Tempo médio de resposta por ano
+
+```{r}
+my_lbl_days <- function(x) str_glue("{round(x)} dias")
+
+pedidos_prazo %>% 
+  group_by(ano = year(data_registro)) %>% 
+  summarise(media_dias_corridos_por_ano = mean(dias_corridos), .groups = "drop") %>% 
+  ggplot(aes(x = ano, y = media_dias_corridos_por_ano)) +
+  geom_col(fill = cores_tb[["azul"]]) +
+  geom_text(aes(label = my_lbl_days(media_dias_corridos_por_ano)), vjust = 1) +
+  scale_x_continuous(breaks = 2012:2022) +
+  scale_y_continuous(breaks = seq(0, 25, 5), labels = str_glue("{seq(0, 25, 5)} dias"),
+                     expand = c(0, 0)) +
+  labs(
+    x = "Ano de registro do pedido",
+    y = "Média de dias corridos para resposta do pedido"
+  )
+```
+
 
