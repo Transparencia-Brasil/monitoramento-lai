@@ -192,15 +192,6 @@ plot_decisao <- function(decisao_escolhida) {
     ) +
     geom_line(show.legend = F, size = .7) +
     geom_vline(xintercept = seq(ymd('2013-01-01'), ymd('2022-01-01'), by = 'year'), lty = 3) +
-    # geom_text(
-    #   data = . %>% filter(month(data_registro) == 2),
-    #   aes(label = year(data_registro), 
-    #       y = if_else(decisao == "Acesso Concedido", .65, .005)),
-    #   size = 3.5,
-    #   vjust = .1,
-    #   hjust = .1,
-    #   color = "gray20"
-    # ) +
     ggforce::geom_mark_circle(
       aes(filter = data_registro == ymd("2018-10-01") & decisao == "Acesso Concedido",
           label = "Máximas anuais"),
@@ -254,7 +245,7 @@ plot_decisao <- function(decisao_escolhida) {
       legend.position = "top",
       axis.ticks.x = element_line(), 
       legend.text = element_text(size = 8),
-      axis.text.x = element_text(size = 11, vjust = 2.5, hjust = .5),
+      axis.text.x = element_text(size = 11),
       axis.text.y = element_text(size = 11),
       panel.grid.minor = element_blank(),
       strip.text = element_text(size = 14, angle = 0, hjust = 0)
@@ -491,12 +482,11 @@ taxas <- pedidos_cgu %>%
   summarise(.groups = "drop")
 ```
 
-
 </br></br>
 
 #### Órgãos que mais negaram informações - mês a mês (2012-2022)
 
-```{r plot-acessos-negados-geral, fig.height=9, fig.width=11}
+```{r plot-acessos-negados-geral, fig.height=10, fig.width=11}
 month.abb2 <- function(x) month.abb[month(x)]
 
 taxas %>% 
@@ -520,7 +510,7 @@ taxas %>%
   ) +
   geom_vline(
     xintercept = seq(ymd('2013-01-01'), ymd('2022-01-01'), by = 'year'),
-    lty = 3
+    lty = 3, color = "gray80"
   ) +
   scale_y_percent(limits = c(0, 0.7)) +
   scale_x_date(
@@ -560,7 +550,7 @@ taxas %>%
 
 </br></br>
 
-#### Poucos órgãos são responsáveis por mais da metade das negativas
+#### Poucos órgãos são responsáveis por mais da metade das negativas do FalaBr
 
 ```{r plot-metade-das-negativas, fig.height=7, fig.width=9}
 top_opacos <- taxas %>% 
@@ -736,7 +726,7 @@ taxas %>%
 
 </br></br>
 
-### Tempo de resposta dos pedidos - em dias corridos (2012-2022)
+### Tempo de resposta dos pedidos 
 
 ```{r data-tempo-resposta}
 cores <- colorRampPalette(c(
@@ -783,22 +773,24 @@ pedidos_prazo <- pedidos_cgu %>%
   )
 ```
 
-```{r fig.height=10}
+#### Frequência de dias corridos para resposta à LAI (2012-2022)
+
+```{r plot-frequencia-dias-corridos, fig.height=10, fig.width=6}
 pedidos_prazo %>% 
   count(name = 'n_pedidos_ano_prazo', dias_corridos_fx, ano = year(data_registro), sort = TRUE) %>%
   add_count(name = 'n_pedidos_ano', ano, wt = n_pedidos_ano_prazo) %>% 
   mutate(per = n_pedidos_ano_prazo / n_pedidos_ano) %>% 
   ggplot(aes(x = reorder(ano, -ano), y = per, fill = dias_corridos_fx, group = dias_corridos_fx)) +
-  # geom_col(position = "dodge", show.legend = FALSE) +
-  geom_line() +
+  geom_col(show.legend = FALSE, width = .7,
+           position = position_dodge(.7)) +
   geom_point(shape = 21, size = 2, show.legend = FALSE) +
   geom_text(aes(label = my_lbl(per)), vjust = -1, size = 2.5) +
   scale_fill_manual(values = cores) +
-  scale_y_percent(expand = c(0, 0), limits = c(0,.5)) +
+  scale_y_percent(expand = c(0, 0), limits = c(0,.36), breaks = c(0, .15, .3)) +
   facet_wrap(~ dias_corridos_fx, ncol = 1, scales = "free_x") +
   labs(
     fill = "Dias corridos",
-    x = "Ano de registro do pedido",
+    x = NULL,
     y = "% de pedidos atendidos no prazo de referência"
   ) +
   theme(
@@ -808,9 +800,9 @@ pedidos_prazo %>%
 
 </br></br>
 
-## Tempo médio de resposta por ano
+#### Tempo médio de resposta por ano
 
-```{r}
+```{r plot-tempo-medio-de-resposta}
 my_lbl_days <- function(x) str_glue("{round(x)} dias")
 
 pedidos_prazo %>% 
@@ -821,7 +813,7 @@ pedidos_prazo %>%
   geom_text(aes(label = my_lbl_days(media_dias_corridos_por_ano)), vjust = 1) +
   scale_x_continuous(breaks = 2012:2022) +
   scale_y_continuous(breaks = seq(0, 25, 5), labels = str_glue("{seq(0, 25, 5)} dias"),
-                     expand = c(0, 0)) +
+                     expand = c(0, 0), limits = c(0, 24)) +
   labs(
     x = "Ano de registro do pedido",
     y = "Média de dias corridos para resposta do pedido"
