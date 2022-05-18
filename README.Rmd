@@ -71,6 +71,9 @@ criado_em <- here("data") %>%
     + [`r toc$h4$section_title[8]`](`r toc$h4$id[8]`)
     + [`r toc$h4$section_title[9]`](`r toc$h4$id[9]`)
     + [`r toc$h4$section_title[10]`](`r toc$h4$id[10]`)
+  + [`r toc$h3$section_title[6]`](`r toc$h3$id[6]`)
+    + [`r toc$h4$section_title[11]`](`r toc$h4$id[11]`)
+    + [`r toc$h4$section_title[11]`](`r toc$h4$id[12]`)
 
 
 ## Base de dados

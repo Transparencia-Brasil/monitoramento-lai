@@ -33,11 +33,18 @@ registrados no portal FalaBr do governo Federal.
         -   [Órgãos que mais negaram informações - mês a mês
             (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Órgãos_que_mais_negaram_informações_-_mês_a_mês_(2012-2022))
         -   [Poucos órgãos são responsáveis por mais da metade das
-            negativas](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Poucos_órgãos_são_responsáveis_por_mais_da_metade_das_negativas)
+            negativas do
+            FalaBr](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Poucos_órgãos_são_responsáveis_por_mais_da_metade_das_negativas_do_FalaBr)
         -   [Mediana da taxa interna de acessos negados por órgão
             (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Mediana_da_taxa_interna_de_acessos_negados_por_órgão_(2012-2022))
         -   [Distribuição das taxas internas de acessos negados por
             órgão](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Distribuição_das_taxas_internas_de_acessos_negados_por_órgão)
+    -   [Tempo de resposta dos
+        pedidos](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tempo_de_resposta_dos_pedidos)
+        -   [Frequência de dias corridos para resposta à LAI
+            (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Frequência_de_dias_corridos_para_resposta_à_LAI_(2012-2022))
+        -   [Frequência de dias corridos para resposta à LAI
+            (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tempo_médio_de_resposta_por_ano)
 
 ## Base de dados
 
