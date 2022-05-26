@@ -52,6 +52,8 @@ registrados no portal FalaBr do governo Federal.
             recurso](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Total_de_pedidos_que_entraram_com_recurso)
         -   [Evolução do % de recursos impetrados por
             ano](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Evolução_do_%_de_recursos_impetrados_por_ano)
+        -   [Órgãos campeões de recursos impetrados (2012 - 2022, 15
+            primeiros)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Órgãos_campeões_de_recursos_impetrados_(2012_-_2022,_15_primeiros))
 
 ## Base de dados
 
