@@ -54,12 +54,49 @@ pedidos_cgu <- "data/base-cgu.rds" %>%
     esfera == "Federal",
     !str_detect(orgao, "refeitura|Órgão para Teste")
   ) %>% 
-  select(id_pedido, data_registro, data_resposta, prazo, ts_registro, ts_resposta, decisao, orgao)
+  transmute(
+    id_pedido,
+    mes_pedido = data_registro,
+    mes_resposta = data_resposta,
+    data_pedido = dmy(ts_registro),
+    data_resposta = dmy(ts_resposta),
+    prazo = dmy(prazo),
+    decisao,
+    orgao
+  )
+```
+
+```{r data-recursos-cgu}
+recursos_cgu <- "data/base-cgu.rds" %>%
+  here() %>%
+  readRDS() %>% 
+  filter(base == "Recursos") %>% 
+  select(datasets) %>% 
+  unnest(c(datasets)) %>%
+  filter(
+    !is.na(instancia),
+    !is.na(data_resposta),
+    esfera == "Federal",
+    !str_detect(orgao, "refeitura|Órgão para Teste"),
+    instancia != "Pedido de Revisão"
+  ) %>% 
+  mutate(instancia = ordered(instancia, levels = names(cores_instancia))) %>% 
+  transmute(
+    id_recurso,
+    id_pedido,
+    mes_recurso = data_registro,
+    mes_resposta_recurso = data_resposta,
+    data_recurso = dmy(ts_registro),
+    data_resposta_recurso = dmy(ts_resposta),
+    instancia,
+    tipo_recurso,
+    tipo_resposta
+  )
 ```
 
 </br></br>
 
-### Total de manifestações registradas no FalaBr (2012-2022)
+## Total de manifestações registradas no FalaBr (2012-2022)
 
 ```{r plot-total-de-manifestacoes-registradas-no-falabr-2012-2022, fig.width=11, fig.height = 5}
 pedidos_cgu %>% 
@@ -70,9 +107,9 @@ pedidos_cgu %>%
     ) ~ "Pedidos de acesso a informação via LAI",
     TRUE ~ decisao
   ) %>% str_wrap(25)) %>% 
-  count(data_registro, is_pedido_de_informacao, name = "qt") %>% 
+  count(mes_pedido, is_pedido_de_informacao, name = "qt") %>% 
   ggplot(aes(
-    x = data_registro,
+    x = mes_pedido,
     y = qt,
     fill = is_pedido_de_informacao,
     color = is_pedido_de_informacao
@@ -103,6 +140,7 @@ pedidos_cgu %>%
       ungroup(),
     show.legend = FALSE
   ) +
+  scale_y_continuous(labels = scales::number_format()) +
   scale_fill_manual(values = cores_lai) +
   scale_color_manual(values = cores_lai, breaks = names(cores_lai)[c(3,1,2)]) +
   scale_x_date(
@@ -126,11 +164,11 @@ pedidos_cgu %>%
 
 </br></br>
 
-### Número de órgãos do governo Federal acionados pela LAI (2012-2022)
+## Número de órgãos do governo Federal acionados pela LAI (2012-2022)
 
 ```{r plot-orgaos-requisitados-pela-lai}
 pedidos_cgu %>% 
-  count(ano = year(data_registro), orgao) %>% 
+  count(ano = year(mes_pedido), orgao) %>% 
   count(ano) %>% 
   ggplot(aes(x = as.character(ano), y = n)) +
   geom_col(fill = cores_aep[["laranja"]], alpha = .9) +
@@ -155,7 +193,7 @@ pedidos_cgu %>%
 
 </br></br>
 
-### Taxa de atendimento de pedidos de acesso a informação (2012-2022)
+## Taxa de atendimento de pedidos de acesso a informação (2012-2022)
 
 ```{r data-decisao}
 decisao <- pedidos_cgu %>% 
@@ -163,7 +201,7 @@ decisao <- pedidos_cgu %>%
     "Pergunta Duplicada/Repetida",
     "Não se trata de solicitação de informação"
   )) %>% 
-  count(data_registro, decisao, name = "qt") %>%
+  count(mes_pedido, decisao, name = "qt") %>%
   na.omit() %>% 
   mutate(decisao = fct_reorder(decisao, qt, .desc = T))
 ```
@@ -173,16 +211,16 @@ decisao <- pedidos_cgu %>%
 plot_decisao <- function(decisao_escolhida) {
   
   p1 <- decisao %>%
-    add_count(data_registro, wt = qt, name = "qt_mes") %>%
+    add_count(mes_pedido, wt = qt, name = "qt_mes") %>%
     mutate(per = qt / qt_mes) %>% 
     filter(decisao == decisao_escolhida) %>% 
-    ggplot(aes(x = data_registro, y = per)) +
+    ggplot(aes(x = mes_pedido, y = per)) +
     geom_rect(
       data = . %>%
-        filter(data_registro == min(data_registro) | data_registro == max(data_registro)),
+        filter(mes_pedido == min(mes_pedido) | mes_pedido == max(mes_pedido)),
       aes(
-        xmin = floor_date(min(data_registro), "year"),
-        xmax = ceiling_date(max(data_registro), "year"),
+        xmin = floor_date(min(mes_pedido), "year"),
+        xmax = ceiling_date(max(mes_pedido), "year"),
         ymin = -Inf,
         ymax = Inf,
         fill = decisao
@@ -193,7 +231,7 @@ plot_decisao <- function(decisao_escolhida) {
     geom_line(show.legend = F, size = .7) +
     geom_vline(xintercept = seq(ymd('2013-01-01'), ymd('2022-01-01'), by = 'year'), lty = 3) +
     ggforce::geom_mark_circle(
-      aes(filter = data_registro == ymd("2018-10-01") & decisao == "Acesso Concedido",
+      aes(filter = mes_pedido == ymd("2018-10-01") & decisao == "Acesso Concedido",
           label = "Máximas anuais"),
       color = "gray20",
       fill = NA,
@@ -208,8 +246,8 @@ plot_decisao <- function(decisao_escolhida) {
     ) +
     ggrepel::geom_label_repel(
       data = . %>%
-        group_by(decisao, year(data_registro)) %>%
-        arrange(year(data_registro), decisao, -per) %>%
+        group_by(decisao, year(mes_pedido)) %>%
+        arrange(year(mes_pedido), decisao, -per) %>%
         filter(row_number() == 1) %>%
         ungroup(),
       aes(label = my_lbl(per), fill = decisao, color = decisao),
@@ -221,8 +259,8 @@ plot_decisao <- function(decisao_escolhida) {
     ) +
     geom_point(
       data = . %>%
-        group_by(decisao, year(data_registro)) %>%
-        arrange(year(data_registro), decisao, -per) %>%
+        group_by(decisao, year(mes_pedido)) %>%
+        arrange(year(mes_pedido), decisao, -per) %>%
         filter(row_number() == 1) %>%
         ungroup()
     ) +
@@ -260,7 +298,7 @@ plot_decisao <- function(decisao_escolhida) {
     )
     
   p2 <- decisao %>%
-    count(ano = year(data_registro), decisao, wt = qt, name = "qt") %>%
+    count(ano = year(mes_pedido), decisao, wt = qt, name = "qt") %>%
     add_count(ano, wt = qt, name = "qt_ano") %>%
     mutate(perc_ano = qt / qt_ano) %>%
     filter(decisao == decisao_escolhida) %>% 
@@ -308,7 +346,7 @@ A **taxa de atendimento** é a proporção de uma decisão de acesso em relaçã
 
 </br></br>
 
-#### Taxa de Acessos Concedidos
+### Taxa de Acessos Concedidos
 
 ```{r plot-acesso-concedido, fig.width=11}
 plot_decisao("Acesso Concedido") 
@@ -316,7 +354,7 @@ plot_decisao("Acesso Concedido")
 
 </br></br>
 
-#### Taxa de Acessos Negados
+### Taxa de Acessos Negados
 
 ```{r plot-acesso-negado, fig.width=11}
 plot_decisao("Acesso Negado") 
@@ -324,7 +362,7 @@ plot_decisao("Acesso Negado")
 
 </br></br>
 
-#### Taxa de Acessos Parcialmente Concedido
+### Taxa de Acessos Parcialmente Concedido
 
 ```{r plot-acesso-parcial, fig.width=11}
 plot_decisao("Acesso Parcialmente Concedido") 
@@ -332,7 +370,7 @@ plot_decisao("Acesso Parcialmente Concedido")
 
 </br></br>
 
-#### Taxa para a decisão "Órgão não tem competência para responder sobre o assunto"
+### Taxa para a decisão "Órgão não tem competência para responder sobre o assunto"
 
 ```{r plot-orgao-sem-competencia, fig.width=11}
 plot_decisao("Órgão não tem competência para responder sobre o assunto") 
@@ -340,7 +378,7 @@ plot_decisao("Órgão não tem competência para responder sobre o assunto")
 
 </br></br>
 
-#### Taxa de resposta de "Informação Inexistente"
+### Taxa de resposta de "Informação Inexistente"
 
 ```{r plot-informacao-inexistente, fig.width=10}
 plot_decisao("Informação Inexistente") 
@@ -348,25 +386,25 @@ plot_decisao("Informação Inexistente")
 
 </br></br>
 
-### Taxas de respostas por decisão de acesso - mesmo período - (2012-2022)
+## Taxas de respostas por decisão de acesso - mesmo período - (2012-2022)
 
 ```{r plot-taxa-de-resposta-mesmo-periodo, fig.width = 10, fig.height=7}
 decisao %>%
-  mutate(mesmo_periodo = month(data_registro) <= month(today())) %>%
-  add_count(data_registro, mesmo_periodo, wt = qt, name = "qt_mes") %>%
+  mutate(mesmo_periodo = month(mes_pedido) <= month(today())) %>%
+  add_count(mes_pedido, mesmo_periodo, wt = qt, name = "qt_mes") %>%
   mutate(perc = qt / qt_mes) %>%
   # filter(decisao == "Acesso Negado") %>%
   filter(decisao %in% c(
     "Acesso Negado",
     "Acesso Parcialmente Concedido"
   )) %>% 
-  group_by(ano = year(data_registro), mesmo_periodo, decisao) %>%
+  group_by(ano = year(mes_pedido), mesmo_periodo, decisao) %>%
   mutate(media_perc = if_else(mesmo_periodo, mean(perc), NA_real_)) %>%
   ungroup() %>%
   mutate(
    decisao2 = if_else(mesmo_periodo, as.character(decisao), "")
   ) %>% 
-  ggplot(aes(x = data_registro, y = perc, fill = decisao2)) +
+  ggplot(aes(x = mes_pedido, y = perc, fill = decisao2)) +
   geom_vline(
     xintercept = seq(ymd("2013-01-01"), ymd("2022-01-01"), by = "year"),
     lty = 3
@@ -374,7 +412,7 @@ decisao %>%
   geom_col() +
   geom_point(aes(y = media_perc), shape = 95, size = 4) +
   geom_text(
-    data = . %>% filter(month(data_registro) == month(today())),
+    data = . %>% filter(month(mes_pedido) == month(today())),
     check_overlap = TRUE,
     fontface = "bold",
     size = 3.5,
@@ -397,8 +435,8 @@ decisao %>%
     arrow = arrow(length = unit(0.2, "cm"))
   ) +
   geom_label(
-    data = . %>% filter(data_registro == ymd("2019-04-01") & decisao2 == "Acesso Parcialmente Concedido"),
-    aes(label = "Média anual\n(mesmo período)", y = .125, x = data_registro),
+    data = . %>% filter(mes_pedido == ymd("2019-04-01") & decisao2 == "Acesso Parcialmente Concedido"),
+    aes(label = "Média anual\n(mesmo período)", y = .125, x = mes_pedido),
     fill = "white",
     size = 3,
     label.size = NA
@@ -427,9 +465,9 @@ decisao %>%
 
 </br></br>
 
-### Negativas de acesso
+## Negativas de acesso
 
-#### Metodologia (taxa geral e interna de acessos negados)
+### Metodologia (taxa geral e interna de acessos negados)
 
 Pedidos de acesso a informação são solicitações no FalaBr que <u>não</u> foram classificadas como: "Pergunta Duplicada/Repetida", "Não se trata de solicitação de informação".
 
@@ -449,25 +487,25 @@ $$
 
 ```{r data-taxas-acessos-negados}
 taxas <- pedidos_cgu %>%
-  select(id_pedido, data_registro, decisao, orgao) %>% 
+  select(id_pedido, mes_pedido, decisao, orgao) %>% 
   filter(decisao %notin% c(
     "Pergunta Duplicada/Repetida",
     "Não se trata de solicitação de informação"
   )) %>% 
   mutate(orgao = str_wrap(orgao, 40)) %>% 
   # contagem de pedidos anuais
-  add_count(name = "n_ano", ano = year(data_registro)) %>% 
+  add_count(name = "n_ano", ano = year(mes_pedido)) %>% 
   add_count(name = "n_ano_orgao", ano, orgao) %>% 
   add_count(name = "n_ano_decisao", ano, decisao) %>% 
   add_count(name = "n_ano_decisao_orgao", ano, decisao, orgao) %>% 
   # contagem de pedidos mensais
-  add_count(name = "n_mes", data_registro) %>% 
-  add_count(name = "n_mes_orgao", data_registro, orgao) %>% 
-  add_count(name = "n_mes_decisao", data_registro, decisao) %>% 
-  add_count(name = "n_mes_decisao_orgao", data_registro, decisao, orgao) %>% 
+  add_count(name = "n_mes", mes_pedido) %>% 
+  add_count(name = "n_mes_orgao", mes_pedido, orgao) %>% 
+  add_count(name = "n_mes_decisao", mes_pedido, decisao) %>% 
+  add_count(name = "n_mes_decisao_orgao", mes_pedido, decisao, orgao) %>% 
   group_by(
     ano,
-    data_registro,
+    mes_pedido,
     decisao,
     orgao,
     n_ano,
@@ -484,7 +522,7 @@ taxas <- pedidos_cgu %>%
 
 </br></br>
 
-#### Órgãos que mais negaram informações - mês a mês (2012-2022)
+### Órgãos que mais negaram informações - mês a mês (2012-2022)
 
 ```{r plot-acessos-negados-geral, fig.height=10, fig.width=11}
 month.abb2 <- function(x) month.abb[month(x)]
@@ -492,20 +530,20 @@ month.abb2 <- function(x) month.abb[month(x)]
 taxas %>% 
   filter(decisao == "Acesso Negado") %>% 
   transmute(
-    data_registro,
+    mes_pedido,
     orgao,
     per = n_mes_decisao_orgao / n_mes_decisao
   ) %>% 
-  group_by(data_registro) %>% 
+  group_by(mes_pedido) %>% 
   slice_max(order_by = per, n = 1) %>% 
   ungroup() %>% 
-  mutate(mes = month.abb2(data_registro)) %>%
-  ggplot(aes(x = data_registro, y = per, color = orgao)) +
+  mutate(mes = month.abb2(mes_pedido)) %>%
+  ggplot(aes(x = mes_pedido, y = per, color = orgao)) +
   geom_segment(aes(
     y = 0,
     yend = per,
-    x = data_registro,
-    xend = data_registro),
+    x = mes_pedido,
+    xend = mes_pedido),
     color = "gray60"
   ) +
   geom_vline(
@@ -550,7 +588,7 @@ taxas %>%
 
 </br></br>
 
-#### Poucos órgãos são responsáveis por mais da metade das negativas do FalaBr
+### Poucos órgãos são responsáveis por mais da metade das negativas do FalaBr
 
 ```{r plot-metade-das-negativas, fig.height=7, fig.width=9}
 top_opacos <- taxas %>% 
@@ -649,7 +687,7 @@ top_opacos2 %>%
 
 </br></br>
 
-#### Mediana da taxa interna de acessos negados por órgão (2012-2022)
+### Mediana da taxa interna de acessos negados por órgão (2012-2022)
 
 ```{r plot-mediana-acessos-negados-interno}
 taxas %>% 
@@ -676,7 +714,7 @@ taxas %>%
 
 </br></br>
 
-#### Distribuição das taxas internas de acessos negados por órgão
+### Distribuição das taxas internas de acessos negados por órgão
 
 ```{r plot-distribuicao-acessos-negados, fig.height=6}
 taxas %>% 
@@ -726,7 +764,7 @@ taxas %>%
 
 </br></br>
 
-### Tempo de resposta dos pedidos 
+## Tempo de resposta dos pedidos 
 
 ```{r data-tempo-resposta}
 cores <- colorRampPalette(c(
@@ -746,9 +784,10 @@ pedidos_prazo <- pedidos_cgu %>%
   transmute(
     id_pedido, 
     orgao,
-    data_registro = dmy(ts_registro),
-    data_resposta = dmy(ts_resposta),
-    dias_corridos = dmy(ts_resposta) - dmy(ts_registro),
+    data_pedido,
+    data_resposta,
+    prazo,
+    dias_corridos = data_resposta - data_pedido,
     dias_corridos_fx = case_when(
       dias_corridos == 0 ~  " 0 dias corridos",
       dias_corridos <= 5 ~  " 1 até 5 dias",
@@ -768,16 +807,15 @@ pedidos_prazo <- pedidos_cgu %>%
       "21 até 25 dias",
       "26 até 30 dias",
       "Acima de 30 dias"
-    )),
-    prazo = lubridate::dmy(prazo)
+    ))
   )
 ```
 
-#### Frequência de dias corridos para resposta à LAI (2012-2022)
+### Frequência de dias corridos para resposta à LAI (2012-2022)
 
 ```{r plot-frequencia-dias-corridos, fig.height=10, fig.width=6}
 pedidos_prazo %>% 
-  count(name = 'n_pedidos_ano_prazo', dias_corridos_fx, ano = year(data_registro), sort = TRUE) %>%
+  count(name = 'n_pedidos_ano_prazo', dias_corridos_fx, ano = year(data_pedido), sort = TRUE) %>%
   add_count(name = 'n_pedidos_ano', ano, wt = n_pedidos_ano_prazo) %>% 
   mutate(per = n_pedidos_ano_prazo / n_pedidos_ano) %>% 
   ggplot(aes(x = reorder(ano, -ano), y = per, fill = dias_corridos_fx, group = dias_corridos_fx)) +
@@ -800,13 +838,13 @@ pedidos_prazo %>%
 
 </br></br>
 
-#### Tempo médio de resposta por ano
+### Tempo médio de resposta por ano
 
 ```{r plot-tempo-medio-de-resposta}
 my_lbl_days <- function(x) str_glue("{round(x)} dias")
 
 pedidos_prazo %>% 
-  group_by(ano = year(data_registro)) %>% 
+  group_by(ano = year(data_pedido)) %>% 
   summarise(media_dias_corridos_por_ano = mean(dias_corridos), .groups = "drop") %>% 
   ggplot(aes(x = ano, y = media_dias_corridos_por_ano)) +
   geom_col(fill = cores_tb[["azul"]]) +
@@ -820,4 +858,88 @@ pedidos_prazo %>%
   )
 ```
 
+## Recursos
+
+```{r}
+pedidos_e_recursos <- recursos_cgu %>%
+  arrange(as.integer(id_pedido), instancia) %>% 
+  group_by(id_pedido) %>% 
+  filter(row_number() == max(row_number())) %>% 
+  ungroup() %>% 
+  right_join(pedidos_cgu) %>% 
+  arrange(as.integer(id_pedido)) %>% 
+  transmute(id_recurso, id_pedido, 
+            ano_pedido = year(mes_pedido),
+            orgao,
+            entrou_com_recurso = !is.na(id_recurso)
+            )
+```
+
+### % de pedidos que entraram ou não com recurso
+
+```{r}
+pedidos_e_recursos %>% 
+  count(ano_pedido, entrou_com_recurso, sort = TRUE) %>%
+  add_count(name = "total", ano_pedido, wt = n) %>% 
+  ggplot(aes(x = ano_pedido, y = n / total, fill = reorder(entrou_com_recurso, n))) +
+  ggchicklet::geom_chicklet(alpha = .9) +
+  geom_text(data = . %>% filter(entrou_com_recurso), size = 3.3, fontface = "bold", vjust = 1,
+            aes(label = my_lbl(n / total)), color = cores_tb[["cinza_quase_branco"]]) +
+  scale_fill_manual(values = c(cores_aep[["rosa"]], cores_tb[["azul"]]), 
+                    labels = c("Houve recurso", "Não houve recurso"), name = "") +
+  scale_y_percent(name = "% de pedidos de acesso a informação", expand = c(0, 0)) +
+  scale_x_continuous(breaks = c(2012:2022), name = NULL)
+```
+
+### Total de pedidos que entraram com recurso
+
+```{r}
+pedidos_e_recursos %>%
+  count(ano_pedido, entrou_com_recurso, sort = TRUE) %>%
+  add_count(name = "total", ano_pedido, wt = n) %>% 
+  ggplot(aes(x = ano_pedido, y = n, fill = reorder(entrou_com_recurso, n))) +
+  ggchicklet::geom_chicklet() +
+  scale_fill_manual(values = c(cores_aep[["rosa"]], cores_tb[["azul"]]), 
+                    labels = c("Houve recurso", "Não houve recurso"), name = "") +
+  scale_x_continuous(breaks = c(2012:2022), name = NULL) +
+  scale_y_continuous(labels = scales::label_number(), name = "Quantidade de pedidos", expand = c(0, 0))
+```
+
+### Evolução do % de recursos impetrados por ano
+
+```{r}
+pedidos_e_recursos %>% 
+  count(ano_pedido, entrou_com_recurso, sort = TRUE) %>%
+  add_count(name = "total", ano_pedido, wt = n) %>%
+  filter(entrou_com_recurso) %>% 
+  ggplot(aes(x = ano_pedido, y = n / total, group = reorder(entrou_com_recurso, n))) +
+  geom_line(size = 1) +
+  geom_point(color = cores_aep[["rosa"]], size = 3) +
+  geom_text(aes(label = my_lbl(n / total)), color = cores_aep[["rosa"]], vjust = -1) +
+  scale_y_percent(name = "% de pedidos de acesso a informação", limits = c(0, 0.11)) +
+  scale_x_continuous(breaks = c(2012:2022), name = NULL)
+```
+
+### Órgãos campeões de recursos impetrados (2012 - 2022, 15 primeiros)
+
+```{r fig.height=10}
+pedidos_e_recursos %>% 
+  filter(entrou_com_recurso) %>% 
+  count(orgao, sort = TRUE) %>% 
+  slice_max(order_by = n, n = 15) %>% 
+  ggplot(aes(y = n, x = reorder(orgao, -n))) +
+  coord_flip() +
+  ggchicklet::geom_chicklet(fill = cores_aep[["laranja"]]) +
+  geom_text(aes(label = scales::number(n, accuracy = 1)), check_overlap = T,
+            color = "black", hjust = 1, size =  3, fontface = "bold") +
+  scale_x_discrete(expand = c(0, 0), name = "Órgão", labels = NULL) + 
+  scale_y_continuous(expand = c(0, 0), labels = number_format(), limits = c(0, 8500), 
+                     name = "Quantidade de recursos impetrados") +
+  facet_wrap(~ reorder(orgao, -n), ncol = 1, scales = "free_y") +
+  theme(strip.text = element_text(hjust = 0, face = "italic"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank())
+```
 
