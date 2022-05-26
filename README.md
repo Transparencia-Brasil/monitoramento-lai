@@ -43,8 +43,15 @@ registrados no portal FalaBr do governo Federal.
         pedidos](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tempo_de_resposta_dos_pedidos)
         -   [Frequência de dias corridos para resposta à LAI
             (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Frequência_de_dias_corridos_para_resposta_à_LAI_(2012-2022))
-        -   [Frequência de dias corridos para resposta à LAI
-            (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tempo_médio_de_resposta_por_ano)
+        -   [Tempo médio de resposta por
+            ano](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tempo_médio_de_resposta_por_ano)
+    -   [Recursos](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Recursos)
+        -   [% de pedidos que entraram ou não com
+            recurso](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#%_de_pedidos_que_entraram_ou_não_com_recurso)
+        -   [Total de pedidos que entraram com
+            recurso](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Total_de_pedidos_que_entraram_com_recurso)
+        -   [Evolução do % de recursos impetrados por
+            ano](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Evolução_do_%_de_recursos_impetrados_por_ano)
 
 ## Base de dados
 
