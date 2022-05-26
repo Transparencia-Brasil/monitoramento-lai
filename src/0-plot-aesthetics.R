@@ -53,6 +53,8 @@ cores_instancia <- c(
   "CMRI" = cores_aep[["rosa"]]
 )
 
+ord_instancia <- ordered(names(cores_instancia), levels = names(cores_instancia))
+
 #' Paleta de cores para tipos de respostas aos recursos de pedidos LAI
 cores_tipo_resposta <- c(
   cores_tb[["azul"]],
@@ -85,7 +87,7 @@ cores_motivo_recurso <- c(
 )
 
 #' Helper para aparência de escala percentual em eixos no ggplot
-my_lbl <- function(x) scales::percent(x, accuracy = .1, decimal.mark = ",")
+my_lbl <- function(x) scales::percent(x, accuracy = .1, decimal.mark = ",", big.mark = " ")
 
 #' ggplot theme defaults
 theme_set(theme_minimal())
