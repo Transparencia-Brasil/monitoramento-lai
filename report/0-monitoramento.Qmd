@@ -473,13 +473,13 @@ Pedidos de acesso a informação são solicitações no FalaBr que <u>não</u> f
 
 As negativas de acesso são abordadas de duas formas:
 
-* Taxa geral de negativas por órgão:
+-   Taxa geral de negativas por órgão:
 
 $$
 Taxa\:geral\:\:de\:negativas\:por\:órgão = \frac{{Total\:Acessos\:Negados\:no\:órgão}_{mês}}{{Total\:Acessos\:Negados\:no\:FalaBr}_{mês}} \times 100
 $$
 
-* Taxa interna de negativas por órgão
+-   Taxa interna de negativas por órgão
 
 $$
 Taxa\:interna\:de\:negativas\:por\:órgão = \frac{{Total\:Acessos\:Negados\:no\:órgão}_{mês}}{{Total\:pedidos\:recebidos\:pelo\:órgão}_{mês}} \times 100
@@ -666,7 +666,7 @@ top_opacos2 %>%
                          glue("(< 5%)\n{sigla}\nsoma: {my_lbl(per)}")
                          )) %>% 
   ggplot(aes(x = ano, y = per, fill = fct_reorder2(orgao, -per, -ano))) +
-  geom_col(color = "black") + 
+  geom_col(color = "gray60") + 
   geom_text(aes(label = sigla), 
             size = 2.7, position = position_stack(vjust = .5)) +
   theme(legend.position = "none") +
@@ -764,7 +764,7 @@ taxas %>%
 
 </br></br>
 
-## Tempo de resposta dos pedidos 
+## Tempo de resposta dos pedidos
 
 ```{r data-tempo-resposta}
 cores <- colorRampPalette(c(
@@ -810,6 +810,8 @@ pedidos_prazo <- pedidos_cgu %>%
     ))
   )
 ```
+
+</br></br>
 
 ### Frequência de dias corridos para resposta à LAI (2012-2022)
 
@@ -858,9 +860,11 @@ pedidos_prazo %>%
   )
 ```
 
+</br></br>
+
 ## Recursos
 
-```{r}
+```{r data-pedidos-e-recursos}
 pedidos_e_recursos <- recursos_cgu %>%
   arrange(as.integer(id_pedido), instancia) %>% 
   group_by(id_pedido) %>% 
@@ -871,13 +875,18 @@ pedidos_e_recursos <- recursos_cgu %>%
   transmute(id_recurso, id_pedido, 
             ano_pedido = year(mes_pedido),
             orgao,
-            entrou_com_recurso = !is.na(id_recurso)
+            entrou_com_recurso = !is.na(id_recurso),
+            tipo_recurso,
+            tipo_resposta,
+            decisao
             )
 ```
 
+</br></br>
+
 ### % de pedidos que entraram ou não com recurso
 
-```{r}
+```{r plot-perc-pedidos-com-e-sem-recurso}
 pedidos_e_recursos %>% 
   count(ano_pedido, entrou_com_recurso, sort = TRUE) %>%
   add_count(name = "total", ano_pedido, wt = n) %>% 
@@ -891,9 +900,11 @@ pedidos_e_recursos %>%
   scale_x_continuous(breaks = c(2012:2022), name = NULL)
 ```
 
+</br></br>
+
 ### Total de pedidos que entraram com recurso
 
-```{r}
+```{r plot-total-recursos-ano}
 pedidos_e_recursos %>%
   count(ano_pedido, entrou_com_recurso, sort = TRUE) %>%
   add_count(name = "total", ano_pedido, wt = n) %>% 
@@ -905,9 +916,11 @@ pedidos_e_recursos %>%
   scale_y_continuous(labels = scales::label_number(), name = "Quantidade de pedidos", expand = c(0, 0))
 ```
 
+</br></br>
+
 ### Evolução do % de recursos impetrados por ano
 
-```{r}
+```{r plor-perc-recursos-ano}
 pedidos_e_recursos %>% 
   count(ano_pedido, entrou_com_recurso, sort = TRUE) %>%
   add_count(name = "total", ano_pedido, wt = n) %>%
@@ -920,9 +933,11 @@ pedidos_e_recursos %>%
   scale_x_continuous(breaks = c(2012:2022), name = NULL)
 ```
 
+</br></br>
+
 ### Órgãos campeões de recursos impetrados (2012 - 2022, 15 primeiros)
 
-```{r fig.height=10}
+```{r plot-orgaos-campeoes-recursos, fig.height=10}
 pedidos_e_recursos %>% 
   filter(entrou_com_recurso) %>% 
   count(orgao, sort = TRUE) %>% 
@@ -943,3 +958,65 @@ pedidos_e_recursos %>%
         panel.grid.minor.y = element_blank())
 ```
 
+</br></br>
+
+```{r func-plot_tipo_reposta}
+cores_tipo_resposta2 <- cores_tipo_resposta %>% 
+  enframe() %>% 
+  mutate(
+    value = case_when(
+      name == "Deferido" ~ "cyan4",
+      name == "Parcialmente deferido" ~ cores_tb[["azul"]],
+      name == "Perda de objeto parcial" ~ cores_tb[["cinza_escuro"]],
+      name == "Perda de objeto" ~ cores_aep[["cinza"]],
+      name == "Não conhecimento" ~ cores_aep[["laranja"]],
+      name == "Acolhimento" ~ cores_tb[["cinza_quase_branco"]],
+      TRUE ~ value
+    )
+  ) %>% deframe()
+
+plot_tipo_resposta <- function(df, instancia_recursal) {
+  
+  recursos_cgu %>%
+  count(ano_recurso = year(data_recurso), instancia, tipo_resposta) %>% 
+  filter(instancia == instancia_recursal) %>%
+  add_count(ano_recurso, wt = n) %>% 
+  ggplot(aes(x = ano_recurso, y = n / nn, color = tipo_resposta)) +
+  geom_line() +
+  geom_point(size = 2) +
+  scale_y_percent() +
+  scale_color_manual(values = cores_tipo_resposta2, name = "Tipo de resposta:") +
+  scale_x_continuous(breaks = 2012:2022)
+  
+} 
+```
+
+### Tipo de resposta dada aos recursos em primeira instância
+
+```{r plot-tipo-resposta-1a-instancia}
+plot_tipo_resposta(recursos_cgu, "Primeira Instância")
+```
+
+</br></br>
+
+### Tipo de resposta dada aos recursos em segunda instância
+
+```{r plot-tipo-resposta-2a-instancia}
+plot_tipo_resposta(recursos_cgu, "Segunda Instância")
+```
+
+</br></br>
+
+### Tipo de resposta dada aos recursos para a CMRI
+
+```{r plot-tipo-resposta-cmri}
+plot_tipo_resposta(recursos_cgu, "CMRI")
+```
+
+</br></br>
+
+### Tipo de resposta dada aos recursos para a CGU
+
+```{r plot-tipo-resposta-cgu}
+plot_tipo_resposta(recursos_cgu, "CGU")
+```
