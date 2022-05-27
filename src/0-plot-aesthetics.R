@@ -90,16 +90,6 @@ cores_motivo_recurso <- c(
 my_lbl <- function(x) scales::percent(x, accuracy = .1, decimal.mark = ",", big.mark = " ")
 
 #' ggplot theme defaults
-theme_set(theme_minimal())
-
-theme_update(
-  panel.grid.minor = element_blank(),
-  panel.background = element_rect(fill = "gray97", color = "transparent")
-)
-
-#' opções gerais do relatório
-set.seed(1014)
-
 knitr::knit_hooks$set(inline = function(x) prettyNum(x, big.mark = ".", decimal.mark = ","))
 
 options(
@@ -107,8 +97,22 @@ options(
   scipen = 999,
   OutDec = ",",
   knitr.kable.NA = "",
-  radian.auto_match = FALSE
+  radian.auto_match = FALSE,
+  hrbrthemes.loadfonts = TRUE
 )
+
+theme_set(theme_minimal())
+
+theme_update(
+  panel.grid.minor = element_blank(),
+  panel.background = element_rect(fill = "gray97", color = "transparent")
+)
+
+hrbrthemes::import_roboto_condensed()
+extrafont::loadfonts()
+
+#' opções gerais do relatório
+set.seed(1014)
 
 Sys.setenv(LANGUAGE = "pt-br")
 Sys.setlocale("LC_TIME", "pt_BR")
