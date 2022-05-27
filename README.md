@@ -10,9 +10,9 @@ registrados no portal FalaBr do governo Federal.
     -   [Total de manifestações registradas no FalaBr
         (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Total_de_manifestações_registradas_no_FalaBr_(2012-2022))
     -   [Número de órgãos do governo Federal acionados pela LAI
-        (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Número_de_órgãos_do_governo_Federal_acionados_pela_LAI_(2012-2022))
+        (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Número_de_órgãos_do_governo_Federal_acionados_pela_LAI__(2012-2022))
     -   [Taxa de atendimento de pedidos de acesso a informação
-        (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxa_de_atendimento_de_pedidos_de_acesso_a_informação_(2012-2022))
+        (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxa_de_atendimento_de_pedidos_de_acesso_a_informação__(2012-2022))
         -   [Taxa de Acessos
             Concedidos](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxa_de_Acessos_Concedidos)
         -   [Taxa de Acessos
@@ -21,11 +21,11 @@ registrados no portal FalaBr do governo Federal.
             Concedido](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxa_de_Acessos_Parcialmente_Concedido)
         -   [Taxa para a decisão “Órgão não tem competência para
             responder sobre o
-            assunto”](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxa_para_a_decisão_“Órgão_não_tem_competência_para_responder_sobre_o_assunto”)
+            assunto”](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxa_para_a_decisão_“Órgão_não_tem_competência_para_responder_sobre__o_assunto”)
         -   [Taxa de resposta de “Informação
             Inexistente”](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxa_de_resposta_de_“Informação_Inexistente”)
     -   [Taxas de respostas por decisão de acesso - mesmo período -
-        (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxas_de_respostas_por_decisão_de_acesso_-_mesmo_período_-_(2012-2022))
+        (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Taxas_de_respostas_por_decisão_de_acesso_-_mesmo_período_-__(2012-2022))
     -   [Negativas de
         acesso](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Negativas_de_acesso)
         -   [Metodologia (taxa geral e interna de acessos
@@ -34,9 +34,9 @@ registrados no portal FalaBr do governo Federal.
             (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Órgãos_que_mais_negaram_informações_-_mês_a_mês_(2012-2022))
         -   [Poucos órgãos são responsáveis por mais da metade das
             negativas do
-            FalaBr](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Poucos_órgãos_são_responsáveis_por_mais_da_metade_das_negativas_do_FalaBr)
+            FalaBr](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Poucos_órgãos_são_responsáveis_por_mais_da_metade_das_negativas_do__FalaBr)
         -   [Mediana da taxa interna de acessos negados por órgão
-            (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Mediana_da_taxa_interna_de_acessos_negados_por_órgão_(2012-2022))
+            (2012-2022)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Mediana_da_taxa_interna_de_acessos_negados_por_órgão__(2012-2022))
         -   [Distribuição das taxas internas de acessos negados por
             órgão](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Distribuição_das_taxas_internas_de_acessos_negados_por_órgão)
     -   [Tempo de resposta dos
@@ -53,7 +53,15 @@ registrados no portal FalaBr do governo Federal.
         -   [Evolução do % de recursos impetrados por
             ano](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Evolução_do_%_de_recursos_impetrados_por_ano)
         -   [Órgãos campeões de recursos impetrados (2012 - 2022, 15
-            primeiros)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Órgãos_campeões_de_recursos_impetrados_(2012_-_2022,_15_primeiros))
+            primeiros)](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Órgãos_campeões_de_recursos_impetrados_(2012_-_2022,_15__primeiros))
+        -   [Tipo de resposta dada aos recursos em primeira
+            instância](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tipo_de_resposta_dada_aos_recursos_em_primeira_instância)
+        -   [Tipo de resposta dada aos recursos em segunda
+            instância](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tipo_de_resposta_dada_aos_recursos_em_segunda_instância)
+        -   [Tipo de resposta dada aos recursos para a
+            CMRI](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tipo_de_resposta_dada_aos_recursos_para_a_CMRI)
+        -   [Tipo de resposta dada aos recursos para a
+            CGU](https://rdurl0.github.io/monitoramento-lai/0-monitoramento.html#Tipo_de_resposta_dada_aos_recursos_para_a_CGU)
 
 ## Base de dados
 
