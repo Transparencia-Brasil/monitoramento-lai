@@ -1,0 +1,66 @@
+---
+title: 'Monitoramento da Lei de Acesso a informação no governo Federal'
+output:
+    github_document:
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = T,
+  comment = "#>",
+  message = F,
+  warning = F,
+  fig.align = "center",
+  echo = F
+)
+```
+
+Repositório com números e análises de pedidos de acesso a informação registrados no portal FalaBr do governo Federal.
+
+```{r}
+library(tidyverse)
+library(here)
+library(xml2)
+
+docs <- list.files(here("docs"))
+
+# get_tags_h <- function(x, xpath) {
+#   here("docs", x) %>% 
+#     read_html() %>% 
+#     xml_find_all(xpath = xpath) %>% 
+#     xml_text() %>% 
+#     as_tibble_col(column_name = "section_title") %>% 
+#     mutate(tag = str_remove_all(xpath, "[:punct:]"))
+# }
+
+
+# toc <- c("//h1", "//h2", "//h3", "//h4") %>% 
+#   map_df(get_tags_h, x = docs) %>% 
+#   mutate(slug = if_else(tag == "h1", "", str_replace_all(section_title, "\\s", "_")),
+#          doc = docs,
+#          id = str_glue("https://rdurl0.github.io/monitoramento-lai/{doc}#{slug}")) %>%
+#   select(tag, section_title, id) %>% 
+#   group_by(tag) %>%
+#   nest() %>% 
+#   deframe()
+
+criado_em <- here("data") %>% 
+  list.files(pattern = "base-cgu", full.names = T) %>%
+  file.info() %>% 
+  pull(ctime) %>%
+  format.Date("%d.%b.%Y")
+```
+
+## Conteúdo
+
+- [Monitoramento da Lei de Acesso a Informação](https://rdurl0.github.io/monitoramento-lai/0-monitoramento): análises extraídas das solicitações e respostas da base de dados de pedidos de acesso a informação enviados ao governo Federal.
+
+- [Uso de termos controversos nas negativas de acesso a informação](https://rdurl0.github.io/monitoramento-lai/1-negativas-sigilo): uso de processamento de linguagem natural para detecção de termos controversos nas respostas de pedidos de acesso a informação classificadas com acesso negado. Busca por termos relacionados a **sigilo**, **dados e informações pessoais**, **artigo 31 da Lei de Acesso a Informação** e **Lei Geral de Proteção de Dados (LGPD)**.
+
+## Base de dados
+
+- [Base completa (2012-2022)](https://falabr.cgu.gov.br/publico/DownloadDados/DownloadDadosLai.aspx): base com todo histórico da LAI no governo federal, porém sem dados textuais de pedidos, recursos e respostas. (*atualizado em: `r criado_em[1]`*)
+
+- [Base filtrada (2015-2022)](http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DownloadPedidos/DownloadDados.aspx): base com conteúdos textuais de pedidos, recursos e respostas. Pedidos LAI que possuam informaçoes sensíveis são excluídos/filtrados da base. (*atualizado em `r criado_em[2]`*)
