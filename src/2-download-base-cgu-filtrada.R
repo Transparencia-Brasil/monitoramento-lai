@@ -157,7 +157,7 @@ meta <- "http://www.consultaesic.cgu.gov.br/arquivosRelatorios/PedidosRespostas/
   rename(metadados = data)
 
 base_cgu %>% 
-  enframe(name = "base", value = "datasets") %>% 
+  #enframe(name = "base", value = "datasets") %>% 
   left_join(meta) %>% 
   saveRDS(here("data/base-cgu-filtrada.rds"))
 
