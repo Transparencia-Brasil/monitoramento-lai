@@ -1,28 +1,52 @@
 ---
 title: "Números da Lei de Acesso a Informação no Brasil"
-output:
-  html_document: 
-    code_folding: hide
-    toc: yes
-    toc_float: true
-    toc_depth: 4
-    theme: paper
-    df_print: default
+lang: pt-BR
+format:
+  html:
+    anchor-sections: true
+    code-fold: true
+    code-tools: true
+    code-link: true
+    code-line-numbers: true
+    code-summary: "Código"
+    toc: true
+    toc-title: "Índice"
+    toc-depth: 4
+    footnotes-hover: true
+    smooth-scroll: true
+    search: true
+    comments:
+      hypothesis: true
+knitr:
+  opts_chunk: 
+    collapse: true
+    comment: "#>" 
 editor_options: 
   chunk_output_type: console
+execute: 
+  cache: false
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  collapse = T,
-  comment = "#>",
-  message = F,
-  warning = F,
-  echo = T,
-  fig.width = 8,
-  fig.height = 5
-)
-```
+<style>
+.nav-tabs .nav-link {
+    margin-bottom: -1px;
+    background: none;
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    color: #fcaa27;
+    font-size: 0.875em;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+    color: #d81755;
+    font-size: 1em;
+}
+</style>
+
 
 ```{r libs}
 library(tidyverse)
