@@ -183,7 +183,7 @@ meta <- "https://falabr.cgu.gov.br/publico/DownloadDados/{base_cgu$base}-Formato
 #' salva
 base_cgu %>% 
   left_join(meta) %>% 
-  saveRDS(here("data/base-cgu.rds"))
+  saveRDS(here("data/base-cgu-atual.rds"))
 
 #' remove temp dir
 unlink(exdir, recursive = TRUE)
