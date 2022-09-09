@@ -59,6 +59,8 @@ criado_em <- here("data") %>%
 
 - [Uso de termos controversos nas negativas de acesso a informação](https://rdurl0.github.io/monitoramento-lai/1-negativas-sigilo): uso de processamento de linguagem natural para detecção de termos controversos nas respostas de pedidos de acesso a informação classificadas com acesso negado. Busca por termos relacionados a **sigilo**, **dados e informações pessoais**, **artigo 31 da Lei de Acesso a Informação** e **Lei Geral de Proteção de Dados (LGPD)**.
 
+- [Busca por menções ao artigo 31 da Lei de Acesso a Informação](https://rdurl0.github.io/monitoramento-lai/2-negativas-artigo-31.qmd)
+
 ## Base de dados
 
 - [Base completa (2012-2022)](https://falabr.cgu.gov.br/publico/DownloadDados/DownloadDadosLai.aspx): base com todo histórico da LAI no governo federal, porém sem dados textuais de pedidos, recursos e respostas. (*atualizado em: `r criado_em[1]`*)
