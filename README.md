@@ -20,7 +20,7 @@ registrados no portal FalaBr do governo Federal.
     Acesso a Informação** e **Lei Geral de Proteção de Dados (LGPD)**.
 
   - [Busca por menções ao artigo 31 da Lei de Acesso a
-    Informação](https://rdurl0.github.io/monitoramento-lai/2-negativas-artigo-31.qmd)
+    Informação](https://rdurl0.github.io/monitoramento-lai/2-negativas-artigo-31.html)
 
 ## Base de dados
 
