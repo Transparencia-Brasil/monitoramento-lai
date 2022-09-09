@@ -1,0 +1,5 @@
+linters: linters_with_defaults(
+    line_length_linter = line_length_linter(Inf),
+    no_tab_linter = NULL
+) # see vignette("lintr")
+encoding: "UTF-8"

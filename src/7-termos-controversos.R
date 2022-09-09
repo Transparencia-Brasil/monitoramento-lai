@@ -68,3 +68,25 @@ pedidos %>%
     menciona_artigo_31_resposta,
     sort = TRUE
   ) %>% print(n = Inf)
+
+pedidos <- pedidos %>%
+  filter(id_pedido %in% ids_acesso_negado) %>%
+  tidylog::left_join(nr_protocolo) 
+  
+pedidos <- pedidos %>%
+  transmute(
+    id_pedido = id_pedido,
+    protocolo = protocolo,
+    data_registro = data_registro,
+    data_resposta = data_resposta,
+    orgao = orgao,
+    detalhamento = detalhamento_clean,
+    resposta_pedido = resposta_clean,
+    resumo = resumo_clean,
+
+  )
+
+pedidos %>%
+  sample_n(1) %>%
+  pull(detalhamento_clean)
+  View()

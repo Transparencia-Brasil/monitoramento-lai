@@ -1,3 +1,4 @@
+# helper
 `%>%` <- magrittr::`%>%`
 
 {
@@ -120,6 +121,10 @@
     "12527",
     "12 527"
   ) %>% paste(collapse = "|")
+
+  rgx_lista_sigilo <- list(
+    
+  )
 
 }
 
