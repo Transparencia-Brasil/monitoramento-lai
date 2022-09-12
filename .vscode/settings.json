@@ -1,3 +1,16 @@
 {
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "spellright.language": [
+    "pt"
+  ],
+  "spellright.documentTypes": [
+    "markdown",
+    "latex",
+    "plaintext"
+  ],
+  "spellright.parserByClass": {
+    "quarto": {
+      "parser": "code"
+    }
+  }
 }
