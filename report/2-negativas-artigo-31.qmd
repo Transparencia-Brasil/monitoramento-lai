@@ -278,6 +278,8 @@ stopwords <- tibble(
 )
 ```
 
+As núvens de palavra abaixo são referentes a `r nrow(pedidos_inss)` pedidos direcionaos aos INSS. Foram extraídas as frequências de palavras de resumos de pedido, conteúdo de pedidos e conteúdo de resposta do pedido.
+
 ::: {.panel-tabset}
 
 ### Resumo do pedido
@@ -336,7 +338,6 @@ pedidos_inss %>%
 
 :::
 
-
 ## Núvem de palavras - Ministério da Economia
 
 ```{r}
@@ -359,6 +360,8 @@ pedidos_me <- base %>%
     resposta
   )
 ```
+
+As núvens de palavra abaixo são referentes a `r nrow(pedidos_me)` pedidos direcionaos aos Ministério da Economia. Foram extraídas as frequências de palavras de resumos de pedido, conteúdo de pedidos e conteúdo de resposta do pedido.
 
 ::: {.panel-tabset}
 
@@ -465,3 +468,4 @@ busca_pedidos_orgao %>%
     perc = md("**% citações<br/>por negativas**")
   )
 ```
+
