@@ -1,5 +1,5 @@
 ---
-title: "Acessos negados contendo termos relacionados a 'sigilo' e 'artigo 31 da LAI'"
+title: "Acessos negados citando o Artigo 31 da LAI"
 lang: pt-BR
 format:
   html:
@@ -25,7 +25,7 @@ knitr:
 editor_options: 
   chunk_output_type: console
 execute: 
-  cache: false
+  cache: true
 ---
 
 ```{=html}
@@ -58,9 +58,10 @@ library(lubridate)
 library(patchwork)
 library(scales)
 library(gt)
+library(tidytext)
+library(wordcloud)
 source(here("src/0-plot-aesthetics.R"), encoding = "utf-8")
 ```
-
 
 ## Base de dados - visão geral
 
@@ -131,7 +132,7 @@ Os pedidos foram agrupados em 3 categorias, onde as negativas citam:
 #|label: plot-quantidades
 
 grp1 <- "Necessidade de comprovação de\nidentidade de requerente"
-grp2 <- "Necessidade de tratamento de\ninformações pessoais (Art. 31 da LAI"
+grp2 <- "Necessidade de tratamento de\ninformações pessoais (Art. 31 da LAI)"
 grp3 <- "Outras justificativas"
 
 pedidos_busca %>%
@@ -186,7 +187,6 @@ pedidos_busca %>%
 ## Alegações de necessidade de tratamento de informações pessoais
 
 ```{r}
-#|label: plot-info-pessoais-anual
 pedidos_busca %>%
   count(
     id_ano = year(data_registro),
@@ -249,7 +249,180 @@ pedidos_busca %>%
   )
 ```
 
+## Núvem de palavras - INSS
+
 ```{r}
+#| label: wordcount-inss
+
+ids_inss <- pedidos_busca %>%
+  filter(str_detect(orgao, "^INSS")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>% 
+  pull(id_pedido)
+
+pedidos_inss <- base %>%
+  filter(base == "Pedidos") %>%
+  select(datasets) %>%
+  unnest(datasets) %>%
+  filter(id_pedido %in% ids_inss) %>% 
+  transmute(
+    id_pedido,
+    resumo,
+    detalhamento,
+    resposta
+  )
+
+#' stopwords do pacote `tm`
+stopwords <- tibble(
+  word = tm::stopwords("pt"),
+  lexicon = "tm"
+)
+```
+
+::: {.panel-tabset}
+
+### Resumo do pedido
+
+```{r}
+#| label: wordcloud-inss-resumo
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_inss %>%
+  select(
+    id_pedido,
+    resumo
+  ) %>% 
+  unnest_tokens(word, resumo) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
+```
+
+### Pedido
+
+```{r}
+#| label: wordcloud-inss-pedido
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_inss %>%
+  select(
+    id_pedido,
+    detalhamento
+  ) %>% 
+  unnest_tokens(word, detalhamento) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
+```
+
+### Resposta do pedido
+
+```{r}
+#| label: wordcloud-inss-resposta
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_inss %>%
+  select(
+    id_pedido,
+    detalhamento
+  ) %>% 
+  unnest_tokens(word, detalhamento) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
+```
+
+:::
+
+
+## Núvem de palavras - Ministério da Economia
+
+```{r}
+#| label: wordcount-me
+
+ids_me <- pedidos_busca %>%
+  filter(str_detect(orgao, "^ME ")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>% 
+  pull(id_pedido)
+
+pedidos_me <- base %>%
+  filter(base == "Pedidos") %>%
+  select(datasets) %>%
+  unnest(datasets) %>%
+  filter(id_pedido %in% ids_me) %>% 
+  transmute(
+    id_pedido,
+    resumo,
+    detalhamento,
+    resposta
+  )
+```
+
+::: {.panel-tabset}
+
+### Resumo do pedido
+
+```{r}
+#| label: wordcloud-me-resumo
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_me %>%
+  select(
+    id_pedido,
+    resumo
+  ) %>% 
+  unnest_tokens(word, resumo) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
+```
+
+### Pedido
+
+```{r}
+#| label: wordcloud-me-pedido
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_me %>%
+  select(
+    id_pedido,
+    detalhamento
+  ) %>% 
+  unnest_tokens(word, detalhamento) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
+```
+
+### Resposta do pedido
+
+```{r}
+#| label: wordcloud-me-resposta
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_me %>%
+  select(
+    id_pedido,
+    detalhamento
+  ) %>% 
+  unnest_tokens(word, detalhamento) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
+```
+
+:::
+
+## Órgãos que mais fazem menção ao Art. 31 da LAI em negativas
+
+```{r}
+#| label: plot-evolucao-negativas-sigilo
+
 busca_pedidos_orgao <- pedidos_busca %>%
   count(
     orgao,
@@ -282,7 +455,7 @@ busca_pedidos_orgao %>%
   )  %>% 
   gt() %>% 
   tab_header(
-    title = "Órgãos que mais fazem menção ao Art. 31 da LAI em negativas",
+    title = "",
     subtitle = "Percentual em relação ao total de negativas emitidas pelo órgão"
   ) %>% 
   cols_label(
@@ -292,4 +465,3 @@ busca_pedidos_orgao %>%
     perc = md("**% citações<br/>por negativas**")
   )
 ```
-
