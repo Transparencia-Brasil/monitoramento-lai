@@ -25,7 +25,7 @@ knitr:
 editor_options: 
   chunk_output_type: console
 execute: 
-  cache: true
+  cache: false
 ---
 
 ```{=html}
@@ -61,6 +61,7 @@ library(gt)
 library(tidytext)
 library(wordcloud)
 source(here("src/0-plot-aesthetics.R"), encoding = "utf-8")
+`%notin%` <- function(x, y) !(x %in% y)
 ```
 
 ## Base de dados - visão geral
@@ -328,9 +329,9 @@ pedidos_inss %>%
 pedidos_inss %>%
   select(
     id_pedido,
-    detalhamento
+    resposta
   ) %>% 
-  unnest_tokens(word, detalhamento) %>% 
+  unnest_tokens(word, resposta) %>% 
   anti_join(stopwords) %>% 
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
@@ -411,15 +412,97 @@ pedidos_me %>%
 pedidos_me %>%
   select(
     id_pedido,
-    detalhamento
+    resposta
   ) %>% 
-  unnest_tokens(word, detalhamento) %>% 
+  unnest_tokens(word, resposta) %>% 
   anti_join(stopwords) %>% 
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
 ```
 
 :::
+
+:::
+
+## Núvem de palavras - Demais Órgãos
+
+```{r}
+#| label: wordcount-demais-orgaos
+
+pedidos_demais_orgaos <- base %>%
+  filter(base == "Pedidos") %>%
+  select(datasets) %>%
+  unnest(datasets) %>%
+  filter(id_pedido %notin% ids_inss) %>% 
+  filter(id_pedido %notin% ids_me) %>% 
+  transmute(
+    id_pedido,
+    resumo,
+    detalhamento,
+    resposta
+  )
+```
+
+As núvens de palavra abaixo são referentes a `r nrow(pedidos_demais_orgaos)` pedidos direcionaos à todos os órgãos *exceto* INSS e Ministério da Economia. Foram extraídas as frequências de palavras de resumos de pedido, conteúdo de pedidos e conteúdo de resposta do pedido.
+
+::: {.panel-tabset}
+
+### Resumo do pedido
+
+```{r}
+#| label: wordcloud-demais-orgaos-resumo
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_demais_orgaos %>%
+  select(
+    id_pedido,
+    resumo
+  ) %>% 
+  unnest_tokens(word, resumo) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
+```
+
+### Pedido
+
+```{r}
+#| label: wordcloud-demais-orgaos-pedido
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_demais_orgaos %>%
+  select(
+    id_pedido,
+    detalhamento
+  ) %>% 
+  unnest_tokens(word, detalhamento) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
+```
+
+### Resposta do pedido
+
+```{r}
+#| label: wordcloud-demais-orgaos-resposta
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_demais_orgaos %>%
+  select(
+    id_pedido,
+    resposta
+  ) %>% 
+  unnest_tokens(word, resposta) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
+```
+
+:::
+
 
 ## Órgãos que mais fazem menção ao Art. 31 da LAI em negativas
 
@@ -467,5 +550,71 @@ busca_pedidos_orgao %>%
     qtde_orgao = md("**Total de<br/>negativas**"),
     perc = md("**% citações<br/>por negativas**")
   )
+```
+
+
+
+```{r}
+#| label: resultados-planilha
+#| eval: false
+
+# resultados INSS
+resultado_busca <- pedidos_busca %>%
+  filter(str_detect(orgao, "^INSS")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
+  transmute(
+    id_pedido,
+    link = str_glue("http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"),
+    link = str_glue('=HIPERLINK("{link}"; "lINK")'),
+    menciona_extrato = if_else(str_detect(resumo, "extrato"), "extrato", ""),
+    menciona_aposentadoria = if_else(str_detect(resumo, "aposentadoria"), "aposentadoria", ""),
+    menciona_tempo = if_else(str_detect(resumo, "tempo"), "tempo", ""),
+    menciona_beneficio = if_else(str_detect(resumo, "beneficio"), "benefício", ""),
+    menciona_cnis = if_else(str_detect(resumo, "cnis"), "CNIS", ""),
+    menciona_segunda_via = if_else(str_detect(resumo, "segunda via"), "2ª via", "")
+  ) %>% 
+  left_join(pedidos_inss)
+
+name_glue <- names(select(resultado_busca, starts_with("menciona"))) %>%
+  paste(collapse = "} {") %>%
+  paste0("{", ., "}")
+
+resultado_busca <- resultado_busca %>%
+  mutate(
+    termos_mencionados = str_glue(name_glue) %>%
+      str_trim()
+  )
+
+resultado_busca %>%
+    select(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) %>% 
+    googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "INSS")
+
+# Resultados Ministério Economia
+pedidos_busca %>%
+  filter(str_detect(orgao, "Ministério da Economia")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
+  transmute(
+    id_pedido,
+    link = str_glue("http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"),
+    link = str_glue('=HIPERLINK("{link}"; "lINK")'),
+    termos_mencionados = if_else(str_detect(resumo, "acordao"), "acordão", "")
+  ) %>% 
+  left_join(pedidos_me) %>% 
+  select(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) %>% 
+  googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "Ministério da Economia")
+
+# Resultados Todos os órgãos
+pedidos_busca %>%
+  filter(!str_detect(orgao, "Ministério da Economia")) %>%
+  filter(!str_detect(orgao, "^INSS")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
+  transmute(
+    id_pedido,
+    link = str_glue("http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"),
+    link = str_glue('=HIPERLINK("{link}"; "lINK")')
+  ) %>% 
+  left_join(pedidos_demais_orgaos) %>% 
+  select(id_pedido, link, resumo, detalhamento, resposta) %>% 
+  googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "Demais órgãos")
 ```
 
