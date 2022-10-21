@@ -1,0 +1,545 @@
+---
+title: "Evolução do uso da LGPD nas solicitações de acesso a informação via LAI para o governo Federal"
+lang: pt-BR
+format:
+  html:
+    anchor-sections: true
+    code-fold: true
+    code-tools: true
+    code-link: true
+    code-line-numbers: true
+    code-summary: "Código"
+    toc: true
+    toc-title: "Índice"
+    toc-depth: 4
+    footnotes-hover: true
+    smooth-scroll: true
+    fig-width: 9
+    search: true
+    comments:
+      hypothesis: true
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+    echo: false
+    message: false
+    warning: false
+editor_options:
+  chunk_output_type: console
+execute:
+  cache: false
+---
+
+```{=html}
+<style>
+.nav-tabs .nav-link {
+    margin-bottom: -1px;
+    background: none;
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    color: #fcaa27;
+    font-size: 0.875em;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+    color: #d81755;
+    font-size: 1em;
+}
+</style>
+```
+
+```{r}
+#| label: libs
+library(tidyverse)
+library(here)
+library(lubridate)
+library(patchwork)
+library(scales)
+library(gt)
+library(tidytext)
+library(wordcloud)
+source(here("src/0-plot-aesthetics.R"), encoding = "utf-8")
+#' lista de regex
+lista_de_regex <- readRDS(here::here("data/lista-de-regex.rds"))
+
+`%notin%` <- function(x, y) !(x %in% y)
+```
+
+```{r}
+#| label: bases-de-dados
+#| eval: false
+
+base <- readRDS(here("data/base-cgu-filtrada.rds"))
+
+recorte_da_base <- "data/base-cgu-filtrada.rds" %>% 
+  here() %>% 
+  readRDS() %>%
+  filter(base == "Pedidos") %>%
+  transmute(datasets = map(datasets, select, assunto, id_pedido, decisao, data_registro, protocolo)) %>%
+  unnest(datasets) %>% 
+  distinct() %>% 
+  filter(
+    year(data_registro) > 2017,
+    decisao %notin% c(
+      "Pergunta Duplicada/Repetida",
+      "Não se trata de solicitação de informação"
+  ))
+
+recursos <- readRDS(here("data/recursos-clean.rds"))
+
+pedidos <- readRDS(here("data/pedidos-clean.rds")) %>% 
+  distinct() %>% 
+  tidylog::inner_join(select(recorte_da_base, id_pedido, protocolo, decisao, assunto)) %>% 
+  mutate(possui_recurso = if_else(
+      id_pedido %in% unique(recursos$id_pedido), TRUE, FALSE
+  ))
+
+saveRDS(pedidos, here("data/pedidos_busca"))
+```
+
+```{r}
+#| label: busca-por-pedidos
+
+pedidos_busca <- "data/pedidos_busca" %>%
+  here() %>% 
+  readRDS() %>% 
+  transmute(
+    id_pedido = id_pedido,
+    protocolo = protocolo,
+    data_registro = data_registro,
+    data_resposta = data_resposta,
+    assunto = assunto,
+    possui_recurso = possui_recurso,
+    orgao = orgao,
+    detalhamento = detalhamento_clean,
+    resposta_pedido = resposta_clean,
+    resumo = resumo_clean,
+    usa_lgpd_assunto = assunto == "Dados Pessoais - LGPD",
+    usa_lgpd_pedido_resumido = if_else(
+      year(data_registro) > 2017,
+      str_detect(resumo_clean, "LGPD"),
+      FALSE
+    ) %>% replace_na(FALSE),
+    usa_lgpd_pedido = if_else(
+      year(data_registro) > 2017,
+      str_detect(detalhamento_clean, "LGPD"),
+      FALSE
+    ),
+    usa_lgpd_resposta = if_else(
+      year(data_registro) > 2017,
+      str_detect(resposta_clean, "LGPD"),
+      FALSE
+    ) %>% replace_na(FALSE)
+  ) %>% 
+  mutate(
+    cita_onde = case_when(
+      !usa_lgpd_assunto & !usa_lgpd_pedido_resumido & !usa_lgpd_pedido & !usa_lgpd_resposta ~
+        "Não foram encontradas citações da LGPD",
+      usa_lgpd_assunto ~ "Usuário menciona LGPD na solitiação",
+      usa_lgpd_pedido_resumido ~ "Usuário menciona LGPD na solitiação",
+      usa_lgpd_pedido ~ "Usuário menciona LGPD na solitiação",
+      !usa_lgpd_assunto & !usa_lgpd_pedido_resumido & !usa_lgpd_pedido & usa_lgpd_resposta ~
+        "Somente na resposta do órgão público",      
+      TRUE ~ NA_character_
+    )
+  )
+```
+
+### Números totais
+
+::: {.panel-tabset}
+
+#### Mês a mês
+
+```{r}
+#| label: plot-total-mensal
+
+pedidos_busca %>% 
+  mutate(
+    deteccao_lgpd = if_else(
+      cita_onde == "Não foram encontradas citações da LGPD",
+      cita_onde, "Citação à LGPD encontrada"
+    )
+  ) %>% 
+  count(data_registro, deteccao_lgpd) %>% 
+  ggplot(aes(x = data_registro, y = n, fill = reorder(deteccao_lgpd, -n))) +
+  geom_col() +
+  geom_text(
+    data = . %>%
+      add_count(data_registro, wt = n) %>% 
+      filter(deteccao_lgpd == "Não foram encontradas citações da LGPD") %>%
+      mutate(nn - n) %>% 
+      filter(`nn - n` > 0),
+    aes(
+      y = `nn - n`,
+      label = `nn - n`,
+    ),
+    color = cores_aep[["rosa"]],
+    vjust = -.5,
+    hjust = 0,
+    size = 2.5,
+    fontface = "bold",
+    angle = 45
+  ) +
+  labs(
+    title = "Detecção dos termos relacionados a LGPD",
+    subtitle = "Considerando menções no pedido e na resposta",
+    x = NULL,
+    y = "Quantidade de pedidos",
+    fill = NULL
+  ) +
+  scale_fill_manual(values = c(alpha(cores_aep[["laranja"]], .5),
+                               cores_aep[["rosa"]])) +
+  scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
+  scale_y_continuous(labels = scales::number) +
+  theme(axis.ticks.x = element_line(),
+        legend.position = "top",
+        legend.justification = "left")
+```
+
+#### Ano a ano
+
+```{r}
+#| label: plot-total-anual
+
+pedidos_busca %>% 
+  mutate(
+    deteccao_lgpd = if_else(
+      cita_onde == "Não foram encontradas citações da LGPD",
+      cita_onde, "Citação à LGPD encontrada"
+    )
+  ) %>% 
+  count(ano = year(data_registro), deteccao_lgpd) %>% 
+  ggplot(aes(x = ano, y = n, fill = reorder(deteccao_lgpd, -n))) +
+  geom_col() +
+  geom_text(
+     data = . %>%
+      add_count(ano, wt = n) %>% 
+      filter(deteccao_lgpd == "Não foram encontradas citações da LGPD") %>%
+      mutate(nn - n) %>% 
+      filter(`nn - n` > 0),
+        aes(
+      y = `nn - n`,
+      label = scales::number(`nn - n`),
+    ),
+    color = cores_aep[["rosa"]],
+    vjust = -.5,
+    hjust = 0,
+    size = 4,
+    fontface = "bold"
+  ) +
+  scale_fill_manual(values = c(alpha(cores_aep[["laranja"]], .5),
+                               cores_aep[["rosa"]])) +
+  scale_y_continuous(labels = scales::number) +
+  theme(axis.ticks.x = element_line(),
+        legend.position = "top",
+        legend.justification = "left") +
+  labs(
+    title = "Detecção dos termos relacionados a LGPD",
+    subtitle = "Considerando menções no pedido e na resposta",
+    x = NULL,
+    y = "Quantidade de pedidos",
+    fill = NULL
+  )
+```
+#### Mês a mês **(%)**
+
+```{r}
+#| label: plot-perc-mensal
+
+pedidos_busca %>% 
+  mutate(
+    deteccao_lgpd = if_else(
+      cita_onde == "Não foram encontradas citações da LGPD",
+      cita_onde, "Citação à LGPD encontrada"
+    )
+  ) %>% 
+  count(data_registro, deteccao_lgpd) %>%
+  group_by(data_registro) %>% 
+  mutate(
+    prop = n / sum(n)
+  ) %>% 
+  ungroup() %>% 
+  filter(deteccao_lgpd != "Não foram encontradas citações da LGPD") %>% 
+  ggplot(aes(x = data_registro, y = prop, fill = reorder(deteccao_lgpd, -prop))) +
+  geom_col(show.legend = F) +
+  geom_text(aes(
+      label = scales::percent(prop, accuracy = .1, big.mark = ".", decimal.mark = ",")
+    ),
+    color = cores_aep[["rosa"]],
+    vjust = -.5,
+    hjust = 0,
+    size = 2.5,
+    angle = 45,
+    fontface = "bold"
+  ) +
+  labs(
+    title = "Taxa de detecção dos termos relacionados a LGPD",
+    subtitle = "Considerando menções no pedido e na resposta",
+    x = NULL,
+    y = "% de pedidos",
+    fill = NULL
+  ) +
+  scale_fill_manual(values = cores_aep[["rosa"]]) +
+  scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
+  scale_y_continuous(labels = scales::percent, limits = c(0, .15)) +
+  theme(axis.ticks.x = element_line())
+```
+
+#### Ano a ano **(%)**
+
+```{r}
+#| label: plot-perc-anual
+
+pedidos_busca %>% 
+  mutate(
+    deteccao_lgpd = if_else(
+      cita_onde == "Não foram encontradas citações da LGPD",
+      cita_onde, "Citação à LGPD encontrada"
+    )
+  ) %>% 
+  count(ano = year(data_registro), deteccao_lgpd) %>%
+  group_by(ano) %>% 
+  mutate(
+    prop = n / sum(n)
+  ) %>% 
+  ungroup() %>% 
+  filter(deteccao_lgpd != "Não foram encontradas citações da LGPD") %>% 
+  ggplot(aes(x = ano, y = prop, fill = reorder(deteccao_lgpd, -prop))) +
+  geom_col(show.legend = F) +
+  geom_text(aes(
+      label = scales::percent(prop, accuracy = .01, big.mark = ".", decimal.mark = ",")
+    ),
+    color = cores_aep[["rosa"]],
+    vjust = -.5,
+    size = 4,
+    fontface = "bold"
+  ) +
+  labs(
+    title = "Taxa de detecção dos termos relacionados a LGPD",
+    subtitle = "Considerando menções no pedido e na resposta",
+    x = NULL,
+    y = "% de pedidos",
+    fill = NULL
+  ) +
+  scale_fill_manual(values = cores_aep[["rosa"]]) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, .05)) +
+  theme(axis.ticks.x = element_line())
+```
+
+#### Total
+
+```{r}
+#| label: plot-onde-total
+
+pedidos_busca %>% 
+  mutate(
+    deteccao_lgpd = if_else(
+      cita_onde == "Não foram encontradas citações da LGPD",
+      cita_onde, "Citação à LGPD encontrada"
+    )
+  ) %>% 
+  count(deteccao_lgpd) %>%
+  mutate(
+    prop = n / sum(n),
+    ypos = cumsum(prop) - 0.5 * prop
+  ) %>% 
+  ggplot(aes(x = "", y = prop, fill = reorder(deteccao_lgpd, -prop))) +
+  geom_col(width = 1, color = cores_tb[["cinza_quase_branco"]]) +
+  coord_polar("y", start = 0) +
+  geom_text(
+    aes(y = 1-ypos, label = str_glue("{scales::number(n)} pedidos\n{my_lbl(prop)}")),
+    size = 4
+  ) +
+  labs(
+    title = "Detecção dos termos relacionados a LGPD",
+    subtitle = "Considerando menções no pedido e na resposta",
+    x = NULL,
+    y = NULL,
+    fill = NULL
+  ) +
+  scale_fill_manual(values = c(cores_aep[["laranja"]], cores_aep[["rosa"]])) +
+  theme(
+    legend.position = "top",
+    legend.justification = "left",
+    legend.direction = "vertical",
+    axis.text = element_blank(),
+    panel.grid = element_blank()
+  )
+```
+
+:::
+
+### Onde a LGPD foi citada
+
+::: {.panel-tabset}
+
+#### Mês a mês
+
+```{r}
+#| label: plot-onde-usou-lgpd-mensal
+
+pedidos_busca %>% 
+  count(data_registro, cita_onde) %>% 
+  group_by(data_registro) %>% 
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>% 
+  filter(cita_onde != "Não foram encontradas citações da LGPD") %>% 
+  ggplot(aes(x = data_registro, y = prop, color = cita_onde)) +
+  geom_line(size = 1.5) +
+  geom_point(
+    size = 1.5, 
+    color = alpha("black", .2),
+    data = . %>% filter(cita_onde == "Somente na resposta do órgão público")
+  ) +
+  geom_text(
+    data = . %>% filter(cita_onde == "Somente na resposta do órgão público"),
+    size = 2.5,
+    vjust = -1.2,
+    hjust = -.1,
+    angle = 45,
+    fontface = "bold",
+    aes(
+      label = scales::percent(
+        prop,
+        accuracy = .1,
+        big.mark = ".",
+        decimal.mark = ","
+      ),
+    )
+  ) +
+  scale_color_manual(values = c(
+    cores_aep[["rosa"]],
+    alpha(cores_aep[["laranja"]], .5)
+  )) +
+  theme(
+    legend.position = "top",
+    legend.justification = "left"
+  ) +
+  labs(
+    title = "Onde os termos relacionados a LGPD foram citados",
+    color = NULL,
+    x = "Mês de registro do pedido",
+    y = "% de pedidos"
+  ) +
+  scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
+  scale_y_continuous(labels = scales::percent, limits = c(0, .15))
+```
+
+#### Ano a ano
+
+```{r}
+#| label: plot-onde-usou-lgpd-anual
+
+pedidos_busca %>% 
+  count(ano = year(data_registro), cita_onde) %>% 
+  group_by(ano) %>% 
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>% 
+  filter(cita_onde != "Não foram encontradas citações da LGPD") %>% 
+  ggplot(aes(x = ano, y = prop, color = cita_onde)) +
+  geom_line(size = 1.5) +
+  geom_point(
+    size = 1.5, 
+    color = alpha("black", .2),
+    data = . %>% filter(cita_onde == "Somente na resposta do órgão público")
+  ) +
+  geom_text(
+    data = . %>% filter(cita_onde == "Somente na resposta do órgão público"),
+    size = 2.5,
+    vjust = -1.2,
+    hjust = -.1,
+    angle = 45,
+    fontface = "bold",
+    aes(
+      label = scales::percent(
+        prop,
+        accuracy = .1,
+        big.mark = ".",
+        decimal.mark = ","
+      ),
+    )
+  ) +
+  scale_color_manual(values = c(
+    cores_aep[["rosa"]],
+    alpha(cores_aep[["laranja"]], .5)
+  )) +
+  theme(
+    legend.position = "top",
+    legend.justification = "left"
+  ) +
+  labs(
+    title = "Onde os termos relacionados a LGPD foram citados",
+    color = NULL,
+    x = "Ano de registro do pedido",
+    y = "% de pedidos"
+  ) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, .05))
+```
+
+#### Total
+
+```{r}
+#| label: plot-onde-usou-lgpd-total
+
+pedidos_busca %>% 
+  count(cita_onde) %>% 
+  filter(cita_onde != "Não foram encontradas citações da LGPD") %>% 
+  mutate(
+    prop = n / sum(n),
+    ypos = cumsum(prop) - 0.5 * prop
+  ) %>% 
+  ggplot(aes(x = "", y = prop, fill = cita_onde)) +
+  geom_col(width = 1, color = cores_tb[["cinza_quase_branco"]]) +
+  coord_polar("y", start = 0) +
+  geom_text(
+    aes(y = 1-ypos, label = str_glue("{scales::number(n)} pedidos\n{my_lbl(prop)}")),
+    size = 4
+  ) +
+  labs(
+    title = "Onde os termos relacionados a LGPD foram citados",
+    fill = NULL,
+    x = NULL,
+    y = NULL
+  ) +
+  scale_fill_manual(values = c(cores_aep[["rosa"]], cores_tb[["azul"]])) +
+  theme(
+    legend.position = "top",
+    legend.justification = "left",
+    legend.direction = "vertical",
+    axis.text = element_blank(),
+    panel.grid = element_blank()
+  )
+```
+
+:::
+
+### Assuntos onde os órgãos usaram LGPD
+
+Considerando situações onde os usuários não mencionam LGPD na solicitação
+
+```{r}
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  count(assunto, sort = TRUE) %>% 
+  slice_max(order_by = n, n = 15) %>% 
+  ggplot(aes(x = reorder(assunto, n), y = n)) +
+  geom_col(fill = cores_tb[["azul"]]) +
+  coord_flip() +
+  geom_text(
+    hjust = 1,
+    size = 3,
+    aes(label = scales::number(n))
+  ) +
+  labs(
+    title = "Assuntos mais recorrentes onde a LGPD foi mencionada",
+    x = NULL,
+    y = "Quantidade de pedidos"
+  )
+```
+
