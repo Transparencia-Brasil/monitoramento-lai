@@ -750,3 +750,68 @@ pedidos_busca %>%
 
 :::
 :::
+
+### Uso da LGPD por órgão e decisão de acesso
+
+```{r}
+plot_orgao_decisao <- function(df, decisao_acesso, label_adjust = 1) {
+  df %>% 
+    filter(cita_onde == "Somente na resposta do órgão público") %>% 
+    count(decisao, orgao) %>%
+    group_by(decisao) %>% 
+    slice_max(order_by = n, n = 10) %>% 
+    ungroup() %>% 
+    filter(decisao == decisao_acesso) %>% 
+    ggplot(aes(x = n, y = reorder(orgao, n), fill = decisao, color = decisao)) +
+    geom_col(show.legend = FALSE) +
+    geom_text(aes(label = n), color = "black", hjust = label_adjust) +
+    scale_fill_manual(values = cores_decisao) +
+    scale_color_manual(values = cores_decisao2) +
+    scale_x_continuous(limits = c(0, 310), expand = c(0, 0)) +
+    labs(
+      title = decisao_acesso,
+      y = NULL,
+      x = "Quantidade de pedidos"
+    )
+
+}
+```
+
+::: {.column-tabset}
+::: {.panel-tabset}
+
+#### Acesso Concedido
+
+```{r}
+plot_orgao_decisao(pedidos_busca, "Acesso Concedido")
+```
+
+#### Acesso Negado
+
+```{r}
+plot_orgao_decisao(pedidos_busca, "Acesso Negado")
+```
+
+#### Acesso Parcialmente Concedido
+
+```{r}
+plot_orgao_decisao(pedidos_busca, "Acesso Parcialmente Concedido")
+```
+
+#### Órgão não competente
+
+```{r}
+plot_orgao_decisao(pedidos_busca, "Órgão não tem competência para responder sobre o assunto",
+                   label_adjust = 0)
+```
+
+#### Informação Inexistente
+
+```{r}
+plot_orgao_decisao(pedidos_busca, "Informação Inexistente", label_adjust = 0)
+```
+
+
+:::
+:::
+
