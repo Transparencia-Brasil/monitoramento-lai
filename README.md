@@ -21,6 +21,8 @@ registrados no portal FalaBr do governo Federal.
 
   - [Busca por menções ao artigo 31 da Lei de Acesso a
     Informação](https://rdurl0.github.io/monitoramento-lai/2-negativas-artigo-31.html)
+    
+  - [Evolução do uso da LGPD nas solicitações de acesso a informação via LAI para o governo Federal](https://rdurl0.github.io/monitoramento-lai/3-uso-da-lgpd-nas-respostas.html)
 
 ## Base de dados
 
