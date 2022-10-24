@@ -565,6 +565,39 @@ pedidos_busca %>%
 
 #### Mês a mês
 
+```{r}
+#| label: funcao-plot-decisao-mes
+plot_decisao_mes <- function(df, decisao_do_orgao) {
+  df %>%
+    filter(cita_onde == "Somente na resposta do órgão público") %>%
+    count(data_registro, decisao, name = "qt_decisao_mes") %>% 
+    add_count(data_registro, wt = qt_decisao_mes, name = "qt_mes") %>% 
+    mutate(prop = qt_decisao_mes / qt_mes) %>% 
+    filter(decisao == decisao_do_orgao) %>% 
+    ggplot(aes(y = qt_decisao_mes, x = data_registro, color = decisao)) +
+    geom_line(size = 1, show.legend = F) +
+    geom_point(
+      data = . %>% filter(month(data_registro) %in% c(6, 12)),
+      color = "black"
+    ) +
+    ggrepel::geom_text_repel(
+      data = . %>% filter(month(data_registro) %in% c(6, 12)),
+      aes(label = qt_decisao_mes),
+      color = "black",
+      show.legend = F
+    ) +
+    scale_color_manual(values = cores_decisao2[c(1, 3, 4, 6, 7)]) +
+    scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
+    scale_y_continuous(limits = c(0, 100)) +
+    labs(
+      title = paste("Menções à LGPD em classificações de acesso concedido", decisao_do_orgao),
+      y = "Quantidade de pedidos",
+      x = "Data de registro do pedido",
+      color = "Decisão do órgão"
+    )
+}
+```
+
 ::: {.panel-tabset}
 
 ##### Todos
@@ -594,173 +627,131 @@ pedidos_busca %>%
 
 ```{r}
 #| label: plot-decisao-acesso-concedido
-
-pedidos_busca %>% 
-  filter(cita_onde == "Somente na resposta do órgão público") %>%
-  count(data_registro, decisao, name = "qt_decisao_mes") %>% 
-  add_count(data_registro, wt = qt_decisao_mes, name = "qt_mes") %>% 
-  mutate(prop = qt_decisao_mes / qt_mes) %>% 
-  filter(decisao == "Acesso Concedido") %>% 
-  ggplot(aes(y = qt_decisao_mes, x = data_registro, color = decisao)) +
-  geom_line(size = 1, show.legend = F) +
-  geom_point(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    color = "black"
-  ) +
-  ggrepel::geom_text_repel(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    aes(label = qt_decisao_mes),
-    color = "black",
-    show.legend = F
-  ) +
-  scale_color_manual(values = cores_decisao2[c(1, 3, 4, 6, 7)]) +
-  scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
-  scale_y_continuous(limits = c(0, 100)) +
-  labs(
-    title = "Menções à LGPD em classificações de acesso concedido",
-    y = "Quantidade de pedidos",
-    x = "Data de registro do pedido",
-    color = "Decisão do órgão"
-  )
+plot_decisao_mes(pedidos_busca, "Acesso Concedido")
 ```
 
 ##### Acesso Negado
 
 ```{r}
 #| label: plot-decisao-acesso-negado
-
-pedidos_busca %>% 
-  filter(cita_onde == "Somente na resposta do órgão público") %>%
-  count(data_registro, decisao, name = "qt_decisao_mes") %>% 
-  add_count(data_registro, wt = qt_decisao_mes, name = "qt_mes") %>% 
-  mutate(prop = qt_decisao_mes / qt_mes) %>% 
-  filter(decisao == "Acesso Negado") %>% 
-  ggplot(aes(y = qt_decisao_mes, x = data_registro, color = decisao)) +
-  geom_line(size = 1, show.legend = F) +
-  geom_point(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    color = "black"
-  ) +
-  ggrepel::geom_text_repel(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    aes(label = qt_decisao_mes),
-    color = "black",
-    show.legend = F
-  ) +
-  scale_color_manual(values = cores_decisao2[c(1, 3, 4, 6, 7)]) +
-  scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
-  scale_y_continuous(limits = c(0, 100)) +
-  labs(
-    title = "Menções à LGPD em classificações de acesso negado",
-    y = "Quantidade de pedidos",
-    x = "Data de registro do pedido",
-    color = "Decisão do órgão"
-  )
+plot_decisao_mes(pedidos_busca, "Acesso Negado")
 ```
 
 ##### Acesso Parcialmente concedido
 
 ```{r}
 #| label: plot-decisao-acesso-parcialmente-concedido
-
-pedidos_busca %>% 
-  filter(cita_onde == "Somente na resposta do órgão público") %>%
-  count(data_registro, decisao, name = "qt_decisao_mes") %>% 
-  add_count(data_registro, wt = qt_decisao_mes, name = "qt_mes") %>% 
-  mutate(prop = qt_decisao_mes / qt_mes) %>% 
-  filter(decisao == "Acesso Parcialmente Concedido") %>% 
-  ggplot(aes(y = qt_decisao_mes, x = data_registro, color = decisao)) +
-  geom_line(size = 1, show.legend = F) +
-  geom_point(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    color = "black"
-  ) +
-  ggrepel::geom_text_repel(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    aes(label = qt_decisao_mes),
-    color = "black",
-    show.legend = F
-  ) +
-  scale_color_manual(values = cores_decisao2[c(1, 3, 4, 6, 7)]) +
-  scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
-  scale_y_continuous(limits = c(0, 100)) +
-  labs(
-    title = "Menções à LGPD em classificações de acesso parcialmente concedido",
-    y = "Quantidade de pedidos",
-    x = "Data de registro do pedido",
-    color = "Decisão do órgão"
-  )
+plot_decisao_mes(pedidos_busca,"Acesso Parcialmente Concedido")
 ```
 
 ##### Órgão não competente
 
 ```{r}
 #| label: plot-decisao-orgao-nao-competente
-
-pedidos_busca %>% 
-  filter(cita_onde == "Somente na resposta do órgão público") %>%
-  count(data_registro, decisao, name = "qt_decisao_mes") %>% 
-  add_count(data_registro, wt = qt_decisao_mes, name = "qt_mes") %>% 
-  mutate(prop = qt_decisao_mes / qt_mes) %>% 
-  filter(decisao == "Órgão não tem competência para responder sobre o assunto") %>% 
-  ggplot(aes(y = qt_decisao_mes, x = data_registro, color = decisao)) +
-  geom_line(size = 1, show.legend = F) +
-  geom_point(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    color = "black"
-  ) +
-  ggrepel::geom_text_repel(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    aes(label = qt_decisao_mes),
-    color = "black",
-    show.legend = F
-  ) +
-  scale_color_manual(values = cores_decisao2[c(1, 3, 4, 6, 7)]) +
-  scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
-  scale_y_continuous(limits = c(0, 100)) +
-  labs(
-    title = "Menções à LGPD em classificações de acesso\nÓrgão não tem competência para responder sobre o assunto",
-    y = "Quantidade de pedidos",
-    x = "Data de registro do pedido",
-    color = "Decisão do órgão"
-  )
+plot_decisao_mes(pedidos_busca, "Somente na resposta do órgão público")
 ```
 
 ##### Informação inexistente
 
 ```{r}
 #| label: plot-decisao-info-inexistente
+plot_decisao_mes(pedidos_busca, "Informação inexistente")
+```
+
+:::
+
+#### Ano a ano
+
+```{r}
+#| label: funcao-plot-decisao-ano
+plot_decisao_ano <- function(df, decisao_do_orgao) {
+  df %>% 
+    filter(cita_onde == "Somente na resposta do órgão público") %>%
+    count(ano = year(data_registro), decisao, name = "qt_decisao_ano") %>% 
+    add_count(ano, wt = qt_decisao_ano, name = "qt_ano") %>% 
+    mutate(prop = qt_decisao_ano / qt_ano) %>% 
+    filter(decisao == decisao_do_orgao) %>% 
+    ggplot(aes(y = qt_decisao_ano, x = ano, color = decisao)) +
+    geom_line(size = 1, show.legend = F) +
+    geom_point(show.legend = F) +
+    ggrepel::geom_text_repel(
+      aes(label = qt_decisao_ano),
+      color = "black",
+      show.legend = F
+    ) +
+    scale_color_manual(values = cores_decisao2[c(1, 3, 4, 6, 7)]) +
+    scale_y_continuous(limits = c(0, 650)) +
+    labs(
+      title = paste("Menções à LGPD em classificações de", decisao_do_orgao),
+      y = "Quantidade de pedidos",
+      x = "Ano de registro do pedido",
+      color = "Decisão do órgão"
+    )
+}
+```
+
+
+::: {.panel-tabset}
+
+##### Todos
+
+```{r}
+#| label: plot-decisao-todos-anual
 
 pedidos_busca %>% 
-  filter(cita_onde == "Somente na resposta do órgão público") %>%
-  count(data_registro, decisao, name = "qt_decisao_mes") %>% 
-  add_count(data_registro, wt = qt_decisao_mes, name = "qt_mes") %>% 
-  mutate(prop = qt_decisao_mes / qt_mes) %>% 
-  filter(decisao == "Informação inexistente") %>% 
-  ggplot(aes(y = qt_decisao_mes, x = data_registro, color = decisao)) +
-  geom_line(size = 1, show.legend = F) +
-  geom_point(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    color = "black"
-  ) +
-  ggrepel::geom_text_repel(
-    data = . %>% filter(month(data_registro) %in% c(6, 12)),
-    aes(label = qt_decisao_mes),
-    color = "black",
-    show.legend = F
-  ) +
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  count(ano = year(data_registro), decisao, name = "qt_decisao_ano") %>% 
+  add_count(ano, wt = qt_decisao_ano, name = "qt_ano") %>% 
+  mutate(prop = qt_decisao_ano / qt_ano) %>% 
+  ggplot(aes(y = qt_decisao_ano, x = ano, color = decisao)) +
+  geom_line(size = 1) +
   scale_color_manual(values = cores_decisao2[c(1, 3, 4, 6, 7)]) +
-  scale_x_date(date_breaks = "6 months", date_labels = "%b-%Y") +
-  scale_y_continuous(limits = c(0, 100)) +
+  scale_y_continuous(limits = c(0, 650)) +
   labs(
-    title = "Menções à LGPD em classificações de acessoórgão inexistente",
+    title = "Menções à LGPD e decições do órgão sobre acesso a informação",
     y = "Quantidade de pedidos",
-    x = "Data de registro do pedido",
+    x = "Ano de registro do pedido",
     color = "Decisão do órgão"
   )
 ```
 
+##### Acesso Concedido
+
+```{r}
+#| label: plot-decisao-acesso-concedido-anual
+plot_decisao_ano(pedidos_busca, "Acesso Concedido")
+```
+
+##### Acesso Negado
+
+```{r}
+#| label: plot-decisao-acesso-negado-anual
+plot_decisao_ano(pedidos_busca, "Acesso Negado")
+```
+
+##### Acesso Parcialmente concedido
+
+```{r}
+#| label: plot-decisao-acesso-parcialmente-concedido-anual
+plot_decisao_ano(pedidos_busca, "Acesso Parcialmente Concedido")
+```
+
+##### Órgão não competente
+
+```{r}
+#| label: plot-decisao-orgao-nao-competente-anual
+plot_decisao_ano(pedidos_busca, "Órgão não tem competência para responder sobre o assunto")
+```
+
+##### Informação inexistente
+
+```{r}
+#| label: plot-decisao-info-inexistente-anual
+plot_decisao_ano(pedidos_busca, "Informação Inexistente")
+```
+
 :::
+
 
 :::
 :::
