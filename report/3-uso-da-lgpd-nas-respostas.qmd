@@ -45,7 +45,7 @@ execute:
 
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
     color: #495057;
-    background-color: #fff;
+    background-color: #ececec";
     border-color: #dee2e6 #dee2e6 #fff;
     color: #d81755;
     font-size: 1em;
@@ -346,7 +346,7 @@ pedidos_busca %>%
 #### Total
 
 ```{r}
-#| label: plot-onde-total
+#| label: plot-onde-usou-lgpd
 
 pedidos_busca %>% 
   mutate(
@@ -535,6 +535,8 @@ pedidos_busca %>%
 Considerando situações onde os usuários não mencionam LGPD na solicitação
 
 ```{r}
+#| label: plot-assunto
+
 pedidos_busca %>% 
   filter(cita_onde == "Somente na resposta do órgão público") %>% 
   count(assunto, sort = TRUE) %>% 
@@ -568,6 +570,8 @@ pedidos_busca %>%
 ##### Todos
 
 ```{r}
+#| label: plot-decisao-todos
+
 pedidos_busca %>% 
   filter(cita_onde == "Somente na resposta do órgão público") %>% 
   count(data_registro, decisao, name = "qt_decisao_mes") %>% 
@@ -589,6 +593,8 @@ pedidos_busca %>%
 ##### Acesso Concedido
 
 ```{r}
+#| label: plot-decisao-acesso-concedido
+
 pedidos_busca %>% 
   filter(cita_onde == "Somente na resposta do órgão público") %>%
   count(data_registro, decisao, name = "qt_decisao_mes") %>% 
@@ -621,6 +627,8 @@ pedidos_busca %>%
 ##### Acesso Negado
 
 ```{r}
+#| label: plot-decisao-acesso-negado
+
 pedidos_busca %>% 
   filter(cita_onde == "Somente na resposta do órgão público") %>%
   count(data_registro, decisao, name = "qt_decisao_mes") %>% 
@@ -653,6 +661,8 @@ pedidos_busca %>%
 ##### Acesso Parcialmente concedido
 
 ```{r}
+#| label: plot-decisao-acesso-parcialmente-concedido
+
 pedidos_busca %>% 
   filter(cita_onde == "Somente na resposta do órgão público") %>%
   count(data_registro, decisao, name = "qt_decisao_mes") %>% 
@@ -685,6 +695,8 @@ pedidos_busca %>%
 ##### Órgão não competente
 
 ```{r}
+#| label: plot-decisao-orgao-nao-competente
+
 pedidos_busca %>% 
   filter(cita_onde == "Somente na resposta do órgão público") %>%
   count(data_registro, decisao, name = "qt_decisao_mes") %>% 
@@ -717,6 +729,8 @@ pedidos_busca %>%
 ##### Informação inexistente
 
 ```{r}
+#| label: plot-decisao-info-inexistente
+
 pedidos_busca %>% 
   filter(cita_onde == "Somente na resposta do órgão público") %>%
   count(data_registro, decisao, name = "qt_decisao_mes") %>% 
@@ -754,6 +768,8 @@ pedidos_busca %>%
 ### Uso da LGPD por órgão e decisão de acesso
 
 ```{r}
+#| label: funcao-plot-orgao-decisao
+
 plot_orgao_decisao <- function(df, decisao_acesso, label_adjust = 1) {
   df %>% 
     filter(cita_onde == "Somente na resposta do órgão público") %>% 
@@ -783,24 +799,28 @@ plot_orgao_decisao <- function(df, decisao_acesso, label_adjust = 1) {
 #### Acesso Concedido
 
 ```{r}
+#| label: plot-orgao-decisao-acesso-concedido
 plot_orgao_decisao(pedidos_busca, "Acesso Concedido")
 ```
 
 #### Acesso Negado
 
 ```{r}
+#| label: plot-orgao-decisao-acesso-negado
 plot_orgao_decisao(pedidos_busca, "Acesso Negado")
 ```
 
 #### Acesso Parcialmente Concedido
 
 ```{r}
+#| label: plot-orgao-decisao-acesso-parcialmente-concedido
 plot_orgao_decisao(pedidos_busca, "Acesso Parcialmente Concedido")
 ```
 
 #### Órgão não competente
 
 ```{r}
+#| label: plot-orgao-decisao-orgao-incompetente
 plot_orgao_decisao(pedidos_busca, "Órgão não tem competência para responder sobre o assunto",
                    label_adjust = 0)
 ```
@@ -808,10 +828,351 @@ plot_orgao_decisao(pedidos_busca, "Órgão não tem competência para responder 
 #### Informação Inexistente
 
 ```{r}
+#| label: plot-orgao-decisao-info-inexistente
 plot_orgao_decisao(pedidos_busca, "Informação Inexistente", label_adjust = 0)
 ```
 
+:::
+:::
 
+### Núvens de palavras
+
+```{r}
+#| label: ids-para-wordcloud
+source(here("src/5-funcao-limpando-texto.R"), encoding = "utf8")
+ids_ms <- pedidos_busca %>% filter(orgao == "MS – Ministério da Saúde") %>% pull(id_pedido)
+ids_inss <- pedidos_busca %>% filter(str_detect(orgao, "^INSS")) %>% pull(id_pedido)
+ids_incra <- pedidos_busca %>% filter(str_detect(orgao, "^INCRA")) %>% pull(id_pedido)
+ids_imbel <- pedidos_busca %>% filter(str_detect(orgao, "^IMBEL")) %>% pull(id_pedido)
+ids_gsi <- pedidos_busca %>% filter(str_detect(orgao, "^GSI")) %>% pull(id_pedido)
+ids_inep <- pedidos_busca %>% filter(str_detect(orgao, "^INEP")) %>% pull(id_pedido)
+```
+
+#### MS – Ministério da Saúde
+
+::: {.panel-tabset}
+
+##### Acesso Negado
+
+```{r}
+#| label: plot-wordcloud-ms-acesso-negado
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_ms) %>% 
+  filter(decisao == "Acesso Negado") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["rosa"]]))
+```
+
+##### Acesso Concedido
+
+```{r}
+#| label: plot-wordcloud-ms-acesso-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_ms) %>% 
+  filter(decisao == "Acesso Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_tb[["azul"]]))
+```
+
+##### Acesso Parcialmente Concedido
+
+```{r}
+#| label: plot-wordcloud-ms-acesso-parcialmente-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_ms) %>% 
+  filter(decisao == "Acesso Parcialmente Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["laranja"]]))
+```
 :::
+
+#### GSI-PR - Gabinete de Segurança Institucional da República
+
+::: {.panel-tabset}
+
+##### Acesso Negado
+
+```{r}
+#| label: plot-wordcloud-gsi-acesso-negado
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_gsi) %>% 
+  filter(decisao == "Acesso Negado") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["rosa"]]))
+```
+
+##### Acesso Concedido
+
+```{r}
+#| label: plot-wordcloud-gsi-acesso-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_gsi) %>% 
+  filter(decisao == "Acesso Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_tb[["azul"]]))
+```
+
+##### Acesso Parcialmente Concedido
+
+```{r}
+#| label: plot-wordcloud-gsi-acesso-parcialmente-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_gsi) %>% 
+  filter(decisao == "Acesso Parcialmente Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["laranja"]]))
+```
 :::
+
+#### INSS – Instituto Nacional do Seguro Social
+
+::: {.panel-tabset}
+
+##### Acesso Negado
+
+```{r}
+#| label: plot-wordcloud-inss-acesso-negado
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_inss) %>% 
+  filter(decisao == "Acesso Negado") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["rosa"]]))
+```
+
+##### Acesso Concedido
+
+```{r}
+#| label: plot-wordcloud-inss-acesso-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_inss) %>% 
+  filter(decisao == "Acesso Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_tb[["azul"]]))
+```
+
+##### Acesso Parcialmente Concedido
+
+```{r}
+#| label: plot-wordcloud-inss-acesso-parcialmente-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_inss) %>% 
+  filter(decisao == "Acesso Parcialmente Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["laranja"]]))
+```
+:::
+
+#### INCRA – Instituto Nacional de Colonização e Reforma Agrária
+
+::: {.panel-tabset}
+
+##### Acesso Negado
+
+```{r}
+#| label: plot-wordcloud-incra-acesso-negado
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_incra) %>% 
+  filter(decisao == "Acesso Negado") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["rosa"]]))
+```
+
+##### Acesso Concedido
+
+```{r}
+#| label: plot-wordcloud-incra-acesso-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_incra) %>% 
+  filter(decisao == "Acesso Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_tb[["azul"]]))
+```
+
+##### Acesso Parcialmente Concedido
+
+```{r}
+#| label: plot-wordcloud-incra-acesso-parcialmente-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_incra) %>% 
+  filter(decisao == "Acesso Parcialmente Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["laranja"]]))
+```
+:::
+
+#### IMBEL – Indústria de Material Bélico do Brasil
+
+::: {.panel-tabset}
+
+##### Acesso Negado
+
+```{r}
+#| label: plot-wordcloud-imbel-acesso-negado
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_imbel) %>% 
+  filter(decisao == "Acesso Negado") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["rosa"]]))
+```
+
+##### Acesso Concedido
+
+```{r}
+#| label: plot-wordcloud-imbel-acesso-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_imbel) %>% 
+  filter(decisao == "Acesso Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_tb[["azul"]]))
+```
+
+##### Acesso Parcialmente Concedido
+
+```{r}
+#| label: plot-wordcloud-imbel-acesso-parcialmente-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_imbel) %>% 
+  filter(decisao == "Acesso Parcialmente Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["laranja"]]))
+```
+:::
+
+#### INEP – Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira
+
+::: {.panel-tabset}
+
+##### Acesso Negado
+
+```{r}
+#| label: plot-wordcloud-inep-acesso-negado
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_inep) %>% 
+  filter(decisao == "Acesso Negado") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["rosa"]]))
+```
+
+##### Acesso Concedido
+
+```{r}
+#| label: plot-wordcloud-inep-acesso-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_inep) %>% 
+  filter(decisao == "Acesso Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_tb[["azul"]]))
+```
+
+##### Acesso Parcialmente Concedido
+
+```{r}
+#| label: plot-wordcloud-inep-acesso-parcialmente-concedido
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  filter(id_pedido %in% ids_inep) %>% 
+  filter(decisao == "Acesso Parcialmente Concedido") %>% 
+  select(id_pedido, resposta_pedido) %>% 
+  unnest_tokens(word, resposta_pedido) %>% 
+  anti_join(stopwords) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, max.words = 350, color = cores_aep[["laranja"]]))
+```
+:::
+
+### Recursos impetrados em respostas que citam LGPD
+
+```{r}
+pedidos_busca %>% 
+  filter(cita_onde == "Somente na resposta do órgão público") %>% 
+  count(ano = year(data_registro), possui_recurso) %>%
+  complete(ano, possui_recurso, fill = list(n = 0)) %>% 
+  ggplot(aes(x = ano, y = n, fill = possui_recurso)) +
+  geom_col(position = "dodge2") +
+  geom_text(
+    data = . %>% mutate(n = if_else(!possui_recurso, NA_integer_, n)),
+    aes(label = n, group = possui_recurso),
+    position = position_dodge(width = .8),
+    vjust = -.1,
+    color = cores_aep[["rosa"]]
+  ) +
+  scale_fill_manual(
+    values = c(cores_aep[["laranja"]], cores_aep[["rosa"]]),
+    labels = c("Não houve recurso", "Houve recurso")
+  ) +
+  labs(
+    title = "Recursos impetrados contra decisões de acesso a informação\nquando órgão menciona LGPD na resposta",
+    x = "Ano",
+    y = "Quantidade de pedidos",
+    fill = NULL
+  )
+```
 
