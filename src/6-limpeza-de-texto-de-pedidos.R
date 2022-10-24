@@ -19,7 +19,7 @@ cria_base_clean <- function(df, interacao, id_ano) {
     filter(year(data_registro) == id_ano)
   
   if (interacao == "Pedidos") {
-    df %>% 
+    df <- df %>% 
       transmute(
         id_pedido = id_pedido,
         data_registro = data_registro,
@@ -28,7 +28,7 @@ cria_base_clean <- function(df, interacao, id_ano) {
         across(c(detalhamento, resposta, resumo), limpando_texto, .names = "{.col}_clean")
       )
   } else {
-    df %>% 
+    df <- df %>% 
       transmute(
         id_pedido = id_pedido,
         id_recurso = id_recurso,
