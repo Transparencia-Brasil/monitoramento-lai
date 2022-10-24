@@ -165,13 +165,15 @@ pedidos_busca <- "data/pedidos_busca" %>%
 
 Foi feita uma busca pelos termos relacionados à [Lei Geral de Proteção de Dados Pessoais (LGPD)](http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm) nos conteúdos de 368.390 mil Pedidos de Acesso a Informação (pedidos LAI) enviados aos órgãos do Governo Federal e disponibilizados pelo portal [FalaBr](http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DownloadPedidos/DownloadDados.aspx).
 
-> A base de pedidos de acesso a informação não é completa. A CGU remove da base pedidos que contenham informações pessoais ou sensíveis.
-
 A busca foi realizada na solicitação do usuário e na resposta do órgão público. Os termos buscados são:
 
 - `"lei geral de protecao de dados|lei de protecao de dados pessoais|lgpd|13709|13 709"`
 
 Para a detecção dos termos, foram utilizadas técnicas de processamento de linguagem natural para remoção de acentos e pontuações, URL's e datas. pós este tratamento, foram detectados 4.697 pedidos que faziam menções à LGPD.
+
+A base de dados da CGU não é completa, pois os pedidos contendo dados pessoais e informações consideradas sensíveis são descartados e o seu conteúdo não é divulgado. Os critérios para descarte desses pedidos da transparência ativa é adotado pelos órgãos do governo Federal e pela CGU e não é claro. Tal incompletude dos dados resulta em subnotificação das detecções dos termos, uma vez que eles dizem respeito aos temas “sigilo” e “dados pessoais”.
+
+Outra fonte de subnotificação importante é a ausência de dados da Caixa Econômica Federal (CEF). A CEF era um dos principais órgãos solicitados via LAI sendo responsável por pelo menos x% de todas as solicitações disponibilizadas pelo FalaBr entre 2015 e 2018.
 
 ::: {.panel-tabset}
 
@@ -1182,4 +1184,5 @@ pedidos_busca %>%
     fill = NULL
   )
 ```
+
 
