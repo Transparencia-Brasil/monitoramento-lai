@@ -163,6 +163,16 @@ pedidos_busca <- "data/pedidos_busca" %>%
 
 ### Números totais
 
+Foi feita uma busca pelos termos relacionados à [Lei Geral de Proteção de Dados Pessoais (LGPD)](http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm) nos conteúdos de 368.390 mil Pedidos de Acesso a Informação (pedidos LAI) enviados aos órgãos do Governo Federal e disponibilizados pelo portal [FalaBr](http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DownloadPedidos/DownloadDados.aspx).
+
+> A base de pedidos de acesso a informação não é completa. A CGU remove da base pedidos que contenham informações pessoais ou sensíveis.
+
+A busca foi realizada na solicitação do usuário e na resposta do órgão público. Os termos buscados são:
+
+- `"lei geral de protecao de dados|lei de protecao de dados pessoais|lgpd|13709|13 709"`
+
+Para a detecção dos termos, foram utilizadas técnicas de processamento de linguagem natural para remoção de acentos e pontuações, URL's e datas. pós este tratamento, foram detectados 4.697 pedidos que faziam menções à LGPD.
+
 ::: {.panel-tabset}
 
 #### Mês a mês
@@ -388,6 +398,12 @@ pedidos_busca %>%
 
 ### Onde a LGPD foi citada
 
+A detecção de termos relacionados à LGPD são divididas em duas partes.
+
+De um lado, pedidos de acesso a informação onde o usuário cita a LGPD na própria solicitação são indicativos do interesse da sociedade sobre a legislação e/ou do cuidado dos solicitantes em delimitar o pedido a informações públicas. 
+
+Por outro lado, pedidos em que o órgão menciona "unilateralmente" a LGPD são indicativos do uso da legislação para restringir a divulgação de informações que o próprio órgão considera que sejam de cunho pessoal. Como a detecção dos termos não é qualitativa, não é possível dizer se o uso da LGPD nas respostas está sendo feito de maneira adequada ou abusiva.
+
 ::: {.panel-tabset}
 
 #### Mês a mês
@@ -532,7 +548,7 @@ pedidos_busca %>%
 
 ### Assuntos onde os órgãos usaram LGPD
 
-Considerando situações onde os usuários não mencionam LGPD na solicitação
+Considerando situações onde os usuários não mencionam LGPD na solicitação. O campo "assuntos" é preenchido pelo usuário a partir de uma lista de assuntos fornecida pela plataforma FalaBr.
 
 ```{r}
 #| label: plot-assunto
