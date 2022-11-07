@@ -2,102 +2,21 @@ library(tidyverse)
 library(here)
 library(lubridate)
 
-#' cria uma pasta para gerenciar arquivos baixados
-exdir <- here("data/temp")
-unlink(exdir, recursive = TRUE)
-dir.create(exdir)
 
-#' params
-years <- 2012:2022
-zip_regex <- c("Recursos_Reclamacoes", "Pedidos")
-url_base <- "https://dadosabertos-download.cgu.gov.br/FalaBR/Arquivos_FalaBR"
+# Functions -------
 
-zips_cgu <- tibble(year = rep(years, 2)) %>% 
-  expand(year, zip_regex) %>% 
-  mutate(zip_file = str_glue("{zip_regex}_csv_{year}.zip"),
-         url = str_glue("{url_base}/{zip_file}"),
-         destfile = str_glue("{exdir}/{zip_file}")) 
-
-#' download !
-download.file_safe <- safely(download.file)
-walk2(zips_cgu$url, zips_cgu$destfile, download.file_safe, mode = "wb")
-
-#' unzip ! terminando o processo o caminho dos arquivos ficam armazenados no objeto como `string`
-unzip_safe <- safely(unzip)
-walk(zips_cgu$destfile, unzip_safe, exdir = exdir)
-
-files_cgu <- here("data/temp") %>% 
-  list.files(pattern = "csv$",full.names = TRUE) %>% 
-  as_tibble_col(column_name = "csv") %>% 
-  mutate(ano = as.integer(str_extract(csv, "\\d+(?=\\.csv)")),
-         interacao = str_extract(csv, "(?<=\\d{8}_).+(?=_csv)"),
-         base = case_when(
-           interacao == "Pedidos" ~ "Pedidos",
-           interacao == "Recursos_Reclamacoes" ~ "Recursos",
-           TRUE ~ "Solicitantes"
-         ))
-
-#' extract data !
+#' Read downloaded file and returns organized data frame
+#' @param arquivo : Downloaded file
 read_lai <- function(arquivo) {
   
   message(glue::glue("get {arquivo}"))
   
   if (stringr::str_detect(arquivo, "_Pedidos")) {
-    colunas <- c(
-      "id_pedido",
-      "protocolo",
-      "esfera",
-      "uf",
-      "municipio",
-      "orgao",
-      "situacao",
-      "data_registro",
-      "prazo",
-      "foi_prorrogado",
-      "foi_reencaminhado",
-      "forma_resposta",
-      "origem_da_solicitaca",
-      "id_solicitante",
-      "assunto",
-      "sub_assunto",
-      "tag",
-      "data_resposta",
-      "decisao",
-      "especificacao_decisao"
-    )
+    colunas <- pedidos_header
   } else if (stringr::str_detect(arquivo, "_Recursos")) {
-    colunas <- c(
-      "id_recurso",
-      "id_recurso_precedente",
-      "id_pedido",
-      "id_solicitante",
-      "protocolo_pedido",
-      "esfera",
-      "uf",
-      "municipio",
-      "orgao",
-      "instancia",
-      "situacao",
-      "data_registro",
-      "prazo_atendimento",
-      "origem_solicitacao",
-      "tipo_recurso",
-      "data_resposta",
-      "tipo_resposta"
-    )
+    colunas <- recursos_header
   } else if (stringr::str_detect(arquivo, "Solicitantes")) {
-    colunas <- c(
-      "id_solicitante",
-      "tipo_demandante",
-      "data_nascimento",
-      "genero",
-      "escolaridade",
-      "profissao",
-      "tipo_pessoa_juridica",
-      "pais",
-      "uf",
-      "municipio"
-    )
+    colunas <- solicitantes_header
   } else {
     stop(glue::glue("{arquivo} is not a LAI file!"))
   }
@@ -141,6 +60,70 @@ read_lai <- function(arquivo) {
   
 }
 
+
+#' metadados
+#' @param txt :  
+read_metadados <- function (txt) {
+  read_delim(txt, "\n", col_names = "texto", 
+             col_types = cols(.default = col_character()), 
+             locale = locale(encoding = "Latin1"))
+}
+
+
+
+# Script --------
+
+#' cria uma pasta para gerenciar arquivos baixados
+exdir <- here("data/temp")
+unlink(exdir, recursive = TRUE)
+dir.create(exdir)
+
+#' params
+years <- 2012:2022
+zip_regex <- c("Recursos_Reclamacoes", "Pedidos")
+url_base <- "https://dadosabertos-download.cgu.gov.br/FalaBR/Arquivos_FalaBR"
+
+#' file header
+pedidos_header <- c("id_pedido", "protocolo", "esfera", "uf", "municipio",
+                    "orgao", "situacao", "data_registro", "prazo", "foi_prorrogado", 
+                    "foi_reencaminhado", "forma_resposta", "origem_da_solicitaca", "id_solicitante", "assunto", 
+                    "sub_assunto", "tag", "data_resposta", "decisao", "especificacao_decisao")
+
+recursos_header <-  c("id_recurso", "id_recurso_precedente", "id_pedido", "id_solicitante", "protocolo_pedido",
+                      "esfera", "uf", "municipio", "orgao", "instancia",
+                      "situacao", "data_registro", "prazo_atendimento", "origem_solicitacao", "tipo_recurso",
+                      "data_resposta", "tipo_resposta")
+
+solicitantes_header <- c("id_solicitante", "tipo_demandante", "data_nascimento", "genero", "escolaridade",
+                         "profissao", "tipo_pessoa_juridica", "pais", "uf", "municipio")
+
+#' Create desired file names
+zips_cgu <- tibble(year = rep(years, 2)) %>% 
+  expand(year, zip_regex) %>% 
+  mutate(zip_file = str_glue("{zip_regex}_csv_{year}.zip"),
+         url = str_glue("{url_base}/{zip_file}"),
+         destfile = str_glue("{exdir}/{zip_file}")) 
+
+#' download data !
+download.file_safe <- safely(download.file)
+walk2(zips_cgu$url, zips_cgu$destfile, download.file_safe, mode = "wb")
+
+#' unzip ! terminando o processo o caminho dos arquivos ficam armazenados no objeto como `string`
+unzip_safe <- safely(unzip)
+walk(zips_cgu$destfile, unzip_safe, exdir = exdir)
+
+files_cgu <- here("data/temp") %>% 
+  list.files(pattern = "csv$",full.names = TRUE) %>% 
+  as_tibble_col(column_name = "csv") %>% 
+  mutate(ano = as.integer(str_extract(csv, "\\d+(?=\\.csv)")),
+         interacao = str_extract(csv, "(?<=\\d{8}_).+(?=_csv)"),
+         base = case_when(
+           interacao == "Pedidos" ~ "Pedidos",
+           interacao == "Recursos_Reclamacoes" ~ "Recursos",
+           TRUE ~ "Solicitantes"
+         ))
+
+
 #' Base de dados simplificada da CGU:
 #' * pedidos              
 #' * solicitantes_pedidos 
@@ -158,12 +141,6 @@ base_cgu <- files_cgu %>%
   ungroup() %>% 
   transmute(base, datasets = map(data, unnest, datasets))
 
-#' metadados
-read_metadados <- function (txt) {
-  read_delim(txt, "\n", col_names = "texto", 
-             col_types = cols(.default = col_character()), 
-             locale = locale(encoding = "Latin1"))
-}
 
 meta <- "https://falabr.cgu.gov.br/publico/DownloadDados/{base_cgu$base}-Formato.txt" %>% 
   str_glue() %>% 
