@@ -58,11 +58,11 @@ criado_em <- here("data") %>%
 - [Monitoramento da Lei de Acesso a Informação](https://rdurl0.github.io/monitoramento-lai/00-monitoramento): análises extraídas das solicitações e respostas da base de dados de pedidos de acesso a informação enviados ao governo Federal.
 - [Uso de termos controversos nas negativas de acesso a informação](https://rdurl0.github.io/monitoramento-lai/01-negativas-sigilo): uso de processamento de linguagem natural para detecção de termos controversos nas respostas de pedidos de acesso a informação classificadas com acesso negado. Busca por termos relacionados a **sigilo**, **dados e informações pessoais**, **artigo 31 da Lei de Acesso a Informação** e **Lei Geral de Proteção de Dados (LGPD)**.
 - [Busca por menções ao artigo 31 da Lei de Acesso a Informação](https://rdurl0.github.io/monitoramento-lai/02-negativas-artigo-31.html)
-- [Uso da LGPD em respostas de pedidos de LAI](https://rdurl0.github.io/monitoramento-lai/03-uso-da-lgpd-nas-respostas.qmd)
+- [Uso da LGPD em respostas de pedidos de LAI](https://rdurl0.github.io/monitoramento-lai/03-uso-da-lgpd-nas-respostas.html)
 
-**NOVO!** 
+**NOVO!**
 
-- [Uso de Inteligência artificial para classificar atendimento de pedidos LAI](https://rdurl0.github.io/monitoramento-lai/04-atendimento-lai-vs-decsisoes.html)
+- [Uso de Inteligência artificial para classificar atendimento de pedidos LAI](https://rdurl0.github.io/monitoramento-lai/04-atendimento-lai-vs-decisoes.html)
 
 ## Base de dados
 
