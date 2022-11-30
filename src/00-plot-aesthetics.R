@@ -55,6 +55,17 @@ cores_instancia <- c(
 
 ord_instancia <- ordered(names(cores_instancia), levels = names(cores_instancia))
 
+#' Cores classificação de atendimento
+cores_classificacao <- c(
+  "Atendido" = cores_tb[["azul"]],
+  "Não Atendido" = cores_aep[["rosa"]],
+  "Parcialmente Atendido" = cores_aep[["laranja"]]
+)
+
+ord_classificacao <- ordered(names(cores_classificacao), levels = c(
+  "Atendido", "Parcialmente Atendido", "Não Atendido"
+))
+
 #' Paleta de cores para tipos de respostas aos recursos de pedidos LAI
 cores_tipo_resposta <- c(
   cores_tb[["azul"]],
