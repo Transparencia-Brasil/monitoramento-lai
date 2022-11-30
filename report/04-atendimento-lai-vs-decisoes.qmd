@@ -197,7 +197,7 @@ p_bert <- pedidos %>%
   ) +
   labs(
     title = "Quantidade de pedidos com classificações (BERT/NLP)",
-    y = "Quantidade de pedido",
+    y = "Quantidade de pedidos",
     x = "Classificações (BERT/NLP)"
   )
 
@@ -892,7 +892,7 @@ read_amostra(aba = "INSS") %>%
 
 #### SGPR
 
-> **SGPR**: Após o presidente da República declarar - em março de 2021 - que possuía provas sobre fraudes nas eleições de 2018 a SGPR recebeu ao menos 371solicitações de envios - com base na LAI - das supostas provas existentes. Apesar de alegar não dispor das tais provas citadas pelo presidente, a SGPR alega que o acesso às mais de 400 solicitações foram concedidos. **O Algoritmo BERT/NLP constatou corretamente o não atendimento de todas as solicitações.**. Os demais pedidos do órgão foram avaliados integralmente e dos 89 pedidos avaliados, foram constatados apenas 16 erros de classificação, 26 pedidos atendidos por meio de link externo e 3 pedidos que estariam à disposição do solicitante ou para retirada pessoalmente ou por outro meio externo ao FalaBr. O restante dos pedidos, 44, foram classificados corretamente pelo algoritmo BERT/NLP.
+> **SGPR**: Após o presidente da República declarar - em março de 2021 - que possuía provas sobre fraudes nas eleições de 2018 a SGPR recebeu ao menos 362 solicitações de envios - com base na LAI - das supostas provas existentes. Apesar de alegar não dispor das tais provas citadas pelo presidente, a SGPR alega que o acesso às solicitações foram concedidos. **O Algoritmo BERT/NLP constatou corretamente o não atendimento de todas as solicitações.**. Os demais pedidos do órgão foram avaliados integralmente e dos 89 pedidos avaliados, foram constatados apenas 16 erros de classificação, 26 pedidos atendidos por meio de link externo e 3 pedidos que estariam à disposição do solicitante ou para retirada pessoalmente ou por outro meio externo ao FalaBr. O restante dos pedidos, 44, foram classificados corretamente pelo algoritmo BERT/NLP.
 
 > Dentre os casos de não atendimento de pedidos de acesso a informação, destacam-se informações referentes à gastos de viagens presidenciais e sobre detalhes de reuniões e da presença de pessoas no palácio do planalto fora da agenda oficial do presidente.
 
