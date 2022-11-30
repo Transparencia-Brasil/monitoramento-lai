@@ -173,7 +173,7 @@ Os pedidos selecionados foram classificados como "Atendido", "Não Atendido" e "
 #| fig-width: 7.2
 #| fig-height: 4.8
 
-pedidos %>%
+p_bert <- pedidos %>%
   count(resultados) %>%
   mutate(
     resultados = reorder(resultados, n),
@@ -183,22 +183,25 @@ pedidos %>%
   geom_col(show.legend = FALSE, color = cores_aep[["cinza"]]) +
   geom_text(
     hjust = -.3,
+    size = 3,
     color = cores_aep[["cinza"]],
     fontface = "bold",
     aes(label = str_glue("{number(n)}\n({percent(perc, decimal = ',', accuracy = .1)})"))
   ) +
   coord_flip() +
-  scale_y_continuous(expand = c(0, 0), labels = number, limits = c(0, 3.5e4)) +
+  scale_y_continuous(expand = c(0 ,0), limits = c(0, 4.5e4), labels = number) +
   scale_fill_manual(values = cores_classificacao) +
   theme(
     axis.line.y = element_line(),
     axis.line.x = element_blank()
   ) +
   labs(
-    title = "Quantidade de pedidos com classificações BERT/NLP",
+    title = "Quantidade de pedidos com classificações (BERT/NLP)",
     y = "Quantidade de pedido",
-    x = "Classificações BERT/NLP"
+    x = "Classificações (BERT/NLP)"
   )
+
+p_bert
 ```
 
 #### Percentual (%)
@@ -233,10 +236,10 @@ pedidos %>%
     panel.grid = element_blank()
   ) +
   labs(
-    title = "Percentual de pedidos com classificações BERT/NLP",
+    title = "Percentual de pedidos com classificações (BERT/NLP)",
     y = NULL,
     x = NULL,
-    fill = "Classificação BERT/NLP"
+    fill = "Classificação (BERT/NLP)"
   )
 ```
 
@@ -283,7 +286,7 @@ A distribuição das decisões para pedidos válidos mostram que a maior parte d
 #| fig-width: 7.2
 #| fig-height: 4.8
 
-pedidos %>%
+p_cgu <- pedidos %>%
   filter(motivo_pedido_nao_valido == "Pedido válido") %>%
   count(decisao) %>%
   mutate(
@@ -305,7 +308,9 @@ pedidos %>%
   theme(
     axis.line.y = element_line(),
     axis.line.x = element_blank()
-  ) +
+  )
+
+p_cgu +
   labs(
     title = "Quantidade de pedidos por decisão (FalaBr/CGU)",
     x = "Decisão (FalaBr/CGU)",
@@ -353,6 +358,21 @@ pedidos %>%
 ```
 
 :::
+
+#### Comparativo entr decisões oficiais (FalaBr/CGU) e classificações (BERT/NLP)
+
+```{r}
+#| fig-height: 7
+#| fig-width: 9
+
+(p_cgu  +
+  labs(
+    title = "Quantidade de pedidos por decisão (FalaBr/CGU)",
+    x = "Decisão (FalaBr/CGU)",
+    y = ""
+  )) / p_bert
+```
+
 
 ## Cruzamento de decisões (FalaBr/CGU) com classificações de atendimento (BERT/NLP)
 
@@ -457,7 +477,7 @@ Ao confrontar as decisões, observamos que o algoritmo (BERT/NLP) classificou co
 
 ```{r}
 #| label: plot-classificacao-bert-nlp-decisao-abs-reduzido
-#| fig-height: 6
+#| fig-height: 6.5
 #| fig-width: 8
 
 pedidos_counts %>%
@@ -548,8 +568,8 @@ pedidos_counts %>%
 > Uma classificação contraditória é quando o algoritmo classifica um pedido com "Acesso Concedido" (FalaBr) como "Não Atendido" (BERT).
 
 ```{r}
-#| fig-width: 7.2
-#| fig-height: 4.8
+#| fig-width: 8
+#| fig-height: 3.8
 
 pedidos_counts %>%
   filter(decisao == "Acesso Concedido") %>%
