@@ -20,13 +20,13 @@ registrados no portal FalaBr do governo Federal.
 - [Busca por menções ao artigo 31 da Lei de Acesso a
   Informação](https://rdurl0.github.io/monitoramento-lai/02-negativas-artigo-31.html)
 - [Uso da LGPD em respostas de pedidos de
-  LAI](https://rdurl0.github.io/monitoramento-lai/03-uso-da-lgpd-nas-respostas.qmd)
+  LAI](https://rdurl0.github.io/monitoramento-lai/03-uso-da-lgpd-nas-respostas.html)
 
 **NOVO!**
 
 - [Uso de Inteligência artificial para classificar atendimento de
   pedidos
-  LAI](https://rdurl0.github.io/monitoramento-lai/04-atendimento-lai-vs-decsisoes.html)
+  LAI](https://rdurl0.github.io/monitoramento-lai/04-atendimento-lai-vs-decisoes.html)
 
 ## Base de dados
 
