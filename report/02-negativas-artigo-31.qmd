@@ -60,7 +60,7 @@ library(scales)
 library(gt)
 library(tidytext)
 library(wordcloud)
-source(here("src/0-plot-aesthetics.R"), encoding = "utf-8")
+source(here("src/00-plot-aesthetics.R"), encoding = "utf-8")
 `%notin%` <- function(x, y) !(x %in% y)
 ```
 

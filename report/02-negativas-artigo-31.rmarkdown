@@ -1,0 +1,652 @@
+---
+title: "Acessos negados citando o Artigo 31 da LAI"
+lang: pt-BR
+format:
+  html:
+    anchor-sections: true
+    code-fold: true
+    code-tools: true
+    code-link: true
+    code-line-numbers: true
+    code-summary: "Código"
+    toc: true
+    toc-title: "Índice"
+    toc-depth: 4
+    footnotes-hover: true
+    smooth-scroll: true
+    fig-width: 9
+    search: true
+    comments:
+      hypothesis: true
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+editor_options:
+  chunk_output_type: console
+execute:
+  cache: false
+---
+
+```{=html}
+<style>
+.nav-tabs .nav-link {
+    margin-bottom: -1px;
+    background: none;
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    color: #fcaa27;
+    font-size: 0.875em;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+    color: #d81755;
+    font-size: 1em;
+}
+</style>
+```
+
+```{r}
+#| label: libs
+library(tidyverse)
+library(here)
+library(lubridate)
+library(patchwork)
+library(scales)
+library(gt)
+library(tidytext)
+library(wordcloud)
+source(here("src/00-plot-aesthetics.R"), encoding = "utf-8")
+`%notin%` <- function(x, y) !(x %in% y)
+```
+
+
+## Base de dados - visão geral
+
+Foram analisados os Pedidos de Acesso a Informação (pedidos LAI) enviados aos órgãos do Governo Federal e disponibilizados pelo portal [FalaBr](http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DownloadPedidos/DownloadDados.aspx). Foram selecionados para análise somente as respostas aos pedidos LAI onde o órgão negou acesso ao solicitante (`decisao = "Acesso Negado"`), totalizando 43.517 respostas analisadas.
+
+
+```{r}
+#| label: bases-de-dados
+base <- readRDS(here("data/base-cgu-filtrada.rds"))
+
+ids_acesso_negado <- base %>%
+  filter(base == "Pedidos") %>%
+  select(datasets) %>%
+  unnest(datasets) %>%
+  filter(decisao == "Acesso Negado") %>%
+  pull(id_pedido)
+
+nr_protocolo <- base %>%
+  filter(base == "Pedidos") %>%
+  select(datasets) %>%
+  unnest(datasets) %>%
+  filter(decisao == "Acesso Negado") %>%
+  select(id_pedido, protocolo)
+
+pedidos  <- readRDS(here("data/pedidos-clean.rds"))
+recursos <- readRDS(here("data/recursos-clean.rds"))
+```
+
+
+## Termos pesquisados nas respostas
+
+Foram analisados os conteúdos das respostas dos pedidos selecionados, identificando quais deles mencionam alguma combinação dos termos abaixo:
+
+* Cita o [artigo 31 da LAI](http://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm) na resposta:
+  - `"o tratamento das informacoes pessoais deve ser feito de forma transparente e com respeito a intimidade vida privada honra e imagem das pessoas bem como as liberdades e garantias individuais"`
+
+* Menção ao [artigo 60 do decreto 7.724](http://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/decreto/d7724.htm) ou alegação de necessidade de identificação do requerente:
+  - `"comprovacao da identidade do requerente|faz se necessaria a identificacao pessoal do titular|identificacao (do)?requerente"`
+
+
+```{r}
+#|label: busca-por-pedidos
+pedidos_busca <- pedidos %>%
+  filter(id_pedido %in% ids_acesso_negado) %>%
+  tidylog::left_join(nr_protocolo) %>%
+  transmute(
+    id_pedido = id_pedido,
+    protocolo = protocolo,
+    data_registro = data_registro,
+    data_resposta = data_resposta,
+    orgao = orgao,
+    detalhamento = detalhamento_clean,
+    resposta_pedido = resposta_clean,
+    resumo = resumo_clean,
+    menciona_art_31_lei_12527 = str_detect(resposta_clean, "o tratamento das informacoes pessoais deve ser feito de forma transparente e com respeito a intimidade vida privada honra e imagem das pessoas bem como as liberdades e garantias individuais"),
+    menciona_art_60_dec_7724 = str_detect(resposta_clean, "comprovacao da identidade do requerente|faz se necessaria a identificacao pessoal do titular|identificacao (do)?requerente")
+  )
+```
+
+
+A alegação de sigilo é legítima quando o requerente solicita uma informação pessoal sem a devida comprovação de sua identidade. Estamos interessados nos pedidos com acesso negado que citam diretamente o artigo 30 da LAI sem fazer menções à necessidade de comprovação de identidade de requerente. O número de pedidos que atendem a este padrão é de 995.
+
+Os pedidos foram agrupados em 3 categorias, onde as negativas citam:
+
+1. A **necessidade de comprovação de identidade de requerente**.
+2. A **necessidade de tratamento de informações pessoais (Art. 31 da LAI)**.
+3. Outras justificativas.
+
+> [Clique aqui](https://docs.google.com/spreadsheets/d/1hjlnWueLupWMuNsI5lPxrU486MqENO3hbBeAhxCd8f0/edit#gid=0) para ver os pedidos negados que alegam a *necessidade de tratamento de informações pessoais*
+
+
+```{r}
+#|label: plot-quantidades
+
+grp1 <- "Necessidade de comprovação de\nidentidade de requerente"
+grp2 <- "Necessidade de tratamento de\ninformações pessoais (Art. 31 da LAI)"
+grp3 <- "Outras justificativas"
+
+pedidos_busca %>%
+  count(
+    menciona_art_31_lei_12527,
+    menciona_art_60_dec_7724,
+    name = "qtde"
+  ) %>%
+  mutate(
+    motivo_negativa = case_when(
+      menciona_art_31_lei_12527 & menciona_art_60_dec_7724 ~ grp1,
+      !menciona_art_31_lei_12527 & menciona_art_60_dec_7724 ~ grp1,
+      menciona_art_31_lei_12527 & !menciona_art_60_dec_7724 ~ grp2,
+      !menciona_art_31_lei_12527 & !menciona_art_60_dec_7724 ~ grp3
+    )
+  ) %>%
+  count(motivo_negativa, wt = qtde, name = "qtde") %>%
+    ggplot(aes(y = qtde, x = reorder(motivo_negativa, -qtde))) +
+    ggchicklet::geom_chicklet(fill = cores_aep[["laranja"]]) +
+    geom_text(aes(label = scales::number(qtde)), hjust = 0) +
+    geom_curve(
+      x = grp2,
+      xend = grp2,
+      y = 2.2e3,
+      yend = 14e3,
+      size = .5,
+      arrow = arrow(length = unit(0.15, "inches"))
+    ) +
+    coord_flip() +
+    scale_y_continuous(
+        labels = scales::number,
+        limits = c(0, 5e4),
+        expand = c(0, 0)
+     ) +
+    geom_text(
+      aes(
+        x = grp2,
+        y = 14500,
+        label = "Grupo de\ninteresse"
+      ),
+      hjust = 0,
+      vjust = 0,
+      check_overlap = TRUE
+    ) +
+    labs(
+      x = NULL,
+      y = "Quantidade",
+      title = "Negativas de acesso a informação"
+    )
+```
+
+
+## Alegações de necessidade de tratamento de informações pessoais
+
+
+```{r}
+pedidos_busca %>%
+  count(
+    id_ano = year(data_registro),
+    menciona_art_31_lei_12527,
+    menciona_art_60_dec_7724,
+    name = "qtde_motivo_negativa"
+  ) %>%
+  mutate(
+    motivo_negativa = case_when(
+      menciona_art_31_lei_12527 & menciona_art_60_dec_7724 ~ grp1,
+      !menciona_art_31_lei_12527 & menciona_art_60_dec_7724 ~ grp1,
+      menciona_art_31_lei_12527 & !menciona_art_60_dec_7724 ~ grp2,
+      !menciona_art_31_lei_12527 & !menciona_art_60_dec_7724 ~ grp3
+    )
+  ) %>%
+  add_count(
+    id_ano,
+    name = "qtde_ano",
+    wt = qtde_motivo_negativa
+  ) %>%
+  mutate(perc = qtde_motivo_negativa / qtde_ano) %>%
+  filter(motivo_negativa == grp2) %>%
+  ggplot(aes(x = id_ano, y = perc)) +
+  geom_line(size = 2, show.legend = FALSE, color = cores_aep[["rosa"]]) +
+  geom_label(
+    aes(
+      label = percent(
+        perc,
+        accuracy = 0.1,
+        decimal.mark = ",",
+        big.mark = " "
+      )
+    ),
+    fill = "white",
+    color = "white"
+  ) +
+  geom_label(
+    aes(
+      label = percent(
+        perc,
+        accuracy = 0.1,
+        decimal.mark = ",",
+        big.mark = " "
+      )
+    ),
+    fill = alpha(cores_aep[["rosa"]], .5)
+  ) +
+  hrbrthemes::scale_y_percent(
+    accuracy = 0.1,
+    decimal.mark = ",",
+    big.mark = " ",
+    limits = c(-.005, .065)
+  ) +
+  scale_x_continuous(breaks = 2015:2022L) +
+  labs(
+    title = "Negativas alegando necessidade de tratamento de informações pessoais",
+    subtitle = "Citação direta do Artigo 31° da Lei de Acesso a Informação",
+    x = "Ano",
+    y = "Percentual em relação ao total de acessos negados"
+  )
+```
+
+
+## Núvem de palavras - INSS
+
+
+```{r}
+#| label: wordcount-inss
+
+ids_inss <- pedidos_busca %>%
+  filter(str_detect(orgao, "^INSS")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
+  pull(id_pedido)
+
+pedidos_inss <- base %>%
+  filter(base == "Pedidos") %>%
+  select(datasets) %>%
+  unnest(datasets) %>%
+  filter(id_pedido %in% ids_inss) %>%
+  transmute(
+    id_pedido,
+    resumo,
+    detalhamento,
+    resposta
+  )
+
+#' stopwords do pacote `tm`
+stopwords <- tibble(
+  word = tm::stopwords("pt"),
+  lexicon = "tm"
+)
+```
+
+
+As núvens de palavra abaixo são referentes a `r nrow(pedidos_inss)` pedidos direcionaos aos INSS. Foram extraídas as frequências de palavras de resumos de pedido, conteúdo de pedidos e conteúdo de resposta do pedido.
+
+::: {.panel-tabset}
+
+### Resumo do pedido
+
+
+```{r}
+#| label: wordcloud-inss-resumo
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_inss %>%
+  select(
+    id_pedido,
+    resumo
+  ) %>%
+  unnest_tokens(word, resumo) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
+```
+
+
+### Pedido
+
+
+```{r}
+#| label: wordcloud-inss-pedido
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_inss %>%
+  select(
+    id_pedido,
+    detalhamento
+  ) %>%
+  unnest_tokens(word, detalhamento) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
+```
+
+
+### Resposta do pedido
+
+
+```{r}
+#| label: wordcloud-inss-resposta
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_inss %>%
+  select(
+    id_pedido,
+    resposta
+  ) %>%
+  unnest_tokens(word, resposta) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
+```
+
+
+:::
+
+## Núvem de palavras - Ministério da Economia
+
+
+```{r}
+#| label: wordcount-me
+
+ids_me <- pedidos_busca %>%
+  filter(str_detect(orgao, "^ME ")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
+  pull(id_pedido)
+
+pedidos_me <- base %>%
+  filter(base == "Pedidos") %>%
+  select(datasets) %>%
+  unnest(datasets) %>%
+  filter(id_pedido %in% ids_me) %>%
+  transmute(
+    id_pedido,
+    resumo,
+    detalhamento,
+    resposta
+  )
+```
+
+
+As núvens de palavra abaixo são referentes a `r nrow(pedidos_me)` pedidos direcionaos aos Ministério da Economia. Foram extraídas as frequências de palavras de resumos de pedido, conteúdo de pedidos e conteúdo de resposta do pedido.
+
+::: {.panel-tabset}
+
+### Resumo do pedido
+
+
+```{r}
+#| label: wordcloud-me-resumo
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_me %>%
+  select(
+    id_pedido,
+    resumo
+  ) %>%
+  unnest_tokens(word, resumo) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
+```
+
+
+### Pedido
+
+
+```{r}
+#| label: wordcloud-me-pedido
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_me %>%
+  select(
+    id_pedido,
+    detalhamento
+  ) %>%
+  unnest_tokens(word, detalhamento) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
+```
+
+
+### Resposta do pedido
+
+
+```{r}
+#| label: wordcloud-me-resposta
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_me %>%
+  select(
+    id_pedido,
+    resposta
+  ) %>%
+  unnest_tokens(word, resposta) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
+```
+
+
+:::
+
+:::
+
+## Núvem de palavras - Demais Órgãos
+
+
+```{r}
+#| label: wordcount-demais-orgaos
+
+pedidos_demais_orgaos <- base %>%
+  filter(base == "Pedidos") %>%
+  select(datasets) %>%
+  unnest(datasets) %>%
+  filter(id_pedido %notin% ids_inss) %>%
+  filter(id_pedido %notin% ids_me) %>%
+  transmute(
+    id_pedido,
+    resumo,
+    detalhamento,
+    resposta
+  )
+```
+
+
+As núvens de palavra abaixo são referentes a `r nrow(pedidos_demais_orgaos)` pedidos direcionaos à todos os órgãos *exceto* INSS e Ministério da Economia. Foram extraídas as frequências de palavras de resumos de pedido, conteúdo de pedidos e conteúdo de resposta do pedido.
+
+::: {.panel-tabset}
+
+### Resumo do pedido
+
+
+```{r}
+#| label: wordcloud-demais-orgaos-resumo
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_demais_orgaos %>%
+  select(
+    id_pedido,
+    resumo
+  ) %>%
+  unnest_tokens(word, resumo) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
+```
+
+
+### Pedido
+
+
+```{r}
+#| label: wordcloud-demais-orgaos-pedido
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_demais_orgaos %>%
+  select(
+    id_pedido,
+    detalhamento
+  ) %>%
+  unnest_tokens(word, detalhamento) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
+```
+
+
+### Resposta do pedido
+
+
+```{r}
+#| label: wordcloud-demais-orgaos-resposta
+#| fig-width: 5
+#| fig-height: 5
+
+pedidos_demais_orgaos %>%
+  select(
+    id_pedido,
+    resposta
+  ) %>%
+  unnest_tokens(word, resposta) %>%
+  anti_join(stopwords) %>%
+  count(word, sort = TRUE) %>%
+  with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
+```
+
+
+:::
+
+
+## Órgãos que mais fazem menção ao Art. 31 da LAI em negativas
+
+
+```{r}
+#| label: plot-evolucao-negativas-sigilo
+
+busca_pedidos_orgao <- pedidos_busca %>%
+  count(
+    orgao,
+    menciona_art_31_lei_12527,
+    menciona_art_60_dec_7724,
+    name = "qtde_motivo_negativa"
+  ) %>%
+  mutate(
+    motivo_negativa = case_when(
+      menciona_art_31_lei_12527 & menciona_art_60_dec_7724 ~ grp1,
+      !menciona_art_31_lei_12527 & menciona_art_60_dec_7724 ~ grp1,
+      menciona_art_31_lei_12527 & !menciona_art_60_dec_7724 ~ grp2,
+      !menciona_art_31_lei_12527 & !menciona_art_60_dec_7724 ~ grp3
+    )
+  ) %>%
+  add_count(
+    orgao,
+    name = "qtde_orgao",
+    wt = qtde_motivo_negativa
+  ) %>%
+  mutate(perc = qtde_motivo_negativa / qtde_orgao) %>%
+  filter(motivo_negativa == grp2, qtde_orgao > 50) %>%
+  select(-starts_with("menciona"), -motivo_negativa) %>%
+  arrange(-perc)
+
+busca_pedidos_orgao %>%
+  mutate(
+    across(contains("qtde"), number, big.mark = " "),
+    perc = percent(perc, decimal.mark = ",", big.mark = ".", accuracy = 1.00)
+  )  %>%
+  gt() %>%
+  tab_header(
+    title = "",
+    subtitle = "Percentual em relação ao total de negativas emitidas pelo órgão"
+  ) %>%
+  cols_label(
+    orgao = md("**Órgão**"),
+    qtde_motivo_negativa = md("**Citação<br/>Art. 31 - Lei 12.527**"),
+    qtde_orgao = md("**Total de<br/>negativas**"),
+    perc = md("**% citações<br/>por negativas**")
+  )
+```
+
+```{r}
+#| label: resultados-planilha
+#| eval: false
+
+# resultados INSS
+resultado_busca <- pedidos_busca %>%
+  filter(str_detect(orgao, "^INSS")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
+  transmute(
+    id_pedido,
+    link = str_glue("http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"),
+    link = str_glue('=HIPERLINK("{link}"; "lINK")'),
+    menciona_extrato = if_else(str_detect(resumo, "extrato"), "extrato", ""),
+    menciona_aposentadoria = if_else(str_detect(resumo, "aposentadoria"), "aposentadoria", ""),
+    menciona_tempo = if_else(str_detect(resumo, "tempo"), "tempo", ""),
+    menciona_beneficio = if_else(str_detect(resumo, "beneficio"), "benefício", ""),
+    menciona_cnis = if_else(str_detect(resumo, "cnis"), "CNIS", ""),
+    menciona_segunda_via = if_else(str_detect(resumo, "segunda via"), "2ª via", "")
+  ) %>%
+  left_join(pedidos_inss)
+
+name_glue <- names(select(resultado_busca, starts_with("menciona"))) %>%
+  paste(collapse = "} {") %>%
+  paste0("{", ., "}")
+
+resultado_busca <- resultado_busca %>%
+  mutate(
+    termos_mencionados = str_glue(name_glue) %>%
+      str_trim()
+  )
+
+resultado_busca %>%
+    select(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) %>%
+    googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "INSS")
+
+# Resultados Ministério Economia
+pedidos_busca %>%
+  filter(str_detect(orgao, "Ministério da Economia")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
+  transmute(
+    id_pedido,
+    link = str_glue("http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"),
+    link = str_glue('=HIPERLINK("{link}"; "lINK")'),
+    termos_mencionados = if_else(str_detect(resumo, "acordao"), "acordão", "")
+  ) %>%
+  left_join(pedidos_me) %>%
+  select(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) %>%
+  googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "Ministério da Economia")
+
+# Resultados Todos os órgãos
+pedidos_busca %>%
+  filter(!str_detect(orgao, "Ministério da Economia")) %>%
+  filter(!str_detect(orgao, "^INSS")) %>%
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
+  transmute(
+    id_pedido,
+    link = str_glue("http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"),
+    link = str_glue('=HIPERLINK("{link}"; "lINK")')
+  ) %>%
+  left_join(pedidos_demais_orgaos) %>%
+  select(id_pedido, link, resumo, detalhamento, resposta) %>%
+  googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "Demais órgãos")
+```
+
