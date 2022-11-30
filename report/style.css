@@ -1,0 +1,18 @@
+.nav-tabs .nav-link {
+  margin-bottom: -1px;
+  background: none;
+  border: 1px solid transparent;
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+  color: #fcaa27;
+  font-size: 0.875em;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: #495057;
+  background-color: #ececec";
+ border-color: #dee2e6 #dee2e6 #fff;
+  color: #d81755;
+  font-size: 1em;
+}
