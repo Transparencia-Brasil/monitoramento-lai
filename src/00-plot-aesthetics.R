@@ -34,7 +34,7 @@ cores_decisao2 <- cores_decisao
 cores_decisao2[["Informação Inexistente"]] <- "gray20"
 
 cores_decisao3 <- c("black", "gray90", "gray20", "gray80", "gray20")
-names(cores_decisao3) <- names(cores_decisao)[-c(5, 2)] 
+names(cores_decisao3) <- names(cores_decisao)[-c(5, 2)]
 
 #' Paleta de cores para difierenciar pedidos LAI de outras manifestações no FalaBr
 cores_lai <- tibble(
@@ -105,7 +105,9 @@ theme_set(theme_minimal())
 
 theme_update(
   panel.grid.minor = element_blank(),
-  panel.background = element_rect(fill = "gray97", color = "transparent")
+  panel.background = element_rect(fill = "gray97", color = "transparent"),
+  axis.line.y = element_blank(),
+  axis.line.x = element_line(color = "gray50")
 )
 
 hrbrthemes::import_roboto_condensed()
