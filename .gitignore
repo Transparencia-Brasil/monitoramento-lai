@@ -40,5 +40,3 @@ vignettes/*.pdf
 
 data/*
 local-files/*
-
-.vscode/*
