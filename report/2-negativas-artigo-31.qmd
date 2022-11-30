@@ -19,12 +19,12 @@ format:
     comments:
       hypothesis: true
 knitr:
-  opts_chunk: 
+  opts_chunk:
     collapse: true
-    comment: "#>" 
-editor_options: 
+    comment: "#>"
+editor_options:
   chunk_output_type: console
-execute: 
+execute:
   cache: false
 ---
 
@@ -139,7 +139,7 @@ grp3 <- "Outras justificativas"
 pedidos_busca %>%
   count(
     menciona_art_31_lei_12527,
-    menciona_art_60_dec_7724, 
+    menciona_art_60_dec_7724,
     name = "qtde"
   ) %>%
   mutate(
@@ -257,14 +257,14 @@ pedidos_busca %>%
 
 ids_inss <- pedidos_busca %>%
   filter(str_detect(orgao, "^INSS")) %>%
-  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>% 
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
   pull(id_pedido)
 
 pedidos_inss <- base %>%
   filter(base == "Pedidos") %>%
   select(datasets) %>%
   unnest(datasets) %>%
-  filter(id_pedido %in% ids_inss) %>% 
+  filter(id_pedido %in% ids_inss) %>%
   transmute(
     id_pedido,
     resumo,
@@ -294,9 +294,9 @@ pedidos_inss %>%
   select(
     id_pedido,
     resumo
-  ) %>% 
-  unnest_tokens(word, resumo) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, resumo) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
 ```
@@ -312,9 +312,9 @@ pedidos_inss %>%
   select(
     id_pedido,
     detalhamento
-  ) %>% 
-  unnest_tokens(word, detalhamento) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, detalhamento) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
 ```
@@ -330,9 +330,9 @@ pedidos_inss %>%
   select(
     id_pedido,
     resposta
-  ) %>% 
-  unnest_tokens(word, resposta) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, resposta) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
 ```
@@ -346,14 +346,14 @@ pedidos_inss %>%
 
 ids_me <- pedidos_busca %>%
   filter(str_detect(orgao, "^ME ")) %>%
-  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>% 
+  filter(menciona_art_31_lei_12527 & !menciona_art_60_dec_7724) %>%
   pull(id_pedido)
 
 pedidos_me <- base %>%
   filter(base == "Pedidos") %>%
   select(datasets) %>%
   unnest(datasets) %>%
-  filter(id_pedido %in% ids_me) %>% 
+  filter(id_pedido %in% ids_me) %>%
   transmute(
     id_pedido,
     resumo,
@@ -377,9 +377,9 @@ pedidos_me %>%
   select(
     id_pedido,
     resumo
-  ) %>% 
-  unnest_tokens(word, resumo) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, resumo) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
 ```
@@ -395,9 +395,9 @@ pedidos_me %>%
   select(
     id_pedido,
     detalhamento
-  ) %>% 
-  unnest_tokens(word, detalhamento) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, detalhamento) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
 ```
@@ -413,9 +413,9 @@ pedidos_me %>%
   select(
     id_pedido,
     resposta
-  ) %>% 
-  unnest_tokens(word, resposta) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, resposta) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
 ```
@@ -433,8 +433,8 @@ pedidos_demais_orgaos <- base %>%
   filter(base == "Pedidos") %>%
   select(datasets) %>%
   unnest(datasets) %>%
-  filter(id_pedido %notin% ids_inss) %>% 
-  filter(id_pedido %notin% ids_me) %>% 
+  filter(id_pedido %notin% ids_inss) %>%
+  filter(id_pedido %notin% ids_me) %>%
   transmute(
     id_pedido,
     resumo,
@@ -458,9 +458,9 @@ pedidos_demais_orgaos %>%
   select(
     id_pedido,
     resumo
-  ) %>% 
-  unnest_tokens(word, resumo) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, resumo) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]))
 ```
@@ -476,9 +476,9 @@ pedidos_demais_orgaos %>%
   select(
     id_pedido,
     detalhamento
-  ) %>% 
-  unnest_tokens(word, detalhamento) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, detalhamento) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]))
 ```
@@ -494,9 +494,9 @@ pedidos_demais_orgaos %>%
   select(
     id_pedido,
     resposta
-  ) %>% 
-  unnest_tokens(word, resposta) %>% 
-  anti_join(stopwords) %>% 
+  ) %>%
+  unnest_tokens(word, resposta) %>%
+  anti_join(stopwords) %>%
   count(word, sort = TRUE) %>%
   with(wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]))
 ```
@@ -533,17 +533,17 @@ busca_pedidos_orgao <- pedidos_busca %>%
   filter(motivo_negativa == grp2, qtde_orgao > 50) %>%
   select(-starts_with("menciona"), -motivo_negativa) %>%
   arrange(-perc)
-  
+
 busca_pedidos_orgao %>%
   mutate(
     across(contains("qtde"), number, big.mark = " "),
     perc = percent(perc, decimal.mark = ",", big.mark = ".", accuracy = 1.00)
-  )  %>% 
-  gt() %>% 
+  )  %>%
+  gt() %>%
   tab_header(
     title = "",
     subtitle = "Percentual em relação ao total de negativas emitidas pelo órgão"
-  ) %>% 
+  ) %>%
   cols_label(
     orgao = md("**Órgão**"),
     qtde_motivo_negativa = md("**Citação<br/>Art. 31 - Lei 12.527**"),
@@ -572,7 +572,7 @@ resultado_busca <- pedidos_busca %>%
     menciona_beneficio = if_else(str_detect(resumo, "beneficio"), "benefício", ""),
     menciona_cnis = if_else(str_detect(resumo, "cnis"), "CNIS", ""),
     menciona_segunda_via = if_else(str_detect(resumo, "segunda via"), "2ª via", "")
-  ) %>% 
+  ) %>%
   left_join(pedidos_inss)
 
 name_glue <- names(select(resultado_busca, starts_with("menciona"))) %>%
@@ -586,7 +586,7 @@ resultado_busca <- resultado_busca %>%
   )
 
 resultado_busca %>%
-    select(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) %>% 
+    select(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) %>%
     googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "INSS")
 
 # Resultados Ministério Economia
@@ -598,9 +598,9 @@ pedidos_busca %>%
     link = str_glue("http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"),
     link = str_glue('=HIPERLINK("{link}"; "lINK")'),
     termos_mencionados = if_else(str_detect(resumo, "acordao"), "acordão", "")
-  ) %>% 
-  left_join(pedidos_me) %>% 
-  select(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) %>% 
+  ) %>%
+  left_join(pedidos_me) %>%
+  select(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) %>%
   googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "Ministério da Economia")
 
 # Resultados Todos os órgãos
@@ -612,9 +612,9 @@ pedidos_busca %>%
     id_pedido,
     link = str_glue("http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"),
     link = str_glue('=HIPERLINK("{link}"; "lINK")')
-  ) %>% 
-  left_join(pedidos_demais_orgaos) %>% 
-  select(id_pedido, link, resumo, detalhamento, resposta) %>% 
+  ) %>%
+  left_join(pedidos_demais_orgaos) %>%
+  select(id_pedido, link, resumo, detalhamento, resposta) %>%
   googlesheets4::write_sheet("1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs", sheet = "Demais órgãos")
 ```
 
