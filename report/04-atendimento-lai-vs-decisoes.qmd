@@ -1,0 +1,1788 @@
+---
+title: "Atendimento da LAI - Órgãos do governo Federal"
+lang: pt-BR
+format:
+  html:
+    html-math-method: katex
+    css: style.css
+    anchor-sections: true
+    code-fold: true
+    code-tools: true
+    code-link: true
+    code-line-numbers: true
+    code-summary: "Código"
+    toc: true
+    toc-title: "Índice"
+    toc-depth: 4
+    toc-float: false
+    toc-collapsed: false
+    footnotes-hover: true
+    smooth-scroll: true
+    fig-width: 10
+    fig-height: 7
+    search: true
+    theme:
+          light: flatly
+          dark: darkly
+knitr:
+  opts_chunk:
+    echo: true
+    collapse: true
+    message: false
+    warning: false
+    comment: "#>"
+editor_options:
+  chunk_output_type: console
+execute:
+  cache: false
+---
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(glue)
+library(here)
+library(scales)
+library(lubridate)
+library(gt)
+library(patchwork)
+library(googlesheets4)
+source(here("src/00-plot-aesthetics.R"), encoding = "utf-8")
+`%notin%` <- function(x, y) !(x %in% y)
+```
+
+## Introdução
+
+O objetivo desta análise é avaliar o cumprimento da [Lei de Acesso a Informação (Lei n° 12.527)](http://www.planalto.gov.br/ccivil_03/_Ato2011-2014/2011/Lei/L12527.htm) por parte do Poder Executivo Federal. Para isso, os pedidos e respostas de acesso a informação feitos aos órgãos do Poder Executivo Federal foram processados por um algoritmo de inteligência artificial capaz de analisar seus conteúdos e classificar as solicitações como "Atendido", "Não Atendido" ou "Parcialmente Atendido". As classificações resultantes de cada pedido foram confrontadas com a decisão de acesso a informação expedida pelos órgãos aos quais as solicitações foram enviadas.
+
+## Metodologia
+
+### Dados
+
+A análise foi feita a partir [da base de dados de pedidos e respostas realizados no Poder Executivo Federal](http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DownloadPedidos/DownloadDados.aspx), disponível no FalaBr. O formato utilizado é o `CSV`. Os dados vão de Janeiro de 2021 até agosto de 2022.
+
+> Código para extrair os dados do FalaBr ([link](src/01-download-base-cgu-filtrada.R))
+
+Foram selecionados para análise somente pedidos:
+
+- **Sem recursos**,
+- **Sem arquivos anexos**,
+- **Com decisões "Acesso Concedido", "Acesso Parcialmente Concedido", "Acesso Negado"**.
+
+Os **pedidos sem recursos** não são um problema para a classificação do algorítmo BERT/NLP mas foram descartados por uma questão de simplicidade e para garantir que os pedidos analisados seriam somente aqueles considerados concluídos levando em conta os prazos legais de tramitação da LAI.
+
+Os **pedidos com anexo** foram descartados pois, em sua versão atual, o algoritmo desenvolvido pelo AeP não é capaz de avaliar respostas atreladas a conteúdos de arquivos externos ao pedido (PDFs, XLS, ODS, etc.) e, portanto, **ele não serve para classificar pedidos que possuem anexos ou referências externas à resposta do pedido solicitado**.
+
+Mas, como saber se os pedidos possuem anexos? A base de dados do FalaBr não possui uma informação (uma coluna na tabela) que indique a presença ou a ausência de anexos no pedido de acesso a informação. Os anexos dos pedidos só estão acessíveis por meio da página de ["Buscas de pedidos e respostas"](http://www.consultaesic.cgu.gov.br/busca/SitePages/Principal.aspx), onde só é possível consultar os pedidos individualmente em uma página HTML específica.
+
+A solução encontrada para saber se um pedido tinha ou unão um anexo foi varrer milhares de páginas de pedidos em busca das URLs que contém os anexos. Este processo foi documentado [neste link](..src/10-coletando-url-anexos.R) e uma base de dados auxiliar foi criada com as URLs de anexos com um *id* único e número de protocolo para cada pedido.
+
+> Por uma questão de tempo de processamento foram coletados os anexos referentes aos anos de 2021 e 2022.
+
+Por fim, foram filtrados somente os **pedidos com decisões "Acesso Concedido", "Acesso Parcialmente Concedido" e "Acesso Negado"**, pois o modelo NLP/BERT não foi treinado para interpretar pedidos classificados como "Não se trata de solicitação de informação", "Pergunta duplicada/repetida", "Órgão não tem competência para responder sobre o assunto" ou "Informação inexistente".
+
+> Processamento da base de dados para análise ([link](../src/09-pedidos-classificados.R))
+
+```{r}
+# label: base-pedidos
+
+# base de dados de pedidos
+pedidos <- readRDS(here("data/pedidos-classificados.rds"))
+```
+
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+
+# Decisões que deverão ser escolhidas para análise
+decisoes_validas <- c(
+  "Acesso Concedido",
+  "Acesso Parcialmente Concedido",
+  "Acesso Negado"
+)
+
+pedidos_count_validos <- pedidos %>%
+  count(motivo_pedido_nao_valido) %>%
+  mutate(
+    perc = n / sum(n),
+    pos = rev(cumsum(perc) - 0.6 * perc),
+    motivo_pedido_nao_valido = reorder(motivo_pedido_nao_valido, perc)
+  )
+
+pedidos_count_validos %>%
+  ggplot(aes(x = motivo_pedido_nao_valido, y = n, fill = motivo_pedido_nao_valido)) +
+  geom_col(show.legend = FALSE, color = cores_aep[["cinza"]]) +
+  geom_text(
+    hjust = -.5,
+    size = 3,
+    color = cores_aep[["cinza"]],
+    fontface = "bold",
+    aes(label = str_glue("{number(n)}\n({percent(perc, decimal.mark = ',', accuracy = .1)})"))
+  ) +
+  coord_flip() +
+  scale_y_continuous(expand = c(0 , 0), limits = c(0, 5.5e4), labels = number) +
+  scale_fill_manual(values = c(
+    "Pedido válido" = cores_tb[["azul"]],
+    "Pedido com anexo\n(Pedido descartado)" = cores_aep[["rosa"]],
+    "Decisão (FalaBr/CGU) inválida\n(Pedido descartado)" = alpha(cores_aep[["rosa"]], .6),
+    "Pedidos com recursos\n(Pedido descartado)" = alpha(cores_aep[["rosa"]], .3)
+  )) +
+  labs(
+    title = str_glue(
+      "Foram processados {number(sum(pedidos_count_validos$n))} pedidos, ",
+      "dos quais {number(pedidos_count_validos$n[3])}",
+      "\n({percent(pedidos_count_validos$perc[3], decimal.mark = ',', accuracy = .1)})",
+      " são considerados válidos para análise"
+    ),
+    y = "Quantidade de pedidos",
+    x = "Pedidos selecionados e descartados"
+  ) +
+  theme(
+    axis.line.y = element_line(),
+    axis.line.x = element_blank()
+  )
+```
+
+Recorte da base de dados:
+
+- **Sem recursos**
+- **Sem arquivos anexos**
+- **Com decisões "Acesso Concedido", "Acesso Parcialmente Concedido", "Acesso Negado"**
+
+```{r}
+pedidos <- pedidos %>%
+  filter(motivo_pedido_nao_valido == "Pedido válido")
+```
+
+> Código que faz o tratamento da base de dados de pedidos utilizada neste relatório ([link](src/02-pedidos-classificados.R))
+
+### Classificação de pedidos com Inteligência Artificial
+
+Os pedidos selecionados foram classificados como "Atendido", "Não Atendido" e "Parcialmente Atendido" por meio do [modelo BERT/NLP](https://huggingface.co/neuralmind/bert-large-portuguese-cased).
+
+- Uma breve explicação sobre como utilizamos o algoritmo de Machine Learning (BERT/NLP) para classificar os pedidos de acesso a informação. ([link](https://achadosepedidos.org.br/na-midia/achados-e-pedidos-usa-inteligencia-artificial-para-classificar-atendimento-a-pedidos))
+- Código que utiliza o modelo BERT para classificar pedidos como "Atendido", "Não Atendido" e "Parcialmente Atendido" ([link](https://colab.research.google.com/drive/1BpahuNidPR6RhIYjrk06vThO3Fz4xA-Z?usp=sharing))
+- O repositório com o modelo BERT treinado para classificação de pedidos de acesso a informação ([link](https://huggingface.co/tbrasil/classificador_de_atendimento_3_classes_v1.1?text=I+like+you.+I+love+you))
+- Repositório deste relatório ([link](https://github.com/Transparencia-Brasil/monitoramento-lai))
+
+::: {.panel-tabset}
+
+#### Total
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+pedidos %>%
+  count(resultados) %>%
+  mutate(
+    resultados = reorder(resultados, n),
+    perc = n / sum(n)
+  ) %>%
+  ggplot(aes(x = resultados, y = n, fill = resultados)) +
+  geom_col(show.legend = FALSE, color = cores_aep[["cinza"]]) +
+  geom_text(
+    hjust = -.3,
+    color = cores_aep[["cinza"]],
+    fontface = "bold",
+    aes(label = str_glue("{number(n)}\n({percent(perc, decimal = ',', accuracy = .1)})"))
+  ) +
+  coord_flip() +
+  scale_y_continuous(expand = c(0, 0), labels = number, limits = c(0, 3.5e4)) +
+  scale_fill_manual(values = cores_classificacao) +
+  theme(
+    axis.line.y = element_line(),
+    axis.line.x = element_blank()
+  ) +
+  labs(
+    title = "Quantidade de pedidos com classificações BERT/NLP",
+    y = "Quantidade de pedido",
+    x = "Classificações BERT/NLP"
+  )
+```
+
+#### Percentual (%)
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+
+pedidos %>%
+  filter(motivo_pedido_nao_valido == "Pedido válido") %>%
+  count(resultados) %>%
+  mutate(
+    resultados = reorder(resultados, n),
+    perc = n / sum(n),
+    pos = cumsum(perc) - 0.5 * perc
+  ) %>%
+  ggplot(aes(x = "", y = perc, fill = resultados)) +
+  geom_bar(
+    color = cores_aep[["cinza"]],
+    width = 1,
+    stat = "identity"
+  ) +
+  geom_label(
+    aes(y = pos, label = str_glue("{number(n)}\n{percent(perc, decimal = ',', accuracy = .1)}"))
+  ) +
+  coord_polar(theta = "y") +
+  scale_fill_manual(values = cores_classificacao) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.text = element_blank(),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    title = "Percentual de pedidos com classificações BERT/NLP",
+    y = NULL,
+    x = NULL,
+    fill = "Classificação BERT/NLP"
+  )
+```
+
+:::
+
+### Decisão sobre acesso a informação do Governo Federal
+
+Após recebimento e análise da solicitação de acesso a informação os órgãos do Poder Executivo Federal podem emitir 6 decisões diferentes. A tabela abaixo mostra as decisões possíveis e a classificação de atendimento (BERT/NLP) correspondente.
+
+```{r}
+#| label: tbl-atendimento-classificacao
+#| tbl-cap: "tabela de correspond~encia entre classificações (NLP/BERT) e decisões (FalaBr/CGU)"
+
+tibble(decisao = c(
+  "Acesso Concedido",
+  "Acesso Parcialmente Concedido",
+  "Acesso Negado",
+  "Não se trata de solicitação de informação",
+  "Informação Inexistente",
+  "Órgão não tem competência para responder sobre o assunto",
+  "Pergunta Duplicada/Repetida"
+  )) %>%
+  mutate(
+    classif = case_when(
+      decisao == "Acesso Concedido" ~ "Atendido",
+      decisao == "Acesso Parcialmente Concedido" ~ "Parcialmente Atendido",
+      decisao == "Acesso Negado" ~ "Não Atendido",
+      TRUE ~ "Decisão Inválida"
+  )) %>%
+  gt() %>%
+  cols_label(
+    decisao = md("**Decisão (FalaBr/CGU)**"),
+    classif = md("**Classificação correspondente (BERT/NLP)**")
+  )
+```
+
+A distribuição das decisões para pedidos válidos mostram que a maior parte dos pedidos são classificados com Acesso Concedido:
+
+::: {.panel-tabset}
+
+#### Total
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+pedidos %>%
+  filter(motivo_pedido_nao_valido == "Pedido válido") %>%
+  count(decisao) %>%
+  mutate(
+    perc = n / sum(n),
+    decisao = reorder(decisao, n)
+  ) %>%
+  ggplot(aes(x = decisao, y = n, fill = decisao)) +
+  geom_col(color = cores_aep[["cinza"]], show.legend = FALSE) +
+  geom_text(
+    hjust = -.3,
+    size = 3,
+    color = cores_aep[["cinza"]],
+    fontface = "bold",
+    aes(label = str_glue("{number(n)}\n({percent(perc, accuracy = .1, decimal.mark = ',')})"))
+  ) +
+  coord_flip() +
+  scale_y_continuous(expand = c(0 ,0), limits = c(0, 4.5e4), labels = number) +
+  scale_fill_manual(values = cores_decisao) +
+  theme(
+    axis.line.y = element_line(),
+    axis.line.x = element_blank()
+  ) +
+  labs(
+    title = "Quantidade de pedidos por decisão (FalaBr/CGU)",
+    x = "Decisão (FalaBr/CGU)",
+    y = "Quantidade de pedidos"
+  )
+```
+
+#### Percentual (%)
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+
+pedidos %>%
+  filter(motivo_pedido_nao_valido == "Pedido válido") %>%
+  count(decisao) %>%
+  mutate(
+    resultados = reorder(decisao, n),
+    perc = n / sum(n),
+    pos = cumsum(perc) - 0.5 * perc
+  ) %>%
+  ggplot(aes(x = "", y = perc, fill = resultados)) +
+  geom_bar(
+    color = cores_aep[["cinza"]],
+    width = 1,
+    stat = "identity"
+  ) +
+  geom_label(
+    aes(y = pos, label = str_glue("{number(n)}\n{percent(perc, decimal = ',', accuracy = .1)}"))
+  ) +
+  coord_polar(theta = "y") +
+  scale_fill_manual(values = cores_decisao[c(1,3,4)], drop = TRUE) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.line.x = element_blank(),
+    axis.text = element_blank(),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    title = "Percentual de pedidos por decisão (FalaBr/CGU)",
+    y = NULL,
+    x = NULL,
+    fill = "Decisão (FalaBr/CGU)"
+  )
+```
+
+:::
+
+## Cruzamento de decisões (FalaBr/CGU) com classificações de atendimento (BERT/NLP)
+
+```{r}
+pedidos_counts <- pedidos %>%
+  filter(pedido_valido) %>%
+  filter(!is.na(decisao)) %>%
+  count(name = "n_decisao_resultado", decisao, resultados) %>%
+  add_count(resultados, name = "n_resultados", wt = n_decisao_resultado) %>%
+  add_count(decisao, name = "n_decisao", wt = n_decisao_resultado) %>%
+  mutate(
+    resultados = ordered(resultados, levels = ord_classificacao),
+    perc = n_decisao_resultado / n_decisao
+  )
+
+pedidos_counts_comparativo <- pedidos_counts %>%
+  distinct(atend = decisao, n = n_decisao) %>%
+  filter(atend %in% c(
+    "Acesso Concedido",
+    "Acesso Negado",
+    "Acesso Parcialmente Concedido"
+  )) %>%
+  mutate(atend = str_glue("{atend} (FalaBr/CGU)")) %>%
+  bind_rows(
+    pedidos_counts %>%
+      distinct(atend = resultados, n = n_resultados) %>%
+      mutate(atend = str_glue("{atend} (BERT/NLP)"))
+  ) %>%
+  mutate(
+    atend = ordered(atend, c(
+      "Atendido (BERT/NLP)",
+      "Acesso Concedido (FalaBr/CGU)",
+      "Não Atendido (BERT/NLP)",
+      "Acesso Negado (FalaBr/CGU)",
+      "Parcialmente Atendido (BERT/NLP)",
+      "Acesso Parcialmente Concedido (FalaBr/CGU)"
+  ))) %>%
+  mutate(
+    atend2 = case_when(
+      atend %in% c("Atendido (BERT/NLP)", "Acesso Concedido (FalaBr/CGU)") ~ "Atendido (BERT/NLP) e Acesso Concedido (FalaBr/CGU)",
+      atend %in% c("Não Atendido (BERT/NLP)", "Acesso Negado (FalaBr/CGU)") ~ "Não Atendido (BERT/NLP) e Acesso Negado (FalaBr/CGU)",
+      atend %in% c("Parcialmente Atendido (BERT/NLP)", "Acesso Parcialmente Concedido (FalaBr/CGU)") ~ "Parcialmente Atendido (BERT/NLP) e Acesso Parcialmente Concedido (FalaBr/CGU)"
+    )
+  ) %>%
+  mutate(
+    origem = if_else(str_detect(atend, "FalaBr"), "FalaBr", "BERT/NLP")
+  ) %>%
+  group_by(origem) %>%
+  mutate(perc = n / sum(n)) %>%
+  ungroup()
+```
+
+No comparativo entre as decisões (FalaBr/CGU) e as classificações por algorítmo (BERT/NLP), observa-se que enquanto o governo Federal alegou conceder acesso para `r percent(pedidos_counts_comparativo$perc[1], accuracy = 1.0, decimal_mark = ",")` a classificação feita por algorítmo foi menor, de `r percent(pedidos_counts_comparativo$perc[4], accuracy = 1.0, decimal_mark = ",")`.
+
+O algoritmo BERT/NLP considerou como "Não Atendida" `r percent(pedidos_counts_comparativo$perc[5], accuracy = 1.0, decimal_mark = ",")` dos pedidos, contra `r percent(pedidos_counts_comparativo$perc[2], accuracy = 1.0, decimal_mark = ",")` de decisões de "Acesso Negado" registradas no FalaBr/CGU.
+
+A comparação entre pedidos onde a informação foi parcialmente concedida/atendida, o algorítmo BERT/NLP classificou como "Parcialmente Atendido" `r percent(pedidos_counts_comparativo$perc[6], accuracy = 1.0, decimal_mark = ",")` dos pedidos. Já o governo Federal expediu decisões de "Acesso Parcialmente Concedido" para `r percent(pedidos_counts_comparativo$perc[3], accuracy = 1.0, decimal_mark = ",")` de pedidos.
+
+```{r}
+#| fig-height: 6.5
+#| fig-width: 8
+
+pedidos_counts_comparativo %>%
+  ggplot(aes(y = n, x = atend, fill = atend)) +
+  coord_flip() +
+  geom_col(show.legend = FALSE, color = cores_aep[["cinza"]]) +
+  geom_text(
+    size = 3,
+    hjust = 0,
+    nudge_y = 800,
+    color = cores_aep[["cinza"]],
+    fontface = "bold",
+    aes(label = str_glue("{number(n)}\n({percent(perc, decimal.mark = ',')})"))
+  ) +
+  facet_wrap(~ atend2, scales = "free_y", ncol = 1) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 4.6e4), labels = number) +
+  scale_fill_manual(values = c(
+    "Atendido (BERT/NLP)" = cores_tb[["azul"]],
+    "Acesso Concedido (FalaBr/CGU)" = alpha(cores_tb[["azul"]], .6),
+    "Não Atendido (BERT/NLP)" = cores_aep[["rosa"]],
+    "Acesso Negado (FalaBr/CGU)" = alpha(cores_aep[["rosa"]], .6),
+    "Parcialmente Atendido (BERT/NLP)" = cores_aep[["laranja"]],
+    "Acesso Parcialmente Concedido (FalaBr/CGU)" = alpha(cores_aep[["laranja"]], .6)
+  )) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(),
+    strip.text = element_text(face = "bold")
+  ) +
+  labs(
+    title = "Comparativo entre decisões e classificações correspondentes",
+    y = "Quantidade de pedidos",
+    x = NULL
+  )
+```
+
+Ao confrontar as decisões, observamos que o algoritmo (BERT/NLP) classificou como "Não Atendido" `r number(pedidos_counts$n_decisao_resultado[2])` pedidos em que os órgãos alegaram "Acesso Concedido". Isso significa que o Poder Executivo Federal não atendeu `r percent(pedidos_counts$perc[2], accuracy = 1.0, decimal_mark = ",")` do total de pedidos que classificou como "Acesso Concedido".
+
+::: {.panel-tabset}
+
+### Classificação BERT/NLP X Decisão (Abs.)
+
+```{r}
+#| label: plot-classificacao-bert-nlp-decisao-abs-reduzido
+#| fig-height: 6
+#| fig-width: 8
+
+pedidos_counts %>%
+  mutate(
+    perc = n_decisao_resultado / n_decisao,
+    destaque = case_when(
+      decisao == "Acesso Concedido" & resultados == "Atendido" ~ "Resultado esperado",
+      decisao == "Acesso Parcialmente Concedido" & resultados == "Parcialmente Atendido" ~ "Resultado esperado",
+      decisao == "Acesso Negado" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Informação Inexistente" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Não se trata de solicitação de informação" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Órgão não tem competência para responder sobre o assunto" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Pergunta Duplicada/Repetida" & resultados == "Não Atendido" ~ "Resultado esperado",
+      TRUE ~ "Resultado contraditório"
+    ),
+    destaque_texto = if_else(
+      destaque == "Resultado esperado", as.character(resultados), destaque
+  )) %>%
+  ggplot(aes(x = resultados, y = n_decisao_resultado, fill = resultados)) +
+  geom_col(
+    show.legend = FALSE,
+    aes(alpha = destaque)
+  ) +
+  geom_col(
+    data = . %>% filter(destaque == "Resultado esperado"),
+    color = cores_aep[["cinza"]],
+    show.legend = FALSE
+  ) +
+  geom_text(
+    aes(
+      label = str_glue("{number(n_decisao_resultado)}\n({percent(perc, decimal.mark = ',', accuracy = 0.1)})"),
+      color = destaque_texto
+    ),
+    hjust = -0.2,
+    size = 3,
+    fontface = "bold",
+    show.legend = FALSE
+  ) +
+  geom_text(
+    data = . %>% filter(decisao == "Acesso Concedido"),
+    check_overlap = TRUE,
+    hjust = 0,
+    size = 3,
+    color = cores_aep[["cinza"]],
+    aes(
+      y = 1.5e4,
+      x = "Não Atendido",
+      label = "As barras em destaques representam\nos resultados esperados para cada decisão"
+    )
+  ) +
+  geom_curve(
+    data = . %>% filter(decisao == "Acesso Concedido"),
+    aes(y = 1.48e4, yend = 1.35e4, x = "Não Atendido", xend = "Atendido"),
+    arrow = arrow(length = unit(2, "mm")),
+    color = cores_aep[["cinza"]],
+    curvature = 0.5
+  ) +
+  coord_flip() +
+  scale_fill_manual(values = cores_classificacao) +
+  scale_y_continuous(
+    labels = scales::number,
+    expand = c(0, 0),
+    breaks = seq(0, 25e3, 5e3),
+    limits = c(0, 3e4)
+  ) +
+  scale_color_manual(values = c(
+    "Atendido" = cores_tb[["azul"]],
+    "Parcialmente Atendido" = cores_aep[["laranja"]],
+    "Não Atendido" = cores_aep[["rosa"]],
+    "Resultado contraditório" = cores_aep[["cinza"]]
+  )) +
+  scale_alpha_discrete(range = c(0.5, 1)) +
+  facet_wrap(~ str_glue("Decisão do órgão: {decisao}"), ncol = 1) +
+  labs(
+    title = "Classificação de atendimento (NLP-BERT) X Decisão do órgão",
+    y = "Quantidade de pedidos",
+    x = "Classificação NLP-BERT"
+  ) +
+  theme(
+    strip.text = element_text(face = "bold"),
+    axis.line.y = element_line(color = "gray50"),
+    axis.line.x = element_blank()
+  )
+```
+
+### Classificação contraditória
+
+> Uma classificação contraditória é quando o algoritmo classifica um pedido com "Acesso Concedido" (FalaBr) como "Não Atendido" (BERT).
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+pedidos_counts %>%
+  filter(decisao == "Acesso Concedido") %>%
+  ggplot(aes(x = resultados, y = n_decisao_resultado, fill = resultados)) +
+  geom_col(show.legend = F, color = cores_aep[["cinza"]]) +
+  geom_text(
+    aes(label = str_glue(
+      "{number(n_decisao_resultado)}\n",
+      "({percent(perc, accuracy = 0.1, decimal.mark = ',')})"
+    )),
+    hjust = -.3,
+    size = 2.8,
+    fontface = "bold",color = cores_aep[["cinza"]]
+  ) +
+  coord_flip() +
+  scale_fill_manual(values = cores_classificacao) +
+  scale_y_continuous(
+    labels = scales::number,
+    expand = c(0, 0),
+    breaks = seq(0, 25e3, 5e3),
+    limits = c(0, 3.1e4)
+  ) +
+  geom_text(
+    check_overlap = TRUE,
+    hjust = 0,
+    size = 2.5,
+    color = cores_aep[["cinza"]],
+    aes(
+      y = 1.5e4,
+      x = "Não Atendido",
+      label = "A decisão do órgão\ncontradiz\na classificação\ndo modelo BERT"
+    )
+  ) +
+  geom_curve(
+    aes(y = 1.49e4, yend = 1.1e4, x = "Não Atendido", xend = "Não Atendido"),
+    arrow = arrow(length = unit(3, "mm")),
+    curvature = .1,
+    color = cores_aep[["cinza"]]
+  ) +
+  facet_wrap(~ str_glue("Decisão do órgão (FalaBr/CGU): {decisao}"), ncol = 1) +
+  labs(
+    title = "Classificação (BERT/NLP) vs. Decisão do órgão (FalaBr/CGU)",
+    y = "Quantidade de pedidos",
+    x = "Classificação (BERT/NLP)"
+  ) +
+  theme(
+    strip.text = element_text(face = "bold", hjust = 0, size = 12),
+    axis.title.x = element_text(hjust = .5),
+    axis.title.y = element_text(hjust = .5),
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50")
+  )
+```
+
+### Classificação BERT/NLP X Decisão (%)
+
+Uma classificação contraditória é quando o algoritmo classifica um pedido com "Acesso Concedido" (FalaBr/CGU) como "Não Atendido" (BERT/NLP).
+
+```{r}
+#| label: plot-classificacao-contraditoria-reduzido
+#| fig-height: 7
+
+cores_classificacao2 <- cores_classificacao
+names(cores_classificacao2) <- paste("Classificação BERT/NLP:", names(cores_classificacao))
+
+pedidos_counts %>%
+  mutate(
+    resultados = str_glue("Classificação BERT/NLP: {resultados}")
+  ) %>%
+  mutate(decisao = tidytext::reorder_within(
+    x = decisao,
+    by = perc,
+    within = resultados,
+    fun = sum
+  )) %>%
+  ggplot(aes(x = decisao, y = perc, fill = resultados)) +
+  geom_col(
+    position = "dodge",
+    show.legend = F,
+    color = cores_aep[["cinza"]],
+    alpha = .6
+  ) +
+  geom_col(
+    data = . %>% filter(decisao == "Acesso Concedido___Classificação BERT/NLP: Não Atendido"),
+    position = "dodge",
+    show.legend = F,
+    color = cores_aep[["cinza"]]
+  ) +
+  tidytext::scale_x_reordered() +
+  hrbrthemes::scale_y_percent(expand = c(0, 0), limits = c(0, 1)) +
+  scale_fill_manual(values = cores_classificacao2) +
+  coord_flip() +
+  geom_text(
+    size = 3,
+    fontface = "bold",
+    color = cores_aep[["cinza"]],
+    aes(label = percent(perc, accuracy = 0.1, big.mark = ".", decimal.mark = ",")),
+    hjust = -.15
+  ) +
+  facet_wrap(resultados ~ ., scales = "free_y", ncol = 1) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50"),
+    strip.text = element_text(face = "bold")
+  ) +
+  labs(
+    title = "Classificação de atendimento (NLP-BERT) X\nDecisão do órgão",
+    y = "% de pedidos",
+    x = "Decisão do órgão no (FlaBr)"
+  )
+```
+
+### Classificação BERT/NLP X Decisão (% acum.)
+
+```{r}
+#| label: plot-classificacao-bert-nlp-decisao-reduzido
+#| fig-height: 6
+#| fig-width: 8
+
+pedidos_counts %>%
+  mutate(
+    destaque = case_when(
+      decisao == "Acesso Concedido" & resultados == "Atendido" ~ "Resultado esperado",
+      decisao == "Acesso Parcialmente Concedido" & resultados == "Parcialmente Atendido" ~ "Resultado esperado",
+      decisao == "Acesso Negado" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Informação Inexistente" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Não se trata de solicitação de informação" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Órgão não tem competência para responder sobre o assunto" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Pergunta Duplicada/Repetida" & resultados == "Não Atendido" ~ "Resultado esperado",
+      TRUE ~ "Resultado contraditório"
+    ),
+    destaque_texto = if_else(
+      destaque == "Resultado esperado", as.character(resultados), destaque
+  )) %>%
+  ggplot(aes(
+    x = "",
+    y = perc,
+    fill = fct_rev(resultados),
+    group = fct_rev(resultados)
+  )) +
+  geom_col(show.legend = T, color = cores_aep[["cinza"]], aes(alpha = destaque)) +
+  geom_label(
+    position = position_stack(vjust = .5),
+    show.legend = FALSE,
+    aes(
+      label = percent(perc, accuracy = 0.1, decimal.mark = ","),
+      color = destaque,
+      alpha = destaque
+  )) +
+  coord_flip() +
+  scale_color_manual(values = c(
+    "Resultado esperado" = "black",
+    "Resultado contraditório" = "gray20"
+  ), guide = "none") +
+  scale_fill_manual(values = cores_classificacao) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1.02), expand = c(0, 0)) +
+  scale_alpha_discrete(range = c(0.4, 1), guide = "none") +
+  facet_wrap(~ reorder(decisao, -perc, sum), ncol = 1) +
+  labs(
+    title = "Classificação de atendimento (BERT/NLP) X Decisão do órgão (FalaBr/CGU)",
+    subtitle = "As barras em destaques representam os resultados esperados para cada decisão",
+    x = "Decisões do órgão (FalaBr/CGU)",
+    y = "% de pedidos",
+    fill = "Classificação BERT/NLP:"
+  ) +
+  theme(
+    strip.text = element_text(face = "bold", hjust = 0),
+    axis.line.x = element_blank(),
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.justification = "left"
+  )
+```
+
+:::
+
+**Destaques**
+
+- Uma classificação contraditória é quando a decisão de acesso emitida pelo órgão não corresponde à classificação de atendimento do algoritmo BERT/NLP definida pela @tbl-atendimento-classificacao
+
+- A classificação contraditória mais relevante é quando o algoritmo BERT/NLP classifica como "Não Atendido" uma solicitação onde o órgão alegou conceder acesso. São 8.045 pedidos que se enquadram nessa classificação contraditória e esses pedidos representam 20,1% dos acessos concedidos.
+
+- O algoritmo de classificação (BERT/NLP) capta uma taxa de não atendimento maior do que as apresentadas pelas decisões (FalaBr/CGU). Os resultados apontam para uma subnotificação do não atendimento de pedidos LAI pelo governo Federal.
+
+## Análise qualitativa
+
+A fim de entender as razões para uma taxa de não atendimento tão alta em casos classificados como "Acesso concedido", foi realizada uma análise qualitativa em uma amostra de 100 pedidos. Os pedidos foram lidos pela equipe da TB e a classificação de cada um foi avaliada.
+
+> As amostras de pedidos selecionadas para análise humana estão disponíveis [nesta planilha](https://docs.google.com/spreadsheets/d/1gLRXoeQ7OZUL3Fq78KNcZiUcsTbUPVKPFge4OXTrKQ4/edit#gid=447338924)
+
+
+### Resultados
+
+#### Amostras analisadas
+
+> **Dos 100 pedidos avaliados, 54 deles realmente não tiveram sua solicitação atendida, apesar de o órgão considerar o acesso como concedido** - esses são casos onde a classificação NLP está correta.
+
+```{r}
+#| label: plot-resultado-amostra
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+read_amostra <- function(aba) read_sheet(ss = "1gLRXoeQ7OZUL3Fq78KNcZiUcsTbUPVKPFge4OXTrKQ4", sheet = aba)
+
+# pegar dados da planilha
+quali <- read_amostra("DECISAO: Acesso Concedido | CLASSIFICAÇÃO: Não Atendido") %>%
+  filter(!is.na(`Classificação NLP está correta?`))
+
+quali %>%
+  count(`Classificação NLP está correta?`) %>%
+  ggplot(aes(
+    x = `Classificação NLP está correta?`,
+    y = n,
+    fill = `Classificação NLP está correta?`
+  )) +
+  geom_col(show.legend = FALSE, color = cores_aep[["cinza"]]) +
+  geom_text(aes(label = n), vjust = -1, color = cores_aep[["cinza"]]) +
+  scale_y_continuous(limits = c(0, 65), expand = c(0, 0)) +
+  scale_fill_manual(values = c(
+    "Sim" = cores_tb[["azul"]],
+    "Não" = cores_aep[["rosa"]],
+    "Ambíguo" = cores_aep[["laranja"]]
+  )) +
+  theme(axis.line.y = element_blank()) +
+  labs(
+    y = "Quantidade de pedidos\nanalisados",
+    x = "A classificação (BERT/NLP) foi correta?",
+    title = "Resultados das análises qualitativas",
+    Subtitle = "Amostra aleatória de 100 pedidos"
+  )
+```
+
+Ainda considerando a amostra de 100 pedidos, foram analisados os 36 casos onde o algoritmo NLP classificou incorretamente o atendimento. As **justificativas das contrariedades* foram classificados em 4 categorias:
+
+1. **Erro de classificação**: quando o algoritmo realmente classifica errado o atendimento ao pedido. O acesso foi, de fato, concedido pelo órgão e o algoritmo NLP/BERT classificou o pedido como "Não atendido".
+2. **Link externo**: a resposta foi concedida ao solicitante por meio de uma URL externa, a qual o algoritmo não possui acesso direto e, portanto, não é capaz de avaliar a resposta.
+3. **Por e-mail**: a resposta foi concedida mas o conteúdo solicitado foi enviado diretamente ao e-mail do solicitante. Este é outro caso onde o algorítmo não é capaz de avaliar a resposta por não possuir acesso ao conteúdo enviado externamente.
+4. **Retirar pessoalmente**: o órgão concedeu acesso ao usuário, porém o conteúdo solicitado só é possível de ser acessado pessoalmente pelo solicitante no endereço indicado pelo órgão.
+
+#### Classificações (NLP/BERT) erradas
+
+> Os casos 2., 3., e 4. são semelhantes ao casos onde os pedidos possuem anexo. O algoritmo não possui acesso ao conteúdo e, portanto, não pode avaliar o teor da resposta por completo.
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+quali %>%
+  filter(`Classificação NLP está correta?` == "Não") %>%
+  count(`Meio de atendimento`) %>%
+  mutate(`Meio de atendimento` = reorder(`Meio de atendimento`, n)) %>%
+  ggplot(aes(x = `Meio de atendimento`, y = n, fill = `Meio de atendimento`)) +
+  geom_col(show.legend = F, color = cores_aep[["cinza"]]) +
+  geom_text(aes(label = n), hjust = -1, color = cores_aep[["cinza"]]) +
+  coord_flip() +
+  scale_fill_manual(values = c(
+    rev(colorRampPalette(c(cores_aep[["rosa"]], "white"))(5)[1:4])
+  )) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 17)) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50")
+  ) +
+  labs(
+    y = "Quantidade de pedidos",
+    title = "Justificativas das classificações contraditórias",
+    x = NULL
+  )
+```
+
+#### Amostras de órgãos selecionados
+
+Selecionamos amostras de órgãos específicos com alta classificações (BERT/NLP) contraditórias com a decisão de acesso expedida pelos órgãos. Os órgãos analisados foram:
+
+- ANVISA: que concedeu acesso a 4.735 pedidos, dos quais 860 (`r percent(860/4735, decimal.mark = ",", accuracy = 0.1)`) foram classificados como Não Atendido pelo algoritmo BERT/NLP
+- INSS: que concedeu acesso a 1.679 pedidos,
+ dos quais 745 foram classificados como Não Atendido pelo algoritmo BERT/NLP (`r percent(745/1679, decimal.mark = ",", accuracy = 0.1)`)
+- SGPR: que concedeu acesso a 714 pedidos, dos quais 451 foram classificados como Não Atendido pelo algoritmo BERT/NLP (`r percent(451/714, decimal.mark = ",", accuracy = 0.1)`)
+
+::: {.panel-tabset}
+
+#### INSS
+
+> **INSS**: Foi constatado uma alta incidência de não atendimento de solicitações por parte do INSS, sob justificativas de que informações pessoais não podem ser oferecidas sem a devida confirmação de identidade do requerente - os pedidos normalmente versam sobre informações de prazos/recebimento de aposentadoria e serviços de seguridade social. Em outros casos o INSS orienta ao requerente a busca pela informação por outros meios que não o FalaBr, pois não se trata de pedido de acesso a informação com base na LAI - apesar de a orientação ser um procedimento correto, o acesso ao pedido não deve ser considerado concedido, pois o órgão não possui competencia para atender tal solicitação via FalaBr.
+
+- INSS – Instituto Nacional do Seguro Social
+- Amostra: 20 de 745 pedidos com classificação contraditória
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+read_amostra(aba = "INSS") %>%
+  count(`Meio de atendimento`) %>%
+  mutate(
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, " \\(", "\n("),
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, "T", "T\n"),
+    `Meio de atendimento` = reorder(`Meio de atendimento`, n)
+  ) %>%
+  ggplot(aes(y = `Meio de atendimento`, x = n, fill = `Meio de atendimento`)) +
+  geom_col(color = cores_aep[["cinza"]], show.legend = FALSE) +
+  geom_text(aes(label = n), hjust = -1, color = cores_aep[["cinza"]], fontface = "bold") +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 20)) +
+  scale_fill_manual(values = c(
+    cores_aep[["laranja"]],
+    cores_tb[["azul"]]
+  )) +
+  theme(
+    axis.line.y = element_line(color = "gray50"),
+    axis.line.x = element_blank()
+  ) +
+  labs(
+    title = "Amostra de 20 pedidos da INSS",
+    subtitle = "INSS – Instituto Nacional do Seguro Social",
+    x = "Quantidade de pedidos analisados",
+    y = "Justificativa da contrariedade"
+  )
+```
+
+
+#### SGPR
+
+> **SGPR**: Após o presidente da República declarar - em março de 2021 - que possuía provas sobre fraudes nas eleições de 2018 a SGPR recebeu ao menos 400 solicitações de envios - com base na LAI - das supostas provas existentes. Apesar de alegar não dispor das tais provas citadas pelo presidente, a SGPR alega que o acesso às mais de 400 solicitações foram concedidos. **O Algoritmo BERT/NLP constatou corretamente o não atendimento de todas as solicitações.**
+
+- SGPR – Secretaria-Geral da Presidência da República
+- Foram analisados todos os 460 pedidos com classificação contraditória que o órgão possui
+  - 371 pedidos possuem o mesmo tema (fraudes nas eleições) e foram filtrados com regex
+  - 89 pedidos restantes
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+read_amostra(aba = "SGPR - DEMAIS") %>%
+  bind_rows(
+    read_amostra(aba = "SGPR - FRAUDE ELEIÇÕES") %>%
+      filter(`Decisão do órgão` == "Acesso Concedido") %>%
+      filter(`Classificação Modelo NLP` == "Não Atendido")
+  ) %>%
+  count(`Meio de atendimento`) %>%
+  mutate(
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, " \\(", "\n("),
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, "T", "T\n"),
+    `Meio de atendimento` = reorder(`Meio de atendimento`, n)
+  ) %>%
+  ggplot(aes(y = `Meio de atendimento`, x = n, fill = `Meio de atendimento`)) +
+  geom_col(color = cores_aep[["cinza"]], show.legend = FALSE) +
+  geom_text(aes(label = n), hjust = -1, color = cores_aep[["cinza"]], fontface = "bold") +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 400)) +
+  scale_fill_manual(values = c(
+    cores_tb[["cinza_escuro"]],
+    cores_aep[["marrom"]],
+    cores_aep[['rosa']],
+    cores_aep[["laranja"]],
+    alpha(cores_tb[["azul"]], .6),
+    cores_tb[["azul"]]
+  )) +
+  theme(
+    axis.line.y = element_line(color = "gray50"),
+    axis.line.x = element_blank()
+  ) +
+  labs(
+    title = "Amostra de 20 pedidos da SGPR",
+    subtitle = "SGPR – Secretaria-Geral da Presidência da República",
+    x = "Quantidade de pedidos analisados",
+    y = "Justificativa da contrariedade"
+  )
+```
+
+#### PETROBRÁS
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+read_amostra(aba = "PETROBRAS") %>%
+  count(`Meio de atendimento`) %>%
+  mutate(
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, " \\(", "\n("),
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, "T", "T\n"),
+    `Meio de atendimento` = reorder(`Meio de atendimento`, n)
+  ) %>%
+  ggplot(aes(y = `Meio de atendimento`, x = n, fill = `Meio de atendimento`)) +
+  geom_col(color = cores_aep[["cinza"]], show.legend = FALSE) +
+  geom_text(aes(label = n), hjust = -1, color = cores_aep[["cinza"]], fontface = "bold") +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 15)) +
+  scale_fill_manual(values = c(
+    cores_aep[["marrom"]],
+    cores_aep[["rosa"]],
+    cores_aep[["laranja"]],
+    cores_tb[["azul"]]
+  )) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50")
+  ) +
+  labs(
+    title = "Amostra de 20 pedidos da PETROBRÁS",
+    subtitle = "PETROBRAS – Petróleo Brasileiro S.A.",
+    x = "Quantidade de pedidos analisados",
+    y = "Justificativa da contrariedade"
+  )
+```
+
+#### CEX
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+read_amostra(aba = "CEX") %>%
+  count(`Meio de atendimento`) %>%
+  mutate(
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, " \\(", "\n("),
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, "T", "T\n"),
+    `Meio de atendimento` = reorder(`Meio de atendimento`, n)
+  ) %>%
+  ggplot(aes(y = `Meio de atendimento`, x = n, fill = `Meio de atendimento`)) +
+  geom_col(color = cores_aep[["cinza"]], show.legend = FALSE) +
+  geom_text(aes(label = n), hjust = -1, color = cores_aep[["cinza"]], fontface = "bold") +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 15)) +
+  scale_fill_manual(values = c(
+    cores_aep[["marrom"]],
+    cores_aep[["rosa"]],
+    cores_aep[["laranja"]],
+    cores_tb[["azul"]]
+  )) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50")
+  ) +
+  labs(
+    title = "Amostra de 20 pedidos da CEX",
+    subtitle = "CEX - Comando do Exército",
+    x = "Quantidade de pedidos analisados",
+    y = "Justificativa da contrariedade"
+  )
+```
+
+
+#### ANVISA
+
+> A **ANVISA** considera como "Acesso concedido" casos onde a informação só pode ser obtida por meio de consulta às Agências Sanitárias municipais ou locais. Também foram observados casos onde a informação não pode ser concedida sem a devida comprovação de identidade.
+
+- ANVISA – Agência Nacional de Vigilância Sanitária
+- Amostra: 20 de 860 pedidos com classificação contraditória
+
+```{r}
+#| fig-width: 7.2
+#| fig-height: 4.8
+
+read_amostra(aba = "ANVISA") %>%
+  count(`Meio de atendimento`) %>%
+  mutate(
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, " \\(", "\n("),
+    `Meio de atendimento` = str_replace_all(`Meio de atendimento`, "T", "T\n"),
+    `Meio de atendimento` = reorder(`Meio de atendimento`, n)
+  ) %>%
+  ggplot(aes(y = `Meio de atendimento`, x = n, fill = `Meio de atendimento`)) +
+  geom_col(color = cores_aep[["cinza"]], show.legend = FALSE) +
+  geom_text(aes(label = n), hjust = -1, color = cores_aep[["cinza"]], fontface = "bold") +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 15)) +
+  scale_fill_manual(values = c(
+    cores_aep[["marrom"]],
+    cores_aep[["rosa"]],
+    cores_aep[["laranja"]],
+    cores_tb[["azul"]]
+  )) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50")
+  ) +
+  labs(
+    title = "Amostra de 20 pedidos da ANVISA",
+    subtitle = "ANVISA – Agência Nacional de Vigilância Sanitária",
+    x = "Quantidade de pedidos analisados",
+    y = "Justificativa da contrariedade"
+  )
+```
+
+
+:::
+
+**Destaques**
+
+- Análise qualitativa geral
+  - **A equipe da TB leu e avaliou 100 pedidos LAI, verificando se a classificação do algoritmo (BERT/NLP) realmente correspondia com a realidade.**
+  - Dos 100 pedidos avaliados, **54 deles realmente não tiveram sua solicitação atendida, apesar de o órgão considerar o acesso como concedido** - esses são casos onde a classificação NLP está correta.
+  - os **motivos de erro de classificação do algoritmo (BERT/NLP)** variaram em 4 tipos diferentes: **(i)** *erro de classificação*, **(ii)** conteúdo disponibilizado via *link/url externo*, **(iii)** conteúdo disponibilizado *por e-mail*, **(iv)** conteúdo disponibilizado por *meio presencial*. Os casos iii, iii e iv são semelhantes ao casos onde os pedidos possuem anexo. O algoritmo não possui acesso ao conteúdo e, portanto, não pode avaliar o teor da resposta por completo.
+
+## Não atendimento da LAI pelos órgãos
+
+### Taxa de classificações contraditórias
+
+::: {.panel-tabset}
+
+#### Distribuição
+
+```{r}
+#| fig-height: 5.5
+#| fig-width: 8
+
+pedidos %>%
+  count(name = "n_orgao_decisao_resultados", orgao, decisao, resultados) %>%
+  add_count(name = "n_orgao", orgao, wt = n_orgao_decisao_resultados) %>%
+  mutate(perc = n_orgao_decisao_resultados / n_orgao) %>%
+  filter(decisao == "Acesso Concedido", resultados == "Não Atendido") %>%
+  mutate(cutoff = if_else(perc >= .2, "Acima de 20%", "Normal")) %>%
+  ggplot(aes(x = perc)) +
+  geom_histogram(
+    aes(alpha = cutoff),
+    color = cores_aep[["rosa"]],
+    fill = cores_aep[["rosa"]],
+    bins = 60
+  ) +
+  geom_vline(
+    aes(xintercept = mean(perc)),
+    color = "black",
+    lty = "dashed",
+    size = 2
+  ) +
+  geom_text(
+    aes(
+      label = str_glue(
+        "Em média, cada órgão teve\n",
+        "{round(mean(perc)*100, 1)}% de pedidos com decisão \"Acesso Concedido\"",
+        "\nforam classificados como \"Não Atendido\""
+      ),
+      x = .21,
+      y = 15
+    ),
+    size = 3,
+    hjust = 0,
+    color = cores_aep[["cinza"]],
+    check_overlap = T
+  ) +
+  geom_curve(
+    aes(
+      x = .205, xend = mean(perc)+.01,
+      y = 15, yend = 17
+    ),
+    color = cores_aep[["cinza"]],
+    curvature = .3,
+    arrow = arrow(length = unit(0.02, "npc"))
+  ) +
+  scale_alpha_manual(values = c(0.9, 0.3)) +
+  hrbrthemes::scale_x_percent(
+    limits = c(0, .6),
+    breaks = seq(0, .6, by = .05)
+  ) +
+  scale_y_continuous(
+    limits = c(0, 27),
+    expand = c(0, 0),
+    breaks = c(0, 2, 5, 10, 15, 20, 25)
+  ) +
+  theme(
+    axis.ticks.x = element_line(),
+    axis.line.y = element_blank(),
+    legend.position = c(0.9, 0.9)
+  ) +
+  labs(
+    x = '% de pedidos com "Acesso Concedido" classificados como "Não Atendido"',
+    y = "Número de órgãos do governo Federal",
+    title = "Distribuição do % de classificações contraditóras",
+    alpha = "% de classificações\ncontraditórias"
+  )
+```
+
+#### Dispersão
+
+```{r}
+#| fig-height: 11
+#| fig-width: 8.5
+
+pedidos %>%
+  count(name = "n_orgao_decisao_resultados", orgao_abrev, decisao, resultados) %>%
+  add_count(name = "n_orgao", orgao_abrev, wt = n_orgao_decisao_resultados) %>%
+  mutate(perc = n_orgao_decisao_resultados / n_orgao) %>%
+  mutate(
+    destaque = case_when(
+      decisao == "Acesso Concedido" & resultados == "Atendido" ~ "Resultado esperado",
+      decisao == "Acesso Parcialmente Concedido" & resultados == "Parcialmente Atendido" ~ "Resultado esperado",
+      decisao == "Acesso Negado" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Informação Inexistente" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Não se trata de solicitação de informação" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Órgão não tem competência para responder sobre o assunto" & resultados == "Não Atendido" ~ "Resultado esperado",
+      decisao == "Pergunta Duplicada/Repetida" & resultados == "Não Atendido" ~ "Resultado esperado",
+      TRUE ~ "Resultado contraditório"
+    ),
+    destaque_texto = if_else(
+      destaque == "Resultado esperado", as.character(resultados), destaque
+  )) %>%
+  filter(destaque != "Resultado esperado") %>%
+  ggplot(aes(x = perc, y = "", color = resultados)) +
+  ggbeeswarm::geom_quasirandom(
+    size = 3,
+    alpha = .4,
+    groupOnX=FALSE
+  ) +
+  ggforce::geom_mark_circle(
+    colour = cores_aep[["cinza"]],
+    expand = unit(2, "mm"),
+    con.cap = unit(0, "mm"),
+    con.colour = cores_aep[["cinza"]],
+    label.fontsize = 8,
+    label.colour = cores_aep[["cinza"]],
+    label.buffer = unit(10, "mm"),
+    label.fill = "transparent",
+    show.legend = FALSE,
+    aes(
+      filter = orgao_abrev == "CEASA-MG" &
+        decisao == "Acesso Parcialmente Concedido" &
+        resultados == "Não Atendido",
+      label = "Cada ponto\né um órgão"
+  )) +
+  facet_wrap(~ reorder(decisao, -perc, sum), ncol = 1, scales = "free_x") +
+  hrbrthemes::scale_x_percent(limits = c(0, .55)) +
+  scale_color_manual(values = c(cores_classificacao)) +
+  theme(
+    strip.text = element_text(hjust = 0),
+    legend.position = "top",
+    legend.justification = "left",
+    legend.direction = "horizontal",
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50")
+  ) +
+  labs(
+    title = "Percentual de classificações contraditórias por órgão",
+    subtitle = "Cada ponto representa um órgão",
+    color = "Classificação (NLP/BERT):",
+    y = "Decisão de Acesso (FalaBr)",
+    x = "Percentual de decisões contraditórias com a classificação NLP/BERT"
+  )
+```
+
+:::
+
+### Órgãos com mais de 20% de classificações contraditórias
+
+::: {.panel-tabset}
+
+#### Percentual (%)
+
+```{r}
+#| fig-height: 8
+
+pedidos %>%
+  count(name = "n_orgao_decisao_resultados", orgao_abrev, decisao, resultados) %>%
+  add_count(name = "n_orgao", orgao_abrev, wt = n_orgao_decisao_resultados) %>%
+  mutate(perc = n_orgao_decisao_resultados / n_orgao) %>%
+  filter(decisao == "Acesso Concedido", resultados == "Não Atendido") %>%
+  filter(perc >= .2) %>%
+  ggplot(aes(x = perc, y = reorder(orgao_abrev, perc))) +
+  geom_col(
+    fill = cores_aep[["rosa"]],
+    color = cores_aep[["rosa"]],
+    size = .1,
+    alpha = .7
+  ) +
+  hrbrthemes::scale_x_percent(
+    expand = c(0, 0),
+    limits = c(0, .6)
+  ) +
+  labs(
+    title = "Percentual de classificações contraditórias por órgão (Acesso Concedido e Não Atendido)",
+    x = "% de classificações contraditórias",
+    y = "Órgão (sigla)"
+  ) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50")
+  )
+```
+
+#### Números absolutos
+
+```{r}
+#| fig-height: 8
+
+pedidos %>%
+  count(name = "n_orgao_decisao_resultados", orgao, decisao, resultados) %>%
+  add_count(name = "n_orgao", orgao, wt = n_orgao_decisao_resultados) %>%
+  mutate(perc = n_orgao_decisao_resultados / n_orgao) %>%
+  filter(decisao == "Acesso Concedido", resultados == "Não Atendido") %>%
+  filter(perc >= .2) %>%
+  mutate(
+    orgao = if_else(str_detect(orgao, "^EBSERH"),
+                    str_extract(orgao, "[A-Z]+ . C*HU-UF\\w+"),
+                    str_extract(orgao, "[A-Z]+")),
+    orgao = if_else(orgao == "A", "Autoridade Portuária", orgao),
+    orgao = reorder(orgao, n_orgao_decisao_resultados)
+  ) %>%
+  ggplot(aes(y = orgao, x = n_orgao_decisao_resultados)) +
+  geom_col(fill = cores_aep[["laranja"]], alpha = .8) +
+  geom_text(
+    aes(label = scales::number(n_orgao_decisao_resultados)),
+    hjust = -.15,
+    color = cores_aep[["cinza"]]
+  ) +
+  labs(
+    title = "Quantidade de pedidos com classificação contraditória",
+    subtitle = "Somente órgãos com taxa de classificação contraditória acima de 20%",
+    x = "Quantidade de pedidos",
+    y = "Órgão (sigla)"
+  ) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 810)) +
+  theme(
+    axis.line.x = element_blank(),
+    axis.line.y = element_line(color = "gray50")
+  )
+```
+
+:::
+
+```{r}
+pedidos_orgaos_counts <- pedidos %>%
+  filter(orgao_abrev != "MINFRA") %>%
+  count(
+    orgao, orgao_abrev, decisao, resultados,
+    name = "n_orgao_decisao_resultados"
+  ) %>%
+  add_count(
+    orgao, orgao_abrev,
+    name = "n_orgao",
+    wt = n_orgao_decisao_resultados
+  )  %>%
+  add_count(
+    name = "n_resultado_acesso_concedido",
+    orgao, orgao_abrev, decisao,
+    wt = n_orgao_decisao_resultados
+  ) %>%
+  mutate(resultados_wt = if_else(
+     resultados == "Não Atendido", n_orgao_decisao_resultados, NA_integer_
+  )) %>%
+  group_by(orgao, orgao_abrev, decisao) %>%
+  fill(resultados_wt, .direction = "updown") %>%
+  ungroup() %>%
+  mutate(resultados_wt = replace_na(resultados_wt, 0))
+
+total_acesso_concedido <- 'Total de pedidos com decisão "Acesso Concedido"'
+nao_atendidos <- 'Classificação contraditória'
+```
+
+### Órgãos agrupados por temas
+
+::: {.panel-tabset}
+
+#### Pastas Ministeriais
+
+```{r}
+
+pastas_ministeriais <- c(
+  "PR",         # PR – Presidência da República
+  "SGPR",       # SGPR – Secretaria-Geral da Presidência da República
+  "SEGOV/PR",   # SEGOV/PR - Secretaria de Governo da Presidência da República
+  "VPR",        # VPR – Vice-Presidência da República
+  "GSI-PR",     # GSI-PR – Gabinete de Segurança Institucional da Presidência da República
+  "MAPA",       # MAPA – Ministério da Agricultura, Pecuária e Abastecimento
+  "MCIDADANIA", # MCIDADANIA - Ministério da Cidadania (Desenvolvimento Social e Esporte)
+  "MCOM",       # MCOM - Ministério das Comunicações
+  "MCTI",       # MCTI – Ministério da Ciência, Tecnologia, Inovações
+  "MD",         # MD – Ministério da Defesa
+  "MDR",        # MDR - Ministério do Desenvolvimento Regional
+  "ME",         # ME - Ministério da Economia
+  "MEC",        # MEC – Ministério da Educação
+  "MJSP",       # MJSP – Ministério da Justiça e Segurança Pública
+  "MMA",        # MMA – Ministério do Meio Ambiente
+  "MME",        # MME – Ministério de Minas e Energia
+  "MMFDH",      # MMFDH – Ministério da Mulher, da Família e dos Direitos Humanos
+  "MRE",        # MRE – Ministério das Relações Exteriores
+  "MS",         # MS – Ministério da Saúde
+  "MTur",        # MTur - Ministério do Turismo (Turismo e Cultura)
+  "CGU"
+)
+
+pedidos_orgaos_counts %>%
+  filter(decisao == "Acesso Concedido") %>%
+  filter(orgao_abrev %in% pastas_ministeriais) %>%
+  ggplot(aes(
+    y = n_orgao_decisao_resultados,
+    x = reorder(orgao_abrev, resultados_wt)
+  )) +
+  geom_col(aes(fill = total_acesso_concedido)) +
+  geom_col(
+    data = . %>% filter(resultados == "Não Atendido"),
+    aes(fill = nao_atendidos)
+  ) +
+  geom_text(
+    data = . %>% filter(resultados == "Não Atendido"),
+    aes(color = nao_atendidos, label = scales::number(n_orgao_decisao_resultados) %>% format(justify = "left")),
+    show.legend = FALSE,
+    vjust = -.4,
+    hjust = .9
+  ) +
+  geom_text(
+    check_overlap = TRUE,
+    size = 3,
+    color = cores_aep[["cinza"]],
+    aes(
+      y = 820,
+      x = "MCIDADANIA",
+      label = "Número total de\nAcessos Concedidos\npara este órgão"
+    )
+  )  +
+  geom_text(
+    show.legend = FALSE,
+    hjust = .3,
+    vjust = -.2,
+    size = 3,
+    check_overlap = T,
+    aes(
+      label = scales::number(n_resultado_acesso_concedido, trim = F),
+      y = n_resultado_acesso_concedido,
+      color = total_acesso_concedido
+    )
+  ) +
+  geom_curve(
+    aes(
+      x = "MCIDADANIA",
+      xend = "MCIDADANIA",
+      y = 750,
+      yend = 510
+    ),
+    curvature = .3,
+    color = cores_aep[["cinza"]],
+    arrow = arrow(length = unit(0.01, "npc"))
+  ) +
+  scale_fill_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = alpha(cores_aep[["marrom"]], .6),
+    'Classificação contraditória' = cores_aep[["rosa"]]
+  )) +
+  scale_color_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = cores_aep[["marrom"]],
+    'Classificação contraditória' = cores_aep[["rosa"]]
+  )) +
+  scale_y_continuous(
+    breaks = c(0, 50, 150, 300, 500, 1000, 1500, 2000, 4000),
+    labels = c("", "50", "150", "300", "500", "1k", "1,5k", "2k", "4k"),
+    limits = c(0, 2000),
+    expand = c(0, 0)
+  ) +
+  theme(
+    axis.ticks.y = element_line(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = c(.15, .95),
+    axis.line.y = element_blank()
+  ) +
+  labs(
+    title = 'Acessos concedidos classificados como "Não Atendido" pelo modelo NLP/BERT',
+    subtitle = "Órgãos selecionados | Pastas ministeriais",
+    x = NULL,
+    y = "Quantidade de pedidos",
+    fill = NULL
+  )
+```
+
+- PR – Presidência da República
+- SGPR – Secretaria-Geral da Presidência da República
+- SEGOV/PR - Secretaria de Governo da Presidência da República
+- VPR – Vice-Presidência da República
+- GSI-PR – Gabinete de Segurança Institucional da Presidência da República
+- MAPA – Ministério da Agricultura, Pecuária e Abastecimento
+- MCIDADANIA - Ministério da Cidadania (Desenvolvimento Social e Esporte)
+- MCOM - Ministério das Comunicações
+- MCTI – Ministério da Ciência, Tecnologia, Inovações
+- MD – Ministério da Defesa
+- MDR - Ministério do Desenvolvimento Regional
+- ME - Ministério da Economia
+- MEC – Ministério da Educação
+- MJSP – Ministério da Justiça e Segurança Pública
+- MMA – Ministério do Meio Ambiente
+- MME – Ministério de Minas e Energia
+- MMFDH – Ministério da Mulher, da Família e dos Direitos Humanos
+- MRE – Ministério das Relações Exteriores
+- MS – Ministério da Saúde
+- MTur - Ministério do Turismo (Turismo e Cultura)
+- CGU - Controladoria Geral da união
+
+
+#### Militares, PRF e PF
+
+```{r}
+
+militares <- c(
+  "CEX",    # CEX – Comando do Exército
+  "CMAR",   # CMAR – Comando da Marinha
+  "COMAER", # COMAER – Comando da Aeronáutica
+  "IMBEL",  # IMBEL – Indústria de Material Bélico do Brasil
+  "DPRF",   # DPRF – Departamento de Polícia Rodoviária Federal
+  "DPF",    # DPF – Departamento de Polícia Federal
+  "ESG",    # ESG – Escola Superior de Guerra
+  "HFA"     # HFA – Hospital das Forças Armadas
+)
+
+pedidos_orgaos_counts %>%
+  filter(decisao == "Acesso Concedido") %>%
+  filter(orgao_abrev %in% militares) %>%
+  ggplot(aes(
+    y = n_orgao_decisao_resultados,
+    x = reorder(orgao_abrev, resultados_wt)
+  )) +
+  geom_col(aes(fill = total_acesso_concedido)) +
+  geom_col(
+    data = . %>% filter(resultados == "Não Atendido"),
+    aes(fill = nao_atendidos)
+  ) +
+  geom_text(
+    data = . %>% filter(resultados == "Não Atendido"),
+    aes(color = nao_atendidos, label = scales::number(n_orgao_decisao_resultados) %>% format(justify = "left")),
+    show.legend = FALSE,
+    vjust = -.4
+  ) +
+  geom_text(
+    show.legend = FALSE,
+    vjust = -.2,
+    check_overlap = T,
+    aes(
+      label = scales::number(n_resultado_acesso_concedido, trim = F),
+      y = n_resultado_acesso_concedido,
+      color = total_acesso_concedido
+    )
+  ) +
+  scale_fill_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = alpha(cores_aep[["marrom"]], .6),
+    'Classificação contraditória' = cores_aep[["rosa"]]
+  )) +
+  scale_color_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = cores_aep[["marrom"]],
+    'Classificação contraditória' = cores_aep[["rosa"]]
+  )) +
+  scale_y_continuous(
+    limits = c(0, 400),
+    expand = c(0, 0)
+  ) +
+  theme(
+    axis.ticks.y = element_line(),
+    axis.text.x = element_text(),
+    legend.position = c(.15, .95),
+    axis.line.y = element_blank()
+  ) +
+  labs(
+    title = 'Acessos concedidos classificados como "Não Atendido" pelo modelo NLP/BERT',
+    subtitle = "Órgãos selecionados | Militares e Polícias",
+    x = NULL,
+    y = "Quantidade de pedidos",
+    fill = NULL
+  )
+```
+
+- CMAR - Comando da Marinha
+- COMAER - Comando da Aeronáutica
+- CEX - Comando do Exército
+- ESG – Escola Superior de Guerra
+- IMBEL – Indústria de Material Bélico do Brasil
+- DPRF – Departamento de Polícia Rodoviária Federal
+- DPF – Departamento de Polícia Federal
+- HFA – Hospital das Forças Armadas
+
+#### Bancos públicos e autoridades financeiras
+
+```{r}
+autoridades_financ <- c(
+  "BACEN",    # BACEN – Banco Central do Brasil
+  "BB",       # BB Tecnologia e Serviços
+  "BB-TEC",   # BB Tecnologia e Serviços
+  "BBTur V",  # BBTur Viagens e Turismo Ltda
+  "BNDES",    # BNDES – Banco Nacional de Desenvolvimento Econômico e Social
+  "CADE",     # CADE – Conselho Administrativo de Defesa Econômica
+  "CMB",      # CMB – Casa da Moeda do Brasil
+  "CVM",      # CVM – Comissão de Valores Mobiliários
+  "CEF"       # CEF - Caixa Econômica Federal
+)
+
+pedidos_orgaos_counts %>%
+  filter(decisao == "Acesso Concedido") %>%
+  filter(orgao_abrev %in% autoridades_financ) %>%
+  add_row(
+    orgao = rep("CEF - Caixa Econômica Federal", 3),
+    orgao_abrev = rep("CEF", 3),
+    decisao = "Acesso Concedido",
+    resultados = c("Atendido", "Não Atendido", "Parcialmente Atendido"),
+    n_orgao_decisao_resultados = 0,
+    n_resultado_acesso_concedido = 0,
+    resultados_wt = -1
+  ) %>%
+  ggplot(aes(
+    y = n_orgao_decisao_resultados,
+    x = reorder(orgao_abrev, resultados_wt, sum)
+  )) +
+  geom_col(aes(fill = total_acesso_concedido)) +
+  geom_col(
+    data = . %>% filter(resultados == "Não Atendido"),
+    aes(fill = nao_atendidos)
+  ) +
+  geom_text(
+    data = . %>% filter(resultados == "Não Atendido"),
+    aes(color = nao_atendidos, label = scales::number(n_orgao_decisao_resultados) %>% format(justify = "left")),
+    show.legend = FALSE,
+    vjust = -.4
+  ) +
+  geom_text(
+    show.legend = FALSE,
+    vjust = -.2,
+    hjust = -.5,
+    check_overlap = T,
+    aes(
+      label = scales::number(n_resultado_acesso_concedido, trim = F),
+      y = n_resultado_acesso_concedido,
+      color = total_acesso_concedido
+    )
+  ) +
+  geom_text(
+    check_overlap = TRUE,
+    size = 3,
+    color = cores_aep[["cinza"]],
+    aes(
+      y = 250,
+      x = "CEF",
+      label = "CEF não divulga\nnenhum pedido\nde acesso a\ninformação"
+    )
+  ) +
+  geom_curve(
+    curvature = 0,
+    color = cores_aep[["cinza"]],
+    arrow = arrow(length = unit(2, "mm")),
+    aes(
+      x = 'CEF', xend = "CEF",
+      y = 145, yend = 50
+    )
+  ) +
+  scale_fill_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = alpha(cores_aep[["marrom"]], .6),
+    'Classificação contraditória' = cores_aep[["rosa"]]
+  )) +
+  scale_color_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = cores_aep[["marrom"]],
+    'Classificação contraditória' = cores_aep[["rosa"]]
+  )) +
+  scale_y_continuous(
+    limits = c(0, 1100),
+    expand = c(0, 0)
+  ) +
+  theme(
+    axis.ticks.y = element_line(),
+    axis.text.x = element_text(),
+    legend.position = c(.15, .9),
+    axis.line.y = element_blank()
+  ) +
+  labs(
+    title = 'Acessos concedidos classificados como "Não Atendido" pelo modelo NLP/BERT',
+    subtitle = "Órgãos selecionados | Bancos públicos e autoridades financeiras",
+    x = NULL,
+    y = "Quantidade de pedidos",
+    fill = NULL
+  )
+```
+
+- BACEN – Banco Central do Brasil
+- BB Tecnologia e Serviços
+- BB Tecnologia e Serviços
+- BBTur Viagens e Turismo Ltda
+- BNDES – Banco Nacional de Desenvolvimento Econômico e Social
+- CADE – Conselho Administrativo de Defesa Econômica
+- CMB – Casa da Moeda do Brasil
+- CVM – Comissão de Valores Mobiliários
+- CEF - Caixa Econômica Federal
+
+#### Órgãos ambientais
+
+```{r}
+orgaos_ambientais <- c(
+  "MMA",
+  "FUNAI",
+  "ICMBio",
+  "IBAMA",
+  "INCRA",
+  "FCP",
+  "INPE-MCT",
+  "INPA"
+)
+
+pedidos_orgaos_counts %>%
+  filter(decisao == "Acesso Concedido") %>%
+  filter(orgao_abrev %in% orgaos_ambientais) %>%
+  ggplot(aes(
+    y = n_orgao_decisao_resultados,
+    x = reorder(orgao_abrev, resultados_wt)
+  )) +
+  geom_col(aes(fill = total_acesso_concedido)) +
+  geom_col(
+    data = . %>% filter(resultados == "Não Atendido"),
+    aes(fill = nao_atendidos)
+  ) +
+  geom_text(
+    data = . %>% filter(resultados == "Não Atendido"),
+    aes(color = nao_atendidos, label = scales::number(n_orgao_decisao_resultados) %>% format(justify = "left")),
+    show.legend = FALSE,
+    vjust = -.4
+  ) +
+  geom_text(
+    show.legend = FALSE,
+    vjust = -.2,
+    check_overlap = T,
+    aes(
+      label = scales::number(n_resultado_acesso_concedido, trim = F),
+      y = n_resultado_acesso_concedido,
+      color = total_acesso_concedido
+    )
+  ) +
+  scale_fill_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = alpha(cores_aep[["marrom"]], .6),
+    'Pedidos com decisão "Acesso Concedido" classificados como "Não Atendido" (BERT)' = cores_aep[["rosa"]]
+  )) +
+  scale_color_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = cores_aep[["marrom"]],
+    'Pedidos com decisão "Acesso Concedido" classificados como "Não Atendido" (BERT)' = cores_aep[["rosa"]]
+  )) +
+  scale_y_continuous(
+    limits = c(0, 2300),
+    breaks = c(0, 50, 300, 1000, 1500, 2000),
+    labels = c("0", "50", "300", "1k", "1,5k", "2k"),
+    expand = c(0, 0)
+  ) +
+  theme(
+    axis.ticks.y = element_line(),
+    axis.text.x = element_text(),
+    legend.position = c(.15, .95),
+    axis.line.y = element_blank()
+  ) +
+  labs(
+    title = 'Acessos concedidos classificados como "Não Atendido" pelo modelo NLP/BERT',
+    subtitle = "Órgãos selecionados | Ambientais",
+    x = NULL,
+    y = "Quantidade de pedidos",
+    fill = NULL
+  )
+```
+
+- MMA – Ministério do Meio Ambient
+- FUNAI – Fundação Nacional do Índio
+- IBAMA – Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis
+- ICMBio – Instituto Chico Mendes de Conservação da Biodiversidade
+- INCRA – Instituto Nacional de Colonização e Reforma Agrária
+- INPA – Instituto Nacional de Pesquisas da Amazônia
+- INPE-MCT – Instituto Nacional de Pesquisas Espaciais
+- FCP – Fundação Cultural Palmares
+
+#### Top 20 | Acessos Concedidos
+
+
+```{r}
+pedidos_orgaos_counts %>%
+  filter(decisao == "Acesso Concedido") %>%
+  filter(resultados == "Não Atendido") %>%
+  group_by(orgao, n_resultado_acesso_concedido) %>%
+  nest() %>%
+  ungroup() %>%
+  slice_max(order_by = n_resultado_acesso_concedido, n = 20) %>%
+  unnest(data) %>%
+  ggplot(aes(x = reorder(orgao_abrev, resultados_wt))) +
+  geom_col(aes(y = n_resultado_acesso_concedido, fill = total_acesso_concedido)) +
+  geom_col(aes(y = resultados_wt, fill = nao_atendidos)) +
+  geom_text(
+    aes(
+      color = nao_atendidos,
+      y = n_orgao_decisao_resultados,
+      label = scales::number(n_orgao_decisao_resultados) %>% format(justify = "left")
+    ),
+    show.legend = FALSE,
+    vjust = -.4,
+    hjust = .9
+  ) +
+  geom_text(
+    show.legend = FALSE,
+    hjust = .3,
+    vjust = -.2,
+    size = 3,
+    check_overlap = T,
+    aes(
+      label = scales::number(n_resultado_acesso_concedido, trim = F),
+      y = n_resultado_acesso_concedido,
+      color = total_acesso_concedido
+    )
+  ) +
+  scale_fill_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = alpha(cores_aep[["marrom"]], .6),
+    'Pedidos com decisão "Acesso Concedido" classificados como "Não Atendido" (BERT)' = cores_aep[["rosa"]]
+  )) +
+  scale_color_manual(values = c(
+    'Total de pedidos com decisão "Acesso Concedido"' = cores_aep[["marrom"]],
+    'Pedidos com decisão "Acesso Concedido" classificados como "Não Atendido" (BERT)' = cores_aep[["rosa"]]
+  )) +
+  scale_y_continuous(
+    breaks = c(0, 250, 500, 1000, 1500, 2000, 4000),
+    labels = c("", "250", "500", "1k", "1,5k", "2k", "4k"),
+    limits = c(0, 5000),
+    expand = c(0, 0)
+  ) +
+  theme(
+    axis.ticks.y = element_line(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = c(.35, .9),
+    axis.line.y = element_blank()
+  ) +
+  labs(
+    title = 'Acessos concedidos classificados como "Não Atendido" pelo modelo NLP/BERT',
+    subtitle = "Órgãos selecionados | 20 primeiros órgãos em número de Acessos Concedido",
+    x = NULL,
+    y = "Quantidade de pedidos",
+    fill = NULL
+  )
+```
+
+- ANVISA – Agência Nacional de Vigilância Sanitária
+- FUNAI – Fundação Nacional do Índio
+- INEP – Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira
+- MEC – Ministério da Educação
+- ME - Ministério da Economia
+- INSS – Instituto Nacional do Seguro Social
+- MS – Ministério da Saúde
+- MAPA – Ministério da Agricultura, Pecuária e Abastecimento
+- PETROBRAS – Petróleo Brasileiro S.A.
+- BACEN – Banco Central do Brasil
+- ANEEL – Agência Nacional de Energia Elétrica
+- SGPR – Secretaria-Geral da Presidência da República
+- CGU – Controladoria-Geral da União
+- DNIT – Departamento Nacional de Infraestrutura de Transportes
+- MCIDADANIA - Ministério da Cidadania (Desenvolvimento Social e Esporte)
+- SUSEP – Superintendência de Seguros Privados
+- MDR - Ministério do Desenvolvimento Regional
+- ANP – Agência Nacional do Petróleo, Gás Natural e Biocombustíveis
+- BNDES – Banco Nacional de Desenvolvimento Econômico e Social
+- INMETRO – Instituto Nacional de Metrologia, Qualidade e Tecnologia
+
+:::
+
