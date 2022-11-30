@@ -2,16 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.468">
+<meta name="generator" content="quarto-1.1.189">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Acessos negados contendo termos relacionados a ‘sigilo’ e ‘artigo 31 da LAI’</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -50,7 +55,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -63,7 +68,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -76,14 +81,24 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
-<style>html{ scroll-behavior: smooth; }</style>
+
+<script src="01-negativas-sigilo_files/libs/clipboard/clipboard.min.js"></script>
+<script src="01-negativas-sigilo_files/libs/quarto-html/quarto.js"></script>
+<script src="01-negativas-sigilo_files/libs/quarto-html/popper.min.js"></script>
+<script src="01-negativas-sigilo_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="01-negativas-sigilo_files/libs/quarto-html/anchor.min.js"></script>
+<link href="01-negativas-sigilo_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="01-negativas-sigilo_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="01-negativas-sigilo_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="01-negativas-sigilo_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="01-negativas-sigilo_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><style>html{ scroll-behavior: smooth; }</style>
 <script async="" src="https://hypothes.is/embed.js"></script>
-<script src="1-negativas-sigilo_files\libs\clipboard\clipboard.min.js"></script><script src="1-negativas-sigilo_files\libs\quarto-html\quarto.js"></script><script src="1-negativas-sigilo_files\libs\quarto-html\popper.min.js"></script><script src="1-negativas-sigilo_files\libs\quarto-html\tippy.umd.min.js"></script><script src="1-negativas-sigilo_files\libs\quarto-html\anchor.min.js"></script><link href="1-negativas-sigilo_files\libs\quarto-html\tippy.css" rel="stylesheet"><link href="1-negativas-sigilo_files\libs\quarto-html\quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><script src="1-negativas-sigilo_files\libs\bootstrap\bootstrap.min.js"></script><link href="1-negativas-sigilo_files\libs\bootstrap\bootstrap-icons.css" rel="stylesheet"><link href="1-negativas-sigilo_files\libs\bootstrap\bootstrap.min.css" rel="stylesheet"></head>
+</head>
 <body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  <nav id="TOC" role="doc-toc"><h2 id="toc-title">Índice</h2>
+  <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Índice</h2>
    
   <ul>
 <li><a href="#base-de-dados---vis%C3%A3o-geral" id="toc-base-de-dados---visão-geral" class="nav-link active" data-scroll-target="#base-de-dados---vis%C3%A3o-geral">Base de dados - visão geral</a></li>
@@ -125,28 +140,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 <div class="cell">
 <details><summary>Código</summary><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; ✔ ggplot2 3.3.6     ✔ purrr   0.3.4</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; ✔ tibble  3.1.8     ✔ dplyr   1.0.9</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; ✔ tidyr   1.2.0     ✔ stringr 1.4.0</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; ✔ readr   2.1.2     ✔ forcats 0.5.1</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; Warning: package 'tibble' was built under R version 4.2.1</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">library</span>(here)</span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt; here() starts at C:/Users/rauld/Documents/monitoramento-lai</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; </span></span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; Attaching package: 'lubridate'</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; ✔ ggplot2 3.3.6      ✔ purrr   0.3.5 </span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; ✔ tibble  3.1.8      ✔ dplyr   1.0.10</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; ✔ tidyr   1.2.1      ✔ stringr 1.4.1 </span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; ✔ readr   2.1.3      ✔ forcats 0.5.2 </span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt; here() starts at C:/Users/rdurl/OneDrive/Documentos/monitoramento-lai</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt; </span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; Attaching package: 'lubridate'</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; </span></span>
 <span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; </span></span>
 <span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt;     date, intersect, setdiff, union</span></span>
 <span id="cb1-19"><a href="#cb1-19"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb1-20"><a href="#cb1-20"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/0-plot-aesthetics.R"</span>), <span class="at">encoding =</span> <span class="st">"utf-8"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/00-plot-aesthetics.R"</span>), <span class="at">encoding =</span> <span class="st">"utf-8"</span>)</span>
 <span id="cb1-21"><a href="#cb1-21"></a><span class="co">#&gt; You will likely need to install these fonts on your system as well.</span></span>
 <span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; </span></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; You can find them in [C:/Users/rauld/AppData/Local/R/win-library/4.2/hrbrthemes/fonts/roboto-condensed]</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; You can find them in [C:/Users/rdurl/AppData/Local/R/win-library/4.2/hrbrthemes/fonts/roboto-condensed]</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="base-de-dados---visão-geral" class="level2"><h2 class="anchored" data-anchor-id="base-de-dados---visão-geral">Base de dados - visão geral</h2>
@@ -176,16 +191,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <details><summary>Código</summary><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>decisao_agregada <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">filter</span>(base <span class="sc">==</span> <span class="st">"Pedidos"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">select</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a>  <span class="fu">mutate</span>(<span class="at">decisao =</span> <span class="fu">if_else</span>(</span>
 <span id="cb3-6"><a href="#cb3-6"></a>    decisao <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Acesso Concedido"</span>, <span class="st">"Acesso Parcialmente Concedido"</span>, <span class="st">"Acesso Negado"</span>),</span>
 <span id="cb3-7"><a href="#cb3-7"></a>    decisao, <span class="st">"Outra classificação*"</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>  )) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-9"><a href="#cb3-9"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), decisao) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-8"><a href="#cb3-8"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), decisao) <span class="sc">%&gt;%</span></span>
 <span id="cb3-10"><a href="#cb3-10"></a>  <span class="fu">mutate</span>(<span class="at">decisao =</span> <span class="fu">reorder</span>(decisao, n))</span>
 <span id="cb3-11"><a href="#cb3-11"></a></span>
-<span id="cb3-12"><a href="#cb3-12"></a>p1 <span class="ot">&lt;-</span> decisao_agregada <span class="sc">%&gt;%</span> </span>
-<span id="cb3-13"><a href="#cb3-13"></a>  <span class="fu">filter</span>(decisao <span class="sc">==</span> <span class="st">"Acesso Negado"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-12"><a href="#cb3-12"></a>p1 <span class="ot">&lt;-</span> decisao_agregada <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>  <span class="fu">filter</span>(decisao <span class="sc">==</span> <span class="st">"Acesso Negado"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb3-14"><a href="#cb3-14"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> n)) <span class="sc">+</span></span>
 <span id="cb3-15"><a href="#cb3-15"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.3</span>, <span class="at">color =</span> cores_aep[[<span class="st">"rosa"</span>]], <span class="at">show.legend =</span> F) <span class="sc">+</span></span>
 <span id="cb3-16"><a href="#cb3-16"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">color =</span> cores_aep[[<span class="st">"rosa"</span>]], <span class="at">show.legend =</span> F) <span class="sc">+</span></span>
@@ -197,10 +212,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-22"><a href="#cb3-22"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>number, <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">8.5e3</span>)) <span class="sc">+</span></span>
 <span id="cb3-23"><a href="#cb3-23"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> 2015L<span class="sc">:</span>2022L)</span>
 <span id="cb3-24"><a href="#cb3-24"></a></span>
-<span id="cb3-25"><a href="#cb3-25"></a>p2 <span class="ot">&lt;-</span> decisao_agregada <span class="sc">%&gt;%</span> </span>
-<span id="cb3-26"><a href="#cb3-26"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_ano"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-27"><a href="#cb3-27"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_ano) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-28"><a href="#cb3-28"></a>  <span class="fu">filter</span>(decisao <span class="sc">==</span> <span class="st">"Acesso Negado"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-25"><a href="#cb3-25"></a>p2 <span class="ot">&lt;-</span> decisao_agregada <span class="sc">%&gt;%</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_ano"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_ano) <span class="sc">%&gt;%</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a>  <span class="fu">filter</span>(decisao <span class="sc">==</span> <span class="st">"Acesso Negado"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb3-29"><a href="#cb3-29"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc)) <span class="sc">+</span></span>
 <span id="cb3-30"><a href="#cb3-30"></a>  <span class="fu">geom_col</span>(<span class="at">size =</span> <span class="fl">1.3</span>, <span class="at">fill =</span> cores_aep[[<span class="st">"rosa"</span>]]) <span class="sc">+</span></span>
 <span id="cb3-31"><a href="#cb3-31"></a>  <span class="fu">labs</span>(</span>
@@ -215,10 +230,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-40"><a href="#cb3-40"></a></span>
 <span id="cb3-41"><a href="#cb3-41"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span></span>
 <span id="cb3-42"><a href="#cb3-42"></a>  <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">'collect'</span>) <span class="sc">+</span></span>
-<span id="cb3-43"><a href="#cb3-43"></a>  <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"Pedidos de acesso a informação - governo Federal"</span>, </span>
+<span id="cb3-43"><a href="#cb3-43"></a>  <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"Pedidos de acesso a informação - governo Federal"</span>,</span>
 <span id="cb3-44"><a href="#cb3-44"></a>                  <span class="at">theme =</span> <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> .<span class="dv">5</span>)))</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="1-negativas-sigilo_files/figure-html/numeros-da-lai-2-1.png" class="img-fluid" width="864"></p>
+<p><img src="01-negativas-sigilo_files/figure-html/numeros-da-lai-2-1.png" class="img-fluid" width="864"></p>
 </div>
 </div>
 </section><section id="termos-pesquisados-nas-respostas" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="termos-pesquisados-nas-respostas">Termos pesquisados nas respostas</h2>
@@ -271,7 +286,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-40"><a href="#cb4-40"></a><span class="co">#&gt;            &gt;                 ========</span></span>
 <span id="cb4-41"><a href="#cb4-41"></a><span class="co">#&gt;            &gt; rows total       43,517</span></span>
 <span id="cb4-42"><a href="#cb4-42"></a></span>
-<span id="cb4-43"><a href="#cb4-43"></a>termos_categoria <span class="ot">&lt;-</span> termos <span class="sc">%&gt;%</span> </span>
+<span id="cb4-43"><a href="#cb4-43"></a>termos_categoria <span class="ot">&lt;-</span> termos <span class="sc">%&gt;%</span></span>
 <span id="cb4-44"><a href="#cb4-44"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb4-45"><a href="#cb4-45"></a>    id_pedido,</span>
 <span id="cb4-46"><a href="#cb4-46"></a>    protocolo,</span>
@@ -306,19 +321,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-75"><a href="#cb4-75"></a>      menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-76"><a href="#cb4-76"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-77"><a href="#cb4-77"></a>      menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb4-78"><a href="#cb4-78"></a>     <span class="sc">!</span>menciona_lgpd_resposta      </span>
+<span id="cb4-78"><a href="#cb4-78"></a>     <span class="sc">!</span>menciona_lgpd_resposta</span>
 <span id="cb4-79"><a href="#cb4-79"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'dados pessoais'"</span>,</span>
 <span id="cb4-80"><a href="#cb4-80"></a>    (<span class="co">#6</span></span>
 <span id="cb4-81"><a href="#cb4-81"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-82"><a href="#cb4-82"></a>      menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-83"><a href="#cb4-83"></a>     <span class="sc">!</span>menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb4-84"><a href="#cb4-84"></a>     <span class="sc">!</span>menciona_lgpd_resposta            </span>
+<span id="cb4-84"><a href="#cb4-84"></a>     <span class="sc">!</span>menciona_lgpd_resposta</span>
 <span id="cb4-85"><a href="#cb4-85"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'sigilo'"</span>,</span>
 <span id="cb4-86"><a href="#cb4-86"></a>    (<span class="co">#7</span></span>
 <span id="cb4-87"><a href="#cb4-87"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-88"><a href="#cb4-88"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-89"><a href="#cb4-89"></a>      menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb4-90"><a href="#cb4-90"></a>     <span class="sc">!</span>menciona_lgpd_resposta      </span>
+<span id="cb4-90"><a href="#cb4-90"></a>     <span class="sc">!</span>menciona_lgpd_resposta</span>
 <span id="cb4-91"><a href="#cb4-91"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'dados pessoais'"</span>,</span>
 <span id="cb4-92"><a href="#cb4-92"></a>    (<span class="co">#8</span></span>
 <span id="cb4-93"><a href="#cb4-93"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
@@ -342,26 +357,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-111"><a href="#cb4-111"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-112"><a href="#cb4-112"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-113"><a href="#cb4-113"></a>      menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb4-114"><a href="#cb4-114"></a>      menciona_lgpd_resposta      </span>
+<span id="cb4-114"><a href="#cb4-114"></a>      menciona_lgpd_resposta</span>
 <span id="cb4-115"><a href="#cb4-115"></a>    ) <span class="sc">~</span> <span class="st">"Menciona os termos 'dados pessoais' e 'LGPD'"</span>,</span>
 <span id="cb4-116"><a href="#cb4-116"></a>    (<span class="co">#12</span></span>
 <span id="cb4-117"><a href="#cb4-117"></a>      menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-118"><a href="#cb4-118"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-119"><a href="#cb4-119"></a>     <span class="sc">!</span>menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb4-120"><a href="#cb4-120"></a>      menciona_lgpd_resposta      </span>
-<span id="cb4-121"><a href="#cb4-121"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'LGPD'"</span>,    </span>
+<span id="cb4-120"><a href="#cb4-120"></a>      menciona_lgpd_resposta</span>
+<span id="cb4-121"><a href="#cb4-121"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'LGPD'"</span>,</span>
 <span id="cb4-122"><a href="#cb4-122"></a>    (<span class="co">#13</span></span>
 <span id="cb4-123"><a href="#cb4-123"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-124"><a href="#cb4-124"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-125"><a href="#cb4-125"></a>     <span class="sc">!</span>menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb4-126"><a href="#cb4-126"></a>      menciona_lgpd_resposta      </span>
-<span id="cb4-127"><a href="#cb4-127"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'LGPD'"</span>,    </span>
+<span id="cb4-126"><a href="#cb4-126"></a>      menciona_lgpd_resposta</span>
+<span id="cb4-127"><a href="#cb4-127"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'LGPD'"</span>,</span>
 <span id="cb4-128"><a href="#cb4-128"></a>    (<span class="co">#14</span></span>
 <span id="cb4-129"><a href="#cb4-129"></a>      menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-130"><a href="#cb4-130"></a>      menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-131"><a href="#cb4-131"></a>     <span class="sc">!</span>menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb4-132"><a href="#cb4-132"></a>      menciona_lgpd_resposta      </span>
-<span id="cb4-133"><a href="#cb4-133"></a>    ) <span class="sc">~</span> <span class="st">"Menciona os termos 'sigilo' e 'LGPD'"</span>,    </span>
+<span id="cb4-132"><a href="#cb4-132"></a>      menciona_lgpd_resposta</span>
+<span id="cb4-133"><a href="#cb4-133"></a>    ) <span class="sc">~</span> <span class="st">"Menciona os termos 'sigilo' e 'LGPD'"</span>,</span>
 <span id="cb4-134"><a href="#cb4-134"></a>    (<span class="co">#15</span></span>
 <span id="cb4-135"><a href="#cb4-135"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb4-136"><a href="#cb4-136"></a>      menciona_sigilo_resposta <span class="sc">&amp;</span></span>
@@ -379,7 +394,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-148"><a href="#cb4-148"></a></span>
 <span id="cb4-149"><a href="#cb4-149"></a></span>
 <span id="cb4-150"><a href="#cb4-150"></a>termos <span class="sc">%&gt;%</span></span>
-<span id="cb4-151"><a href="#cb4-151"></a>  <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"_resposta"</span>), <span class="sc">-</span>data_resposta) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-151"><a href="#cb4-151"></a>  <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"_resposta"</span>), <span class="sc">-</span>data_resposta) <span class="sc">%&gt;%</span></span>
 <span id="cb4-152"><a href="#cb4-152"></a>  <span class="fu">count</span>(</span>
 <span id="cb4-153"><a href="#cb4-153"></a>    menciona_lai_resposta,</span>
 <span id="cb4-154"><a href="#cb4-154"></a>    menciona_sigilo_resposta,</span>
@@ -387,10 +402,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-156"><a href="#cb4-156"></a>    menciona_lgpd_resposta,</span>
 <span id="cb4-157"><a href="#cb4-157"></a>    <span class="at">sort =</span> <span class="cn">TRUE</span></span>
 <span id="cb4-158"><a href="#cb4-158"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-159"><a href="#cb4-159"></a>  <span class="fu">mutate</span>(<span class="at">ord =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-160"><a href="#cb4-160"></a>  <span class="fu">group_by</span>(ord) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-161"><a href="#cb4-161"></a>  <span class="fu">nest</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb4-162"><a href="#cb4-162"></a>  <span class="fu">deframe</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb4-159"><a href="#cb4-159"></a>  <span class="fu">mutate</span>(<span class="at">ord =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb4-160"><a href="#cb4-160"></a>  <span class="fu">group_by</span>(ord) <span class="sc">%&gt;%</span></span>
+<span id="cb4-161"><a href="#cb4-161"></a>  <span class="fu">nest</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-162"><a href="#cb4-162"></a>  <span class="fu">deframe</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb4-163"><a href="#cb4-163"></a>  <span class="fu">map</span>(</span>
 <span id="cb4-164"><a href="#cb4-164"></a>    pivot_longer,</span>
 <span id="cb4-165"><a href="#cb4-165"></a>    <span class="at">cols =</span> <span class="fu">c</span>(menciona_lai_resposta,</span>
@@ -548,15 +563,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>A base de dados da CGU não é completa, pois os pedidos contendo dados pessoais e informações consideradas sensíveis são descartados e o seu conteúdo não é divulgado. Os critérios para descarte desses pedidos da transparência ativa é adotado pelos órgãos do governo Federal e pela CGU e não é claro. Tal incompletude dos dados <strong>resulta em subnotificação</strong> das detecções dos termos, uma vez que eles dizem respeito aos temas “sigilo” e “dados pessoais”.</p>
 <p>Outra fonte de subnotificação importante é a ausência de dados da Caixa Econômica Federal (CEF). A CEF era um dos principais órgãos solicitados via LAI sendo responsável por pelo menos x% de todas as solicitações disponibilizadas pelo FalaBr entre 2015 e 2018.</p>
 <div class="cell">
-<details><summary>Código</summary><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>base[<span class="dv">1</span>, <span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
+<details><summary>Código</summary><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>base[<span class="dv">1</span>, <span class="dv">2</span>] <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">inner_join</span>(nr_protocolo) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">inner_join</span>(nr_protocolo) <span class="sc">%&gt;%</span></span>
 <span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">count</span>(</span>
 <span id="cb5-5"><a href="#cb5-5"></a>    <span class="at">ano =</span> <span class="fu">year</span>(data_registro),</span>
 <span id="cb5-6"><a href="#cb5-6"></a>    <span class="at">orgao =</span> <span class="fu">if_else</span>(orgao <span class="sc">==</span> <span class="st">"CEF – Caixa Econômica Federal"</span>, orgao, <span class="st">"Demais órgãos"</span>)</span>
-<span id="cb5-7"><a href="#cb5-7"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-7"><a href="#cb5-7"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb5-8"><a href="#cb5-8"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_total"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-9"><a href="#cb5-9"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span></span>
 <span id="cb5-10"><a href="#cb5-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">fill =</span> orgao)) <span class="sc">+</span></span>
 <span id="cb5-11"><a href="#cb5-11"></a>  ggchicklet<span class="sc">::</span><span class="fu">geom_chicklet</span>() <span class="sc">+</span></span>
 <span id="cb5-12"><a href="#cb5-12"></a>  <span class="fu">geom_text</span>(</span>
@@ -567,13 +582,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-17"><a href="#cb5-17"></a>                                                   <span class="at">big.mark =</span> <span class="st">" "</span>))),</span>
 <span id="cb5-18"><a href="#cb5-18"></a>    <span class="at">color =</span> <span class="st">"white"</span>,</span>
 <span id="cb5-19"><a href="#cb5-19"></a>    <span class="at">vjust =</span> <span class="dv">1</span></span>
-<span id="cb5-20"><a href="#cb5-20"></a>  ) <span class="sc">+</span> </span>
+<span id="cb5-20"><a href="#cb5-20"></a>  ) <span class="sc">+</span></span>
 <span id="cb5-21"><a href="#cb5-21"></a>  <span class="fu">scale_fill_manual</span>(</span>
 <span id="cb5-22"><a href="#cb5-22"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
 <span id="cb5-23"><a href="#cb5-23"></a>      <span class="st">"CEF – Caixa Econômica Federal"</span> <span class="ot">=</span> cores_aep[[<span class="st">"rosa"</span>]],</span>
 <span id="cb5-24"><a href="#cb5-24"></a>      <span class="st">"Demais órgãos"</span> <span class="ot">=</span> cores_aep[[<span class="st">"laranja"</span>]]</span>
 <span id="cb5-25"><a href="#cb5-25"></a>    )</span>
-<span id="cb5-26"><a href="#cb5-26"></a>  ) <span class="sc">+</span> </span>
+<span id="cb5-26"><a href="#cb5-26"></a>  ) <span class="sc">+</span></span>
 <span id="cb5-27"><a href="#cb5-27"></a>  hrbrthemes<span class="sc">::</span><span class="fu">scale_y_percent</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">n.breaks =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
 <span id="cb5-28"><a href="#cb5-28"></a>  <span class="fu">labs</span>(</span>
 <span id="cb5-29"><a href="#cb5-29"></a>    <span class="at">title =</span> <span class="st">"Pedidos LAI com acesso negado"</span>,</span>
@@ -585,16 +600,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-35"><a href="#cb5-35"></a><span class="co">#&gt; Joining, by = c("id_pedido", "protocolo")</span></span>
 <span id="cb5-36"><a href="#cb5-36"></a><span class="co">#&gt; Warning: Removed 8 rows containing missing values (geom_text).</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="1-negativas-sigilo_files/figure-html/plot-cef-1.png" class="img-fluid" width="864"></p>
+<p><img src="01-negativas-sigilo_files/figure-html/plot-cef-1.png" class="img-fluid" width="864"></p>
 </div>
 </div>
 <p>A busca pelos termos não é perfeita e pode conter imprecisões e detecções que não correspondem ao contexto de interesse. Para aumentar a precisão da detecção o conteúdo das respostas foram normalizados com remoção de acentos, pontuações, caracteres especiais e substituição de letras maiúsculas por minúsculas. A detecção dos termos foi feita com o auxílio de expressões regulares definidas <a href="src/4-lista-de-regex.R">neste script</a>.</p>
 <p>A quantidade de pedidos em que os termos foram detectados podem ser vistos na figura abaixo:</p>
 <div class="cell">
-<details><summary>Código</summary><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>termos_categoria <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(detectado <span class="sc">==</span> <span class="st">"Termos não detectados"</span>, detectado, <span class="st">"Termos detectados"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">count</span>(detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> detectado, <span class="at">y =</span> n, <span class="at">fill =</span> detectado)) <span class="sc">+</span> </span>
+<details><summary>Código</summary><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>termos_categoria <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(detectado <span class="sc">==</span> <span class="st">"Termos não detectados"</span>, detectado, <span class="st">"Termos detectados"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">count</span>(detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> detectado, <span class="at">y =</span> n, <span class="at">fill =</span> detectado)) <span class="sc">+</span></span>
 <span id="cb6-5"><a href="#cb6-5"></a>  ggchicklet<span class="sc">::</span><span class="fu">geom_chicklet</span>() <span class="sc">+</span></span>
 <span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> scales<span class="sc">::</span><span class="fu">number</span>(n))) <span class="sc">+</span></span>
 <span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>number) <span class="sc">+</span></span>
@@ -607,15 +622,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-14"><a href="#cb6-14"></a>    <span class="at">fill =</span> <span class="cn">NULL</span></span>
 <span id="cb6-15"><a href="#cb6-15"></a>  )</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="1-negativas-sigilo_files/figure-html/plot-deteccao-de-termos-geral-1.png" class="img-fluid" width="864"></p>
+<p><img src="01-negativas-sigilo_files/figure-html/plot-deteccao-de-termos-geral-1.png" class="img-fluid" width="864"></p>
 </div>
 </div>
 <p>Onde os termos foram detectados, foram agrupadas as combinações de sua utilização:</p>
 <div class="cell">
-<details><summary>Código</summary><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>termos_categoria <span class="sc">%&gt;%</span> </span>
-<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">filter</span>(detectado <span class="sc">!=</span> <span class="st">"Termos não detectados"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> n)) <span class="sc">+</span> </span>
+<details><summary>Código</summary><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>termos_categoria <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">filter</span>(detectado <span class="sc">!=</span> <span class="st">"Termos não detectados"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> n)) <span class="sc">+</span></span>
 <span id="cb7-5"><a href="#cb7-5"></a>  ggchicklet<span class="sc">::</span><span class="fu">geom_chicklet</span>(<span class="at">fill =</span> cores_aep[[<span class="st">"rosa"</span>]]) <span class="sc">+</span></span>
 <span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">geom_text</span>(</span>
 <span id="cb7-7"><a href="#cb7-7"></a>    <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">if_else</span>(n <span class="sc">&gt;</span> <span class="dv">0</span>, scales<span class="sc">::</span><span class="fu">number</span>(n), <span class="st">""</span>)),</span>
@@ -625,7 +640,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-11"><a href="#cb7-11"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>number, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.4e3</span>)) <span class="sc">+</span></span>
 <span id="cb7-12"><a href="#cb7-12"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> 2015L<span class="sc">:</span>2022L)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="1-negativas-sigilo_files/figure-html/plot-deteccao-de-termos-detalhado-1.png" class="img-fluid" width="864"></p>
+<p><img src="01-negativas-sigilo_files/figure-html/plot-deteccao-de-termos-detalhado-1.png" class="img-fluid" width="864"></p>
 </div>
 <details><summary>Código</summary><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb8-2"><a href="#cb8-2"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
@@ -651,13 +666,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>A figura abaixo apresenta o percentual de acessos negados que mencionaram as combinações de textos.</p>
 <div class="cell page-columns page-full">
-<details><summary>Código</summary><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>termos_categoria <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(detectado, <span class="st">"LGPD"</span>), <span class="st">"Menciona LGPD*"</span>, detectado)) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span> </span>
+<details><summary>Código</summary><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>termos_categoria <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(detectado, <span class="st">"LGPD"</span>), <span class="st">"Menciona LGPD*"</span>, detectado)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span></span>
 <span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_total"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">filter</span>(detectado <span class="sc">!=</span> <span class="st">"Termos não detectados"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-7"><a href="#cb9-7"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">color =</span> <span class="fu">reorder</span>(detectado, <span class="sc">-</span>perc))) <span class="sc">+</span> </span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">filter</span>(detectado <span class="sc">!=</span> <span class="st">"Termos não detectados"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">color =</span> <span class="fu">reorder</span>(detectado, <span class="sc">-</span>perc))) <span class="sc">+</span></span>
 <span id="cb9-8"><a href="#cb9-8"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
 <span id="cb9-9"><a href="#cb9-9"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
 <span id="cb9-10"><a href="#cb9-10"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">85</span>),</span>
@@ -680,17 +695,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-27"><a href="#cb9-27"></a>    <span class="at">caption =</span> <span class="st">"* Todas as combinações para LGPD foram agrupadas em uma única categoria"</span></span>
 <span id="cb9-28"><a href="#cb9-28"></a>  )</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display column-page">
-<p><img src="1-negativas-sigilo_files/figure-html/plot-frequencia-termos-1.png" class="img-fluid" width="864"></p>
+<p><img src="01-negativas-sigilo_files/figure-html/plot-frequencia-termos-1.png" class="img-fluid" width="864"></p>
 </div>
 </div>
 <p>Em linhas gerais, a distribuição da frequência de negativas que alegam sigilos ou exposição de informações sensíveis e pessoais não se alteraram ao longo dos anos. Entretanto isso deve ser visto com ressalvas, uma vez que a Caixa Econômica Federal não disponibiliza pedidos LAI em transparência ativa. Nos últimos anos aumentaram a frequência da utilização de termos relacionados a dados pessoais e, mais recentemente, a Lei Geral de Proteção de Dados.</p>
 <div class="cell page-columns page-full">
-<details><summary>Código</summary><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>termos_categoria <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(detectado, <span class="st">"LGPD"</span>), <span class="st">"Menciona LGPD*"</span>, detectado)) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span> </span>
+<details><summary>Código</summary><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>termos_categoria <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(detectado, <span class="st">"LGPD"</span>), <span class="st">"Menciona LGPD*"</span>, detectado)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span></span>
 <span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_total"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-6"><a href="#cb10-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">fill =</span> <span class="fu">reorder</span>(detectado, <span class="sc">-</span>perc))) <span class="sc">+</span> </span>
+<span id="cb10-5"><a href="#cb10-5"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">fill =</span> <span class="fu">reorder</span>(detectado, <span class="sc">-</span>perc))) <span class="sc">+</span></span>
 <span id="cb10-7"><a href="#cb10-7"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="st">"stack"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> .<span class="dv">7</span>) <span class="sc">+</span></span>
 <span id="cb10-8"><a href="#cb10-8"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">85</span>),</span>
 <span id="cb10-9"><a href="#cb10-9"></a>        <span class="at">panel.grid.minor.y =</span> <span class="fu">element_line</span>(),</span>
@@ -713,7 +728,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb10-26"><a href="#cb10-26"></a>    <span class="at">caption =</span> <span class="st">"* Todas as combinações para LGPD foram agrupadas em uma única categoria"</span></span>
 <span id="cb10-27"><a href="#cb10-27"></a>  )</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display column-page">
-<p><img src="1-negativas-sigilo_files/figure-html/plot-frequencia-termos-stacked-1.png" class="img-fluid" width="864"></p>
+<p><img src="01-negativas-sigilo_files/figure-html/plot-frequencia-termos-stacked-1.png" class="img-fluid" width="864"></p>
 </div>
 </div>
 </section><section id="relação-de-pedidos-que-utilizaram-o-texto-link-para-planilhas" class="level2"><h2 class="anchored" data-anchor-id="relação-de-pedidos-que-utilizaram-o-texto-link-para-planilhas">Relação de pedidos que utilizaram o texto (link para planilhas)</h2>
@@ -734,7 +749,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-14"><a href="#cb11-14"></a><span class="co">#     data_resposta = dmy(ts_resposta),</span></span>
 <span id="cb11-15"><a href="#cb11-15"></a><span class="co">#     resposta</span></span>
 <span id="cb11-16"><a href="#cb11-16"></a><span class="co">#   )</span></span>
-<span id="cb11-17"><a href="#cb11-17"></a><span class="co"># </span></span>
+<span id="cb11-17"><a href="#cb11-17"></a><span class="co">#</span></span>
 <span id="cb11-18"><a href="#cb11-18"></a><span class="co"># googlesheets4::write_sheet(</span></span>
 <span id="cb11-19"><a href="#cb11-19"></a><span class="co">#   plan,</span></span>
 <span id="cb11-20"><a href="#cb11-20"></a><span class="co">#   "https://docs.google.com/spreadsheets/d/10NSfGW-f1mt8SWZGb4UBMVnN6AcxEVRyXiJrtXc4qhw/edit#gid=0",</span></span>
@@ -747,6 +762,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </section></main><!-- /main column --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -847,7 +880,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
@@ -896,12 +930,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-19"><a href="#cb12-19"></a><span class="co">    comments:</span></span>
 <span id="cb12-20"><a href="#cb12-20"></a><span class="co">      hypothesis: true</span></span>
 <span id="cb12-21"><a href="#cb12-21"></a><span class="an">knitr:</span></span>
-<span id="cb12-22"><a href="#cb12-22"></a><span class="co">  opts_chunk: </span></span>
+<span id="cb12-22"><a href="#cb12-22"></a><span class="co">  opts_chunk:</span></span>
 <span id="cb12-23"><a href="#cb12-23"></a><span class="co">    collapse: true</span></span>
-<span id="cb12-24"><a href="#cb12-24"></a><span class="co">    comment: "#&gt;" </span></span>
-<span id="cb12-25"><a href="#cb12-25"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb12-24"><a href="#cb12-24"></a><span class="co">    comment: "#&gt;"</span></span>
+<span id="cb12-25"><a href="#cb12-25"></a><span class="an">editor_options:</span></span>
 <span id="cb12-26"><a href="#cb12-26"></a><span class="co">  chunk_output_type: console</span></span>
-<span id="cb12-27"><a href="#cb12-27"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb12-27"><a href="#cb12-27"></a><span class="an">execute:</span></span>
 <span id="cb12-28"><a href="#cb12-28"></a><span class="co">  cache: false</span></span>
 <span id="cb12-29"><a href="#cb12-29"></a><span class="co">---</span></span>
 <span id="cb12-30"><a href="#cb12-30"></a></span>
@@ -933,7 +967,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-58"><a href="#cb12-58"></a><span class="fu">library</span>(here)</span>
 <span id="cb12-59"><a href="#cb12-59"></a><span class="fu">library</span>(lubridate)</span>
 <span id="cb12-60"><a href="#cb12-60"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb12-61"><a href="#cb12-61"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/0-plot-aesthetics.R"</span>), <span class="at">encoding =</span> <span class="st">"utf-8"</span>)</span>
+<span id="cb12-61"><a href="#cb12-61"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/00-plot-aesthetics.R"</span>), <span class="at">encoding =</span> <span class="st">"utf-8"</span>)</span>
 <span id="cb12-62"><a href="#cb12-62"></a><span class="in">```</span></span>
 <span id="cb12-63"><a href="#cb12-63"></a></span>
 <span id="cb12-64"><a href="#cb12-64"></a></span>
@@ -970,16 +1004,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-99"><a href="#cb12-99"></a>decisao_agregada <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span></span>
 <span id="cb12-100"><a href="#cb12-100"></a>  <span class="fu">filter</span>(base <span class="sc">==</span> <span class="st">"Pedidos"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb12-101"><a href="#cb12-101"></a>  <span class="fu">select</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb12-102"><a href="#cb12-102"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-102"><a href="#cb12-102"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
 <span id="cb12-103"><a href="#cb12-103"></a>  <span class="fu">mutate</span>(<span class="at">decisao =</span> <span class="fu">if_else</span>(</span>
 <span id="cb12-104"><a href="#cb12-104"></a>    decisao <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Acesso Concedido"</span>, <span class="st">"Acesso Parcialmente Concedido"</span>, <span class="st">"Acesso Negado"</span>),</span>
 <span id="cb12-105"><a href="#cb12-105"></a>    decisao, <span class="st">"Outra classificação*"</span></span>
-<span id="cb12-106"><a href="#cb12-106"></a>  )) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-107"><a href="#cb12-107"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), decisao) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-106"><a href="#cb12-106"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb12-107"><a href="#cb12-107"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), decisao) <span class="sc">%&gt;%</span></span>
 <span id="cb12-108"><a href="#cb12-108"></a>  <span class="fu">mutate</span>(<span class="at">decisao =</span> <span class="fu">reorder</span>(decisao, n))</span>
 <span id="cb12-109"><a href="#cb12-109"></a></span>
-<span id="cb12-110"><a href="#cb12-110"></a>p1 <span class="ot">&lt;-</span> decisao_agregada <span class="sc">%&gt;%</span> </span>
-<span id="cb12-111"><a href="#cb12-111"></a>  <span class="fu">filter</span>(decisao <span class="sc">==</span> <span class="st">"Acesso Negado"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-110"><a href="#cb12-110"></a>p1 <span class="ot">&lt;-</span> decisao_agregada <span class="sc">%&gt;%</span></span>
+<span id="cb12-111"><a href="#cb12-111"></a>  <span class="fu">filter</span>(decisao <span class="sc">==</span> <span class="st">"Acesso Negado"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb12-112"><a href="#cb12-112"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> n)) <span class="sc">+</span></span>
 <span id="cb12-113"><a href="#cb12-113"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.3</span>, <span class="at">color =</span> cores_aep[[<span class="st">"rosa"</span>]], <span class="at">show.legend =</span> F) <span class="sc">+</span></span>
 <span id="cb12-114"><a href="#cb12-114"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">color =</span> cores_aep[[<span class="st">"rosa"</span>]], <span class="at">show.legend =</span> F) <span class="sc">+</span></span>
@@ -991,10 +1025,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-120"><a href="#cb12-120"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>number, <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">8.5e3</span>)) <span class="sc">+</span></span>
 <span id="cb12-121"><a href="#cb12-121"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> 2015L<span class="sc">:</span>2022L)</span>
 <span id="cb12-122"><a href="#cb12-122"></a></span>
-<span id="cb12-123"><a href="#cb12-123"></a>p2 <span class="ot">&lt;-</span> decisao_agregada <span class="sc">%&gt;%</span> </span>
-<span id="cb12-124"><a href="#cb12-124"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_ano"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-125"><a href="#cb12-125"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_ano) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-126"><a href="#cb12-126"></a>  <span class="fu">filter</span>(decisao <span class="sc">==</span> <span class="st">"Acesso Negado"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-123"><a href="#cb12-123"></a>p2 <span class="ot">&lt;-</span> decisao_agregada <span class="sc">%&gt;%</span></span>
+<span id="cb12-124"><a href="#cb12-124"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_ano"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-125"><a href="#cb12-125"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_ano) <span class="sc">%&gt;%</span></span>
+<span id="cb12-126"><a href="#cb12-126"></a>  <span class="fu">filter</span>(decisao <span class="sc">==</span> <span class="st">"Acesso Negado"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb12-127"><a href="#cb12-127"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc)) <span class="sc">+</span></span>
 <span id="cb12-128"><a href="#cb12-128"></a>  <span class="fu">geom_col</span>(<span class="at">size =</span> <span class="fl">1.3</span>, <span class="at">fill =</span> cores_aep[[<span class="st">"rosa"</span>]]) <span class="sc">+</span></span>
 <span id="cb12-129"><a href="#cb12-129"></a>  <span class="fu">labs</span>(</span>
@@ -1009,7 +1043,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-138"><a href="#cb12-138"></a></span>
 <span id="cb12-139"><a href="#cb12-139"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span></span>
 <span id="cb12-140"><a href="#cb12-140"></a>  <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">'collect'</span>) <span class="sc">+</span></span>
-<span id="cb12-141"><a href="#cb12-141"></a>  <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"Pedidos de acesso a informação - governo Federal"</span>, </span>
+<span id="cb12-141"><a href="#cb12-141"></a>  <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"Pedidos de acesso a informação - governo Federal"</span>,</span>
 <span id="cb12-142"><a href="#cb12-142"></a>                  <span class="at">theme =</span> <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> .<span class="dv">5</span>)))</span>
 <span id="cb12-143"><a href="#cb12-143"></a><span class="in">```</span></span>
 <span id="cb12-144"><a href="#cb12-144"></a></span>
@@ -1049,7 +1083,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-180"><a href="#cb12-180"></a>    <span class="co"># menciona_artigo_31_resposta = str_detect(resposta_clean, "(artigo 31|art 31)")</span></span>
 <span id="cb12-181"><a href="#cb12-181"></a>  )</span>
 <span id="cb12-182"><a href="#cb12-182"></a></span>
-<span id="cb12-183"><a href="#cb12-183"></a>termos_categoria <span class="ot">&lt;-</span> termos <span class="sc">%&gt;%</span> </span>
+<span id="cb12-183"><a href="#cb12-183"></a>termos_categoria <span class="ot">&lt;-</span> termos <span class="sc">%&gt;%</span></span>
 <span id="cb12-184"><a href="#cb12-184"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb12-185"><a href="#cb12-185"></a>    id_pedido,</span>
 <span id="cb12-186"><a href="#cb12-186"></a>    protocolo,</span>
@@ -1084,19 +1118,19 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-215"><a href="#cb12-215"></a>      menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-216"><a href="#cb12-216"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-217"><a href="#cb12-217"></a>      menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb12-218"><a href="#cb12-218"></a>     <span class="sc">!</span>menciona_lgpd_resposta      </span>
+<span id="cb12-218"><a href="#cb12-218"></a>     <span class="sc">!</span>menciona_lgpd_resposta</span>
 <span id="cb12-219"><a href="#cb12-219"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'dados pessoais'"</span>,</span>
 <span id="cb12-220"><a href="#cb12-220"></a>    (<span class="co">#6</span></span>
 <span id="cb12-221"><a href="#cb12-221"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-222"><a href="#cb12-222"></a>      menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-223"><a href="#cb12-223"></a>     <span class="sc">!</span>menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb12-224"><a href="#cb12-224"></a>     <span class="sc">!</span>menciona_lgpd_resposta            </span>
+<span id="cb12-224"><a href="#cb12-224"></a>     <span class="sc">!</span>menciona_lgpd_resposta</span>
 <span id="cb12-225"><a href="#cb12-225"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'sigilo'"</span>,</span>
 <span id="cb12-226"><a href="#cb12-226"></a>    (<span class="co">#7</span></span>
 <span id="cb12-227"><a href="#cb12-227"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-228"><a href="#cb12-228"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-229"><a href="#cb12-229"></a>      menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb12-230"><a href="#cb12-230"></a>     <span class="sc">!</span>menciona_lgpd_resposta      </span>
+<span id="cb12-230"><a href="#cb12-230"></a>     <span class="sc">!</span>menciona_lgpd_resposta</span>
 <span id="cb12-231"><a href="#cb12-231"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'dados pessoais'"</span>,</span>
 <span id="cb12-232"><a href="#cb12-232"></a>    (<span class="co">#8</span></span>
 <span id="cb12-233"><a href="#cb12-233"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
@@ -1120,26 +1154,26 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-251"><a href="#cb12-251"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-252"><a href="#cb12-252"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-253"><a href="#cb12-253"></a>      menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb12-254"><a href="#cb12-254"></a>      menciona_lgpd_resposta      </span>
+<span id="cb12-254"><a href="#cb12-254"></a>      menciona_lgpd_resposta</span>
 <span id="cb12-255"><a href="#cb12-255"></a>    ) <span class="sc">~</span> <span class="st">"Menciona os termos 'dados pessoais' e 'LGPD'"</span>,</span>
 <span id="cb12-256"><a href="#cb12-256"></a>    (<span class="co">#12</span></span>
 <span id="cb12-257"><a href="#cb12-257"></a>      menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-258"><a href="#cb12-258"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-259"><a href="#cb12-259"></a>     <span class="sc">!</span>menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb12-260"><a href="#cb12-260"></a>      menciona_lgpd_resposta      </span>
-<span id="cb12-261"><a href="#cb12-261"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'LGPD'"</span>,    </span>
+<span id="cb12-260"><a href="#cb12-260"></a>      menciona_lgpd_resposta</span>
+<span id="cb12-261"><a href="#cb12-261"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'LGPD'"</span>,</span>
 <span id="cb12-262"><a href="#cb12-262"></a>    (<span class="co">#13</span></span>
 <span id="cb12-263"><a href="#cb12-263"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-264"><a href="#cb12-264"></a>     <span class="sc">!</span>menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-265"><a href="#cb12-265"></a>     <span class="sc">!</span>menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb12-266"><a href="#cb12-266"></a>      menciona_lgpd_resposta      </span>
-<span id="cb12-267"><a href="#cb12-267"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'LGPD'"</span>,    </span>
+<span id="cb12-266"><a href="#cb12-266"></a>      menciona_lgpd_resposta</span>
+<span id="cb12-267"><a href="#cb12-267"></a>    ) <span class="sc">~</span> <span class="st">"Menciona somente termos 'LGPD'"</span>,</span>
 <span id="cb12-268"><a href="#cb12-268"></a>    (<span class="co">#14</span></span>
 <span id="cb12-269"><a href="#cb12-269"></a>      menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-270"><a href="#cb12-270"></a>      menciona_sigilo_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-271"><a href="#cb12-271"></a>     <span class="sc">!</span>menciona_dados_pessoais_resposta <span class="sc">&amp;</span></span>
-<span id="cb12-272"><a href="#cb12-272"></a>      menciona_lgpd_resposta      </span>
-<span id="cb12-273"><a href="#cb12-273"></a>    ) <span class="sc">~</span> <span class="st">"Menciona os termos 'sigilo' e 'LGPD'"</span>,    </span>
+<span id="cb12-272"><a href="#cb12-272"></a>      menciona_lgpd_resposta</span>
+<span id="cb12-273"><a href="#cb12-273"></a>    ) <span class="sc">~</span> <span class="st">"Menciona os termos 'sigilo' e 'LGPD'"</span>,</span>
 <span id="cb12-274"><a href="#cb12-274"></a>    (<span class="co">#15</span></span>
 <span id="cb12-275"><a href="#cb12-275"></a>     <span class="sc">!</span>menciona_lai_resposta <span class="sc">&amp;</span></span>
 <span id="cb12-276"><a href="#cb12-276"></a>      menciona_sigilo_resposta <span class="sc">&amp;</span></span>
@@ -1157,7 +1191,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-288"><a href="#cb12-288"></a></span>
 <span id="cb12-289"><a href="#cb12-289"></a></span>
 <span id="cb12-290"><a href="#cb12-290"></a>termos <span class="sc">%&gt;%</span></span>
-<span id="cb12-291"><a href="#cb12-291"></a>  <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"_resposta"</span>), <span class="sc">-</span>data_resposta) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-291"><a href="#cb12-291"></a>  <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"_resposta"</span>), <span class="sc">-</span>data_resposta) <span class="sc">%&gt;%</span></span>
 <span id="cb12-292"><a href="#cb12-292"></a>  <span class="fu">count</span>(</span>
 <span id="cb12-293"><a href="#cb12-293"></a>    menciona_lai_resposta,</span>
 <span id="cb12-294"><a href="#cb12-294"></a>    menciona_sigilo_resposta,</span>
@@ -1165,10 +1199,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-296"><a href="#cb12-296"></a>    menciona_lgpd_resposta,</span>
 <span id="cb12-297"><a href="#cb12-297"></a>    <span class="at">sort =</span> <span class="cn">TRUE</span></span>
 <span id="cb12-298"><a href="#cb12-298"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-299"><a href="#cb12-299"></a>  <span class="fu">mutate</span>(<span class="at">ord =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-300"><a href="#cb12-300"></a>  <span class="fu">group_by</span>(ord) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-301"><a href="#cb12-301"></a>  <span class="fu">nest</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb12-302"><a href="#cb12-302"></a>  <span class="fu">deframe</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb12-299"><a href="#cb12-299"></a>  <span class="fu">mutate</span>(<span class="at">ord =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb12-300"><a href="#cb12-300"></a>  <span class="fu">group_by</span>(ord) <span class="sc">%&gt;%</span></span>
+<span id="cb12-301"><a href="#cb12-301"></a>  <span class="fu">nest</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb12-302"><a href="#cb12-302"></a>  <span class="fu">deframe</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb12-303"><a href="#cb12-303"></a>  <span class="fu">map</span>(</span>
 <span id="cb12-304"><a href="#cb12-304"></a>    pivot_longer,</span>
 <span id="cb12-305"><a href="#cb12-305"></a>    <span class="at">cols =</span> <span class="fu">c</span>(menciona_lai_resposta,</span>
@@ -1187,15 +1221,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-320"><a href="#cb12-320"></a><span class="in">```{r}</span></span>
 <span id="cb12-321"><a href="#cb12-321"></a><span class="co">#| label: plot-cef</span></span>
 <span id="cb12-322"><a href="#cb12-322"></a></span>
-<span id="cb12-323"><a href="#cb12-323"></a>base[<span class="dv">1</span>, <span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb12-323"><a href="#cb12-323"></a>base[<span class="dv">1</span>, <span class="dv">2</span>] <span class="sc">%&gt;%</span></span>
 <span id="cb12-324"><a href="#cb12-324"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb12-325"><a href="#cb12-325"></a>  <span class="fu">inner_join</span>(nr_protocolo) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-325"><a href="#cb12-325"></a>  <span class="fu">inner_join</span>(nr_protocolo) <span class="sc">%&gt;%</span></span>
 <span id="cb12-326"><a href="#cb12-326"></a>  <span class="fu">count</span>(</span>
 <span id="cb12-327"><a href="#cb12-327"></a>    <span class="at">ano =</span> <span class="fu">year</span>(data_registro),</span>
 <span id="cb12-328"><a href="#cb12-328"></a>    <span class="at">orgao =</span> <span class="fu">if_else</span>(orgao <span class="sc">==</span> <span class="st">"CEF – Caixa Econômica Federal"</span>, orgao, <span class="st">"Demais órgãos"</span>)</span>
-<span id="cb12-329"><a href="#cb12-329"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-329"><a href="#cb12-329"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb12-330"><a href="#cb12-330"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_total"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-331"><a href="#cb12-331"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-331"><a href="#cb12-331"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span></span>
 <span id="cb12-332"><a href="#cb12-332"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">fill =</span> orgao)) <span class="sc">+</span></span>
 <span id="cb12-333"><a href="#cb12-333"></a>  ggchicklet<span class="sc">::</span><span class="fu">geom_chicklet</span>() <span class="sc">+</span></span>
 <span id="cb12-334"><a href="#cb12-334"></a>  <span class="fu">geom_text</span>(</span>
@@ -1206,13 +1240,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-339"><a href="#cb12-339"></a>                                                   <span class="at">big.mark =</span> <span class="st">" "</span>))),</span>
 <span id="cb12-340"><a href="#cb12-340"></a>    <span class="at">color =</span> <span class="st">"white"</span>,</span>
 <span id="cb12-341"><a href="#cb12-341"></a>    <span class="at">vjust =</span> <span class="dv">1</span></span>
-<span id="cb12-342"><a href="#cb12-342"></a>  ) <span class="sc">+</span> </span>
+<span id="cb12-342"><a href="#cb12-342"></a>  ) <span class="sc">+</span></span>
 <span id="cb12-343"><a href="#cb12-343"></a>  <span class="fu">scale_fill_manual</span>(</span>
 <span id="cb12-344"><a href="#cb12-344"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
 <span id="cb12-345"><a href="#cb12-345"></a>      <span class="st">"CEF – Caixa Econômica Federal"</span> <span class="ot">=</span> cores_aep[[<span class="st">"rosa"</span>]],</span>
 <span id="cb12-346"><a href="#cb12-346"></a>      <span class="st">"Demais órgãos"</span> <span class="ot">=</span> cores_aep[[<span class="st">"laranja"</span>]]</span>
 <span id="cb12-347"><a href="#cb12-347"></a>    )</span>
-<span id="cb12-348"><a href="#cb12-348"></a>  ) <span class="sc">+</span> </span>
+<span id="cb12-348"><a href="#cb12-348"></a>  ) <span class="sc">+</span></span>
 <span id="cb12-349"><a href="#cb12-349"></a>  hrbrthemes<span class="sc">::</span><span class="fu">scale_y_percent</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">n.breaks =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
 <span id="cb12-350"><a href="#cb12-350"></a>  <span class="fu">labs</span>(</span>
 <span id="cb12-351"><a href="#cb12-351"></a>    <span class="at">title =</span> <span class="st">"Pedidos LAI com acesso negado"</span>,</span>
@@ -1230,10 +1264,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-365"><a href="#cb12-365"></a><span class="in">```{r}</span></span>
 <span id="cb12-366"><a href="#cb12-366"></a><span class="co">#| label: plot-deteccao-de-termos-geral</span></span>
 <span id="cb12-367"><a href="#cb12-367"></a></span>
-<span id="cb12-368"><a href="#cb12-368"></a>termos_categoria <span class="sc">%&gt;%</span> </span>
-<span id="cb12-369"><a href="#cb12-369"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(detectado <span class="sc">==</span> <span class="st">"Termos não detectados"</span>, detectado, <span class="st">"Termos detectados"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-370"><a href="#cb12-370"></a>  <span class="fu">count</span>(detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-371"><a href="#cb12-371"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> detectado, <span class="at">y =</span> n, <span class="at">fill =</span> detectado)) <span class="sc">+</span> </span>
+<span id="cb12-368"><a href="#cb12-368"></a>termos_categoria <span class="sc">%&gt;%</span></span>
+<span id="cb12-369"><a href="#cb12-369"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(detectado <span class="sc">==</span> <span class="st">"Termos não detectados"</span>, detectado, <span class="st">"Termos detectados"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-370"><a href="#cb12-370"></a>  <span class="fu">count</span>(detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb12-371"><a href="#cb12-371"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> detectado, <span class="at">y =</span> n, <span class="at">fill =</span> detectado)) <span class="sc">+</span></span>
 <span id="cb12-372"><a href="#cb12-372"></a>  ggchicklet<span class="sc">::</span><span class="fu">geom_chicklet</span>() <span class="sc">+</span></span>
 <span id="cb12-373"><a href="#cb12-373"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> scales<span class="sc">::</span><span class="fu">number</span>(n))) <span class="sc">+</span></span>
 <span id="cb12-374"><a href="#cb12-374"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>number) <span class="sc">+</span></span>
@@ -1253,10 +1287,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-390"><a href="#cb12-390"></a><span class="co">#| label: plot-deteccao-de-termos-detalhado</span></span>
 <span id="cb12-391"><a href="#cb12-391"></a><span class="co">#| fig-height: 12</span></span>
 <span id="cb12-392"><a href="#cb12-392"></a></span>
-<span id="cb12-393"><a href="#cb12-393"></a>termos_categoria <span class="sc">%&gt;%</span> </span>
-<span id="cb12-394"><a href="#cb12-394"></a>  <span class="fu">filter</span>(detectado <span class="sc">!=</span> <span class="st">"Termos não detectados"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-395"><a href="#cb12-395"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-396"><a href="#cb12-396"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> n)) <span class="sc">+</span> </span>
+<span id="cb12-393"><a href="#cb12-393"></a>termos_categoria <span class="sc">%&gt;%</span></span>
+<span id="cb12-394"><a href="#cb12-394"></a>  <span class="fu">filter</span>(detectado <span class="sc">!=</span> <span class="st">"Termos não detectados"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-395"><a href="#cb12-395"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb12-396"><a href="#cb12-396"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> n)) <span class="sc">+</span></span>
 <span id="cb12-397"><a href="#cb12-397"></a>  ggchicklet<span class="sc">::</span><span class="fu">geom_chicklet</span>(<span class="at">fill =</span> cores_aep[[<span class="st">"rosa"</span>]]) <span class="sc">+</span></span>
 <span id="cb12-398"><a href="#cb12-398"></a>  <span class="fu">geom_text</span>(</span>
 <span id="cb12-399"><a href="#cb12-399"></a>    <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">if_else</span>(n <span class="sc">&gt;</span> <span class="dv">0</span>, scales<span class="sc">::</span><span class="fu">number</span>(n), <span class="st">""</span>)),</span>
@@ -1280,13 +1314,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-419"><a href="#cb12-419"></a><span class="co">#| fig-height: 8</span></span>
 <span id="cb12-420"><a href="#cb12-420"></a><span class="co">#| column: page</span></span>
 <span id="cb12-421"><a href="#cb12-421"></a><span class="co">#| label: plot-frequencia-termos</span></span>
-<span id="cb12-422"><a href="#cb12-422"></a>termos_categoria <span class="sc">%&gt;%</span> </span>
-<span id="cb12-423"><a href="#cb12-423"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(detectado, <span class="st">"LGPD"</span>), <span class="st">"Menciona LGPD*"</span>, detectado)) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-424"><a href="#cb12-424"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-422"><a href="#cb12-422"></a>termos_categoria <span class="sc">%&gt;%</span></span>
+<span id="cb12-423"><a href="#cb12-423"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(detectado, <span class="st">"LGPD"</span>), <span class="st">"Menciona LGPD*"</span>, detectado)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-424"><a href="#cb12-424"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span></span>
 <span id="cb12-425"><a href="#cb12-425"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_total"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-426"><a href="#cb12-426"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-427"><a href="#cb12-427"></a>  <span class="fu">filter</span>(detectado <span class="sc">!=</span> <span class="st">"Termos não detectados"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-428"><a href="#cb12-428"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">color =</span> <span class="fu">reorder</span>(detectado, <span class="sc">-</span>perc))) <span class="sc">+</span> </span>
+<span id="cb12-426"><a href="#cb12-426"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span></span>
+<span id="cb12-427"><a href="#cb12-427"></a>  <span class="fu">filter</span>(detectado <span class="sc">!=</span> <span class="st">"Termos não detectados"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-428"><a href="#cb12-428"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">color =</span> <span class="fu">reorder</span>(detectado, <span class="sc">-</span>perc))) <span class="sc">+</span></span>
 <span id="cb12-429"><a href="#cb12-429"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
 <span id="cb12-430"><a href="#cb12-430"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
 <span id="cb12-431"><a href="#cb12-431"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">85</span>),</span>
@@ -1317,12 +1351,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-458"><a href="#cb12-458"></a><span class="co">#| fig-height: 8</span></span>
 <span id="cb12-459"><a href="#cb12-459"></a><span class="co">#| column: page</span></span>
 <span id="cb12-460"><a href="#cb12-460"></a><span class="co">#| label: plot-frequencia-termos-stacked</span></span>
-<span id="cb12-461"><a href="#cb12-461"></a>termos_categoria <span class="sc">%&gt;%</span> </span>
-<span id="cb12-462"><a href="#cb12-462"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(detectado, <span class="st">"LGPD"</span>), <span class="st">"Menciona LGPD*"</span>, detectado)) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-463"><a href="#cb12-463"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-461"><a href="#cb12-461"></a>termos_categoria <span class="sc">%&gt;%</span></span>
+<span id="cb12-462"><a href="#cb12-462"></a>  <span class="fu">mutate</span>(<span class="at">detectado =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(detectado, <span class="st">"LGPD"</span>), <span class="st">"Menciona LGPD*"</span>, detectado)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-463"><a href="#cb12-463"></a>  <span class="fu">count</span>(<span class="at">ano =</span> <span class="fu">year</span>(data_registro), detectado, <span class="at">sort =</span> T) <span class="sc">%&gt;%</span></span>
 <span id="cb12-464"><a href="#cb12-464"></a>  <span class="fu">add_count</span>(ano, <span class="at">wt =</span> n, <span class="at">name =</span> <span class="st">"n_total"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-465"><a href="#cb12-465"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-466"><a href="#cb12-466"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">fill =</span> <span class="fu">reorder</span>(detectado, <span class="sc">-</span>perc))) <span class="sc">+</span> </span>
+<span id="cb12-465"><a href="#cb12-465"></a>  <span class="fu">mutate</span>(<span class="at">perc =</span> n <span class="sc">/</span> n_total) <span class="sc">%&gt;%</span></span>
+<span id="cb12-466"><a href="#cb12-466"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ano, <span class="at">y =</span> perc, <span class="at">fill =</span> <span class="fu">reorder</span>(detectado, <span class="sc">-</span>perc))) <span class="sc">+</span></span>
 <span id="cb12-467"><a href="#cb12-467"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="st">"stack"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> .<span class="dv">7</span>) <span class="sc">+</span></span>
 <span id="cb12-468"><a href="#cb12-468"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">75</span>, .<span class="dv">85</span>),</span>
 <span id="cb12-469"><a href="#cb12-469"></a>        <span class="at">panel.grid.minor.y =</span> <span class="fu">element_line</span>(),</span>
@@ -1366,7 +1400,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-509"><a href="#cb12-509"></a><span class="co">#     data_resposta = dmy(ts_resposta),</span></span>
 <span id="cb12-510"><a href="#cb12-510"></a><span class="co">#     resposta</span></span>
 <span id="cb12-511"><a href="#cb12-511"></a><span class="co">#   )</span></span>
-<span id="cb12-512"><a href="#cb12-512"></a><span class="co"># </span></span>
+<span id="cb12-512"><a href="#cb12-512"></a><span class="co">#</span></span>
 <span id="cb12-513"><a href="#cb12-513"></a><span class="co"># googlesheets4::write_sheet(</span></span>
 <span id="cb12-514"><a href="#cb12-514"></a><span class="co">#   plan,</span></span>
 <span id="cb12-515"><a href="#cb12-515"></a><span class="co">#   "https://docs.google.com/spreadsheets/d/10NSfGW-f1mt8SWZGb4UBMVnN6AcxEVRyXiJrtXc4qhw/edit#gid=0",</span></span>
@@ -1381,4 +1415,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<script src="1-negativas-sigilo_files\libs\quarto-html\zenscroll-min.js"></script></body></html>
+<script src="01-negativas-sigilo_files/libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
