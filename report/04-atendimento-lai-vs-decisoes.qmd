@@ -872,11 +872,13 @@ read_amostra(aba = "INSS") %>%
 
 #### SGPR
 
-> **SGPR**: Após o presidente da República declarar - em março de 2021 - que possuía provas sobre fraudes nas eleições de 2018 a SGPR recebeu ao menos 400 solicitações de envios - com base na LAI - das supostas provas existentes. Apesar de alegar não dispor das tais provas citadas pelo presidente, a SGPR alega que o acesso às mais de 400 solicitações foram concedidos. **O Algoritmo BERT/NLP constatou corretamente o não atendimento de todas as solicitações.**
+> **SGPR**: Após o presidente da República declarar - em março de 2021 - que possuía provas sobre fraudes nas eleições de 2018 a SGPR recebeu ao menos 371solicitações de envios - com base na LAI - das supostas provas existentes. Apesar de alegar não dispor das tais provas citadas pelo presidente, a SGPR alega que o acesso às mais de 400 solicitações foram concedidos. **O Algoritmo BERT/NLP constatou corretamente o não atendimento de todas as solicitações.**. Os demais pedidos do órgão foram avaliados integralmente e dos 89 pedidos avaliados, foram constatados apenas 16 erros de classificação, 26 pedidos atendidos por meio de link externo e 3 pedidos que estariam à disposição do solicitante ou para retirada pessoalmente ou por outro meio externo ao FalaBr. O restante dos pedidos, 44, foram classificados corretamente pelo algoritmo BERT/NLP.
+
+> Dentre os casos de não atendimento de pedidos de acesso a informação, destacam-se informações referentes à gastos de viagens presidenciais e sobre detalhes de reuniões e da presença de pessoas no palácio do planalto fora da agenda oficial do presidente.
 
 - SGPR – Secretaria-Geral da Presidência da República
-- Foram analisados todos os 460 pedidos com classificação contraditória que o órgão possui
-  - 371 pedidos possuem o mesmo tema (fraudes nas eleições) e foram filtrados com regex
+- Foram analisados todos os 451 pedidos com classificação contraditória que o órgão possui
+  - 362 pedidos possuem o mesmo tema (fraudes nas eleições) e foram filtrados com regex
   - 89 pedidos restantes
 
 ```{r}
@@ -884,11 +886,14 @@ read_amostra(aba = "INSS") %>%
 #| fig-height: 4.8
 
 read_amostra(aba = "SGPR - DEMAIS") %>%
+    filter(`Decisão do órgão` == "Acesso Concedido") %>%
+    filter(`Classificação Modelo NLP` == "Não Atendido") %>%
   bind_rows(
     read_amostra(aba = "SGPR - FRAUDE ELEIÇÕES") %>%
       filter(`Decisão do órgão` == "Acesso Concedido") %>%
       filter(`Classificação Modelo NLP` == "Não Atendido")
   ) %>%
+  filter(id_pedido %in% (pedidos %>% filter(pedido_valido) %>% pull(id_pedido))) %>%
   count(`Meio de atendimento`) %>%
   mutate(
     `Meio de atendimento` = str_replace_all(`Meio de atendimento`, " \\(", "\n("),
@@ -897,7 +902,7 @@ read_amostra(aba = "SGPR - DEMAIS") %>%
   ) %>%
   ggplot(aes(y = `Meio de atendimento`, x = n, fill = `Meio de atendimento`)) +
   geom_col(color = cores_aep[["cinza"]], show.legend = FALSE) +
-  geom_text(aes(label = n), hjust = -1, color = cores_aep[["cinza"]], fontface = "bold") +
+  geom_text(aes(label = n), hjust = -.5, color = cores_aep[["cinza"]], fontface = "bold") +
   scale_x_continuous(expand = c(0, 0), limits = c(0, 400)) +
   scale_fill_manual(values = c(
     cores_tb[["cinza_escuro"]],
@@ -919,7 +924,12 @@ read_amostra(aba = "SGPR - DEMAIS") %>%
   )
 ```
 
-#### PETROBRÁS
+#### PETROBRAS
+
+> **PETROBRAS** a grande maioria das classificações contraditórias são referentes a atendimentos de pedidos pelo e-mail pessoal do solicitante. Na grande maioria dos casos, os pedidos versavam sobre a disponibilização de grandes volumes de documentos (contratos, pareceres técnicos, etc.) que não poderiam ser enviados pelo canal do FalaBr em função da limitação de 30Mb que o sistema possui para anexar arquivos aos pedidos. São casos em que o conteúdo de atendimento ao pedido está em documentos externos ao pedido de acesso a informação.
+
+- PETROBRAS – Petróleo Brasileiro S.A.
+  - Amostra: 20 de 444 pedidos com classificação contraditória
 
 ```{r}
 #| fig-width: 7.2
@@ -947,7 +957,7 @@ read_amostra(aba = "PETROBRAS") %>%
     axis.line.y = element_line(color = "gray50")
   ) +
   labs(
-    title = "Amostra de 20 pedidos da PETROBRÁS",
+    title = "Amostra de 20 pedidos da PETROBRAS",
     subtitle = "PETROBRAS – Petróleo Brasileiro S.A.",
     x = "Quantidade de pedidos analisados",
     y = "Justificativa da contrariedade"
@@ -955,6 +965,11 @@ read_amostra(aba = "PETROBRAS") %>%
 ```
 
 #### CEX
+
+> **Comando do Exército (CEX)**: das 20 respostas do CEX analisadas, 4 possuíam erros de classificação, 5 disponibilizaram o conteúdo da resposta ou via e-mail ou por link externo. Dentre os acertos da classificação NLP/BERT, detacam-se casos onde o CEX considerou como Acesso Concedido solicitações que não poderia atender sem a devida comprovação de identidade do requerente e casos em que o pedido requer trabalho adicional.
+
+- CEX - Comando do Exército
+  - Amostra 20 de 118 pedidos com classificação contraditória
 
 ```{r}
 #| fig-width: 7.2
@@ -1194,7 +1209,7 @@ pedidos %>%
 #### Percentual (%)
 
 ```{r}
-#| fig-height: 8
+#| fig-height: 10
 
 pedidos %>%
   count(name = "n_orgao_decisao_resultados", orgao_abrev, decisao, resultados) %>%
@@ -1211,7 +1226,7 @@ pedidos %>%
   ) +
   hrbrthemes::scale_x_percent(
     expand = c(0, 0),
-    limits = c(0, .6)
+    limits = c(0, .8)
   ) +
   labs(
     title = "Percentual de classificações contraditórias por órgão (Acesso Concedido e Não Atendido)",
@@ -1227,7 +1242,7 @@ pedidos %>%
 #### Números absolutos
 
 ```{r}
-#| fig-height: 8
+#| fig-height: 10
 
 pedidos %>%
   count(name = "n_orgao_decisao_resultados", orgao, decisao, resultados) %>%
@@ -1661,11 +1676,11 @@ pedidos_orgaos_counts %>%
   ) +
   scale_fill_manual(values = c(
     'Total de pedidos com decisão "Acesso Concedido"' = alpha(cores_aep[["marrom"]], .6),
-    'Pedidos com decisão "Acesso Concedido" classificados como "Não Atendido" (BERT)' = cores_aep[["rosa"]]
+    'Classificação contraditória' = cores_aep[["rosa"]]
   )) +
   scale_color_manual(values = c(
     'Total de pedidos com decisão "Acesso Concedido"' = cores_aep[["marrom"]],
-    'Pedidos com decisão "Acesso Concedido" classificados como "Não Atendido" (BERT)' = cores_aep[["rosa"]]
+    'Classificação contraditória' = cores_aep[["rosa"]]
   )) +
   scale_y_continuous(
     limits = c(0, 2300),
@@ -1736,11 +1751,11 @@ pedidos_orgaos_counts %>%
   ) +
   scale_fill_manual(values = c(
     'Total de pedidos com decisão "Acesso Concedido"' = alpha(cores_aep[["marrom"]], .6),
-    'Pedidos com decisão "Acesso Concedido" classificados como "Não Atendido" (BERT)' = cores_aep[["rosa"]]
+    'Classificação contraditória' = cores_aep[["rosa"]]
   )) +
   scale_color_manual(values = c(
     'Total de pedidos com decisão "Acesso Concedido"' = cores_aep[["marrom"]],
-    'Pedidos com decisão "Acesso Concedido" classificados como "Não Atendido" (BERT)' = cores_aep[["rosa"]]
+    'Classificação contraditória' = cores_aep[["rosa"]]
   )) +
   scale_y_continuous(
     breaks = c(0, 250, 500, 1000, 1500, 2000, 4000),
