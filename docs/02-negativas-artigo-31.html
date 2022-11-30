@@ -82,16 +82,16 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
-<script src="2-negativas-artigo-31_files/libs/clipboard/clipboard.min.js"></script>
-<script src="2-negativas-artigo-31_files/libs/quarto-html/quarto.js"></script>
-<script src="2-negativas-artigo-31_files/libs/quarto-html/popper.min.js"></script>
-<script src="2-negativas-artigo-31_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="2-negativas-artigo-31_files/libs/quarto-html/anchor.min.js"></script>
-<link href="2-negativas-artigo-31_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="2-negativas-artigo-31_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="2-negativas-artigo-31_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="2-negativas-artigo-31_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="2-negativas-artigo-31_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><style>html{ scroll-behavior: smooth; }</style>
+<script src="02-negativas-artigo-31_files/libs/clipboard/clipboard.min.js"></script>
+<script src="02-negativas-artigo-31_files/libs/quarto-html/quarto.js"></script>
+<script src="02-negativas-artigo-31_files/libs/quarto-html/popper.min.js"></script>
+<script src="02-negativas-artigo-31_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="02-negativas-artigo-31_files/libs/quarto-html/anchor.min.js"></script>
+<link href="02-negativas-artigo-31_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="02-negativas-artigo-31_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="02-negativas-artigo-31_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="02-negativas-artigo-31_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="02-negativas-artigo-31_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><style>html{ scroll-behavior: smooth; }</style>
 <script async="" src="https://hypothes.is/embed.js"></script>
 </head>
 <body>
@@ -144,20 +144,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 <div class="cell">
 <details><summary>Código</summary><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; ✔ ggplot2 3.3.6     ✔ purrr   0.3.4</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; ✔ tibble  3.1.8     ✔ dplyr   1.0.9</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; ✔ tidyr   1.2.0     ✔ stringr 1.4.0</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; ✔ readr   2.1.2     ✔ forcats 0.5.1</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; Warning: package 'tibble' was built under R version 4.2.1</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">library</span>(here)</span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt; here() starts at C:/Users/rauld/Documents/monitoramento-lai</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; </span></span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; Attaching package: 'lubridate'</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; ✔ ggplot2 3.3.6      ✔ purrr   0.3.5 </span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; ✔ tibble  3.1.8      ✔ dplyr   1.0.10</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; ✔ tidyr   1.2.1      ✔ stringr 1.4.1 </span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; ✔ readr   2.1.3      ✔ forcats 0.5.2 </span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt; here() starts at C:/Users/rdurl/OneDrive/Documentos/monitoramento-lai</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt; </span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; Attaching package: 'lubridate'</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; </span></span>
 <span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; </span></span>
 <span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt;     date, intersect, setdiff, union</span></span>
@@ -165,24 +165,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-20"><a href="#cb1-20"></a><span class="fu">library</span>(scales)</span>
 <span id="cb1-21"><a href="#cb1-21"></a><span class="co">#&gt; </span></span>
 <span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; Attaching package: 'scales'</span></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; The following object is masked from 'package:purrr':</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a><span class="co">#&gt; </span></span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="co">#&gt;     discard</span></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="co">#&gt; The following object is masked from 'package:readr':</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; </span></span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="co">#&gt; The following object is masked from 'package:purrr':</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a><span class="co">#&gt; </span></span>
+<span id="cb1-26"><a href="#cb1-26"></a><span class="co">#&gt;     discard</span></span>
 <span id="cb1-27"><a href="#cb1-27"></a><span class="co">#&gt; </span></span>
-<span id="cb1-28"><a href="#cb1-28"></a><span class="co">#&gt;     col_factor</span></span>
-<span id="cb1-29"><a href="#cb1-29"></a><span class="fu">library</span>(gt)</span>
-<span id="cb1-30"><a href="#cb1-30"></a><span class="co">#&gt; Warning: package 'gt' was built under R version 4.2.1</span></span>
-<span id="cb1-31"><a href="#cb1-31"></a><span class="fu">library</span>(tidytext)</span>
-<span id="cb1-32"><a href="#cb1-32"></a><span class="co">#&gt; Warning: package 'tidytext' was built under R version 4.2.1</span></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="co">#&gt; The following object is masked from 'package:readr':</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a><span class="co">#&gt; </span></span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="co">#&gt;     col_factor</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="fu">library</span>(tidytext)</span>
 <span id="cb1-33"><a href="#cb1-33"></a><span class="fu">library</span>(wordcloud)</span>
-<span id="cb1-34"><a href="#cb1-34"></a><span class="co">#&gt; Warning: package 'wordcloud' was built under R version 4.2.1</span></span>
-<span id="cb1-35"><a href="#cb1-35"></a><span class="co">#&gt; Carregando pacotes exigidos: RColorBrewer</span></span>
-<span id="cb1-36"><a href="#cb1-36"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/0-plot-aesthetics.R"</span>), <span class="at">encoding =</span> <span class="st">"utf-8"</span>)</span>
-<span id="cb1-37"><a href="#cb1-37"></a><span class="co">#&gt; You will likely need to install these fonts on your system as well.</span></span>
-<span id="cb1-38"><a href="#cb1-38"></a><span class="co">#&gt; </span></span>
-<span id="cb1-39"><a href="#cb1-39"></a><span class="co">#&gt; You can find them in [C:/Users/rauld/AppData/Local/R/win-library/4.2/hrbrthemes/fonts/roboto-condensed]</span></span>
-<span id="cb1-40"><a href="#cb1-40"></a><span class="st">`</span><span class="at">%notin%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y) <span class="sc">!</span>(x <span class="sc">%in%</span> y)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="co">#&gt; Carregando pacotes exigidos: RColorBrewer</span></span>
+<span id="cb1-35"><a href="#cb1-35"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/00-plot-aesthetics.R"</span>), <span class="at">encoding =</span> <span class="st">"utf-8"</span>)</span>
+<span id="cb1-36"><a href="#cb1-36"></a><span class="co">#&gt; You will likely need to install these fonts on your system as well.</span></span>
+<span id="cb1-37"><a href="#cb1-37"></a><span class="co">#&gt; </span></span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="co">#&gt; You can find them in [C:/Users/rdurl/AppData/Local/R/win-library/4.2/hrbrthemes/fonts/roboto-condensed]</span></span>
+<span id="cb1-39"><a href="#cb1-39"></a><span class="st">`</span><span class="at">%notin%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y) <span class="sc">!</span>(x <span class="sc">%in%</span> y)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="base-de-dados---visão-geral" class="level2"><h2 class="anchored" data-anchor-id="base-de-dados---visão-geral">Base de dados - visão geral</h2>
@@ -279,7 +278,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-7"><a href="#cb4-7"></a>pedidos_busca <span class="sc">%&gt;%</span></span>
 <span id="cb4-8"><a href="#cb4-8"></a>  <span class="fu">count</span>(</span>
 <span id="cb4-9"><a href="#cb4-9"></a>    menciona_art_31_lei_12527,</span>
-<span id="cb4-10"><a href="#cb4-10"></a>    menciona_art_60_dec_7724, </span>
+<span id="cb4-10"><a href="#cb4-10"></a>    menciona_art_60_dec_7724,</span>
 <span id="cb4-11"><a href="#cb4-11"></a>    <span class="at">name =</span> <span class="st">"qtde"</span></span>
 <span id="cb4-12"><a href="#cb4-12"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb4-13"><a href="#cb4-13"></a>  <span class="fu">mutate</span>(</span>
@@ -324,7 +323,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-52"><a href="#cb4-52"></a>      <span class="at">title =</span> <span class="st">"Negativas de acesso a informação"</span></span>
 <span id="cb4-53"><a href="#cb4-53"></a>    )</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="864"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="864"></p>
 </div>
 </div>
 </section><section id="alegações-de-necessidade-de-tratamento-de-informações-pessoais" class="level2"><h2 class="anchored" data-anchor-id="alegações-de-necessidade-de-tratamento-de-informações-pessoais">Alegações de necessidade de tratamento de informações pessoais</h2>
@@ -390,21 +389,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-59"><a href="#cb5-59"></a>    <span class="at">y =</span> <span class="st">"Percentual em relação ao total de acessos negados"</span></span>
 <span id="cb5-60"><a href="#cb5-60"></a>  )</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="864"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="864"></p>
 </div>
 </div>
 </section><section id="núvem-de-palavras---inss" class="level2"><h2 class="anchored" data-anchor-id="núvem-de-palavras---inss">Núvem de palavras - INSS</h2>
 <div class="cell">
 <details><summary>Código</summary><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>ids_inss <span class="ot">&lt;-</span> pedidos_busca <span class="sc">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(orgao, <span class="st">"^INSS"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">filter</span>(menciona_art_31_lei_12527 <span class="sc">&amp;</span> <span class="sc">!</span>menciona_art_60_dec_7724) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">filter</span>(menciona_art_31_lei_12527 <span class="sc">&amp;</span> <span class="sc">!</span>menciona_art_60_dec_7724) <span class="sc">%&gt;%</span></span>
 <span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">pull</span>(id_pedido)</span>
 <span id="cb6-5"><a href="#cb6-5"></a></span>
 <span id="cb6-6"><a href="#cb6-6"></a>pedidos_inss <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span></span>
 <span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">filter</span>(base <span class="sc">==</span> <span class="st">"Pedidos"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb6-8"><a href="#cb6-8"></a>  <span class="fu">select</span>(datasets) <span class="sc">%&gt;%</span></span>
 <span id="cb6-9"><a href="#cb6-9"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%in%</span> ids_inss) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-10"><a href="#cb6-10"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%in%</span> ids_inss) <span class="sc">%&gt;%</span></span>
 <span id="cb6-11"><a href="#cb6-11"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb6-12"><a href="#cb6-12"></a>    id_pedido,</span>
 <span id="cb6-13"><a href="#cb6-13"></a>    resumo,</span>
@@ -433,14 +432,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb7-3"><a href="#cb7-3"></a>    id_pedido,</span>
 <span id="cb7-4"><a href="#cb7-4"></a>    resumo</span>
-<span id="cb7-5"><a href="#cb7-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-7"><a href="#cb7-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a href="#cb7-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb7-8"><a href="#cb7-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb7-9"><a href="#cb7-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"rosa"</span>]]))</span>
 <span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; Joining, by = "word"</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-inss-resumo-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-inss-resumo-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -450,9 +449,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb8-3"><a href="#cb8-3"></a>    id_pedido,</span>
 <span id="cb8-4"><a href="#cb8-4"></a>    detalhamento</span>
-<span id="cb8-5"><a href="#cb8-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-6"><a href="#cb8-6"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-7"><a href="#cb8-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-5"><a href="#cb8-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb8-8"><a href="#cb8-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb8-9"><a href="#cb8-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_tb[[<span class="st">"azul"</span>]]))</span>
 <span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; Joining, by = "word"</span></span>
@@ -571,7 +570,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-123"><a href="#cb8-123"></a><span class="co">#&gt; Warning in wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]):</span></span>
 <span id="cb8-124"><a href="#cb8-124"></a><span class="co">#&gt; meses could not be fit on page. It will not be plotted.</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-inss-pedido-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-inss-pedido-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -581,9 +580,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb9-3"><a href="#cb9-3"></a>    id_pedido,</span>
 <span id="cb9-4"><a href="#cb9-4"></a>    resposta</span>
-<span id="cb9-5"><a href="#cb9-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-7"><a href="#cb9-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-5"><a href="#cb9-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb9-8"><a href="#cb9-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb9-9"><a href="#cb9-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"marrom"</span>]]))</span>
 <span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt; Joining, by = "word"</span></span>
@@ -714,7 +713,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-135"><a href="#cb9-135"></a><span class="co">#&gt; Warning in wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]):</span></span>
 <span id="cb9-136"><a href="#cb9-136"></a><span class="co">#&gt; consultas could not be fit on page. It will not be plotted.</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-inss-resposta-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-inss-resposta-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -724,14 +723,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details><summary>Código</summary><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>ids_me <span class="ot">&lt;-</span> pedidos_busca <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(orgao, <span class="st">"^ME "</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">filter</span>(menciona_art_31_lei_12527 <span class="sc">&amp;</span> <span class="sc">!</span>menciona_art_60_dec_7724) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">filter</span>(menciona_art_31_lei_12527 <span class="sc">&amp;</span> <span class="sc">!</span>menciona_art_60_dec_7724) <span class="sc">%&gt;%</span></span>
 <span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">pull</span>(id_pedido)</span>
 <span id="cb10-5"><a href="#cb10-5"></a></span>
 <span id="cb10-6"><a href="#cb10-6"></a>pedidos_me <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span></span>
 <span id="cb10-7"><a href="#cb10-7"></a>  <span class="fu">filter</span>(base <span class="sc">==</span> <span class="st">"Pedidos"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb10-8"><a href="#cb10-8"></a>  <span class="fu">select</span>(datasets) <span class="sc">%&gt;%</span></span>
 <span id="cb10-9"><a href="#cb10-9"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%in%</span> ids_me) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-10"><a href="#cb10-10"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%in%</span> ids_me) <span class="sc">%&gt;%</span></span>
 <span id="cb10-11"><a href="#cb10-11"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb10-12"><a href="#cb10-12"></a>    id_pedido,</span>
 <span id="cb10-13"><a href="#cb10-13"></a>    resumo,</span>
@@ -754,14 +753,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb11-3"><a href="#cb11-3"></a>    id_pedido,</span>
 <span id="cb11-4"><a href="#cb11-4"></a>    resumo</span>
-<span id="cb11-5"><a href="#cb11-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-6"><a href="#cb11-6"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-7"><a href="#cb11-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-5"><a href="#cb11-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb11-8"><a href="#cb11-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb11-9"><a href="#cb11-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"rosa"</span>]]))</span>
 <span id="cb11-10"><a href="#cb11-10"></a><span class="co">#&gt; Joining, by = "word"</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-me-resumo-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-me-resumo-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -771,9 +770,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb12-3"><a href="#cb12-3"></a>    id_pedido,</span>
 <span id="cb12-4"><a href="#cb12-4"></a>    detalhamento</span>
-<span id="cb12-5"><a href="#cb12-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-6"><a href="#cb12-6"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-7"><a href="#cb12-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-5"><a href="#cb12-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb12-8"><a href="#cb12-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb12-9"><a href="#cb12-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_tb[[<span class="st">"azul"</span>]]))</span>
 <span id="cb12-10"><a href="#cb12-10"></a><span class="co">#&gt; Joining, by = "word"</span></span>
@@ -788,7 +787,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-19"><a href="#cb12-19"></a><span class="co">#&gt; Warning in wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]):</span></span>
 <span id="cb12-20"><a href="#cb12-20"></a><span class="co">#&gt; proferido could not be fit on page. It will not be plotted.</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-me-pedido-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-me-pedido-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -798,9 +797,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb13-3"><a href="#cb13-3"></a>    id_pedido,</span>
 <span id="cb13-4"><a href="#cb13-4"></a>    resposta</span>
-<span id="cb13-5"><a href="#cb13-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-6"><a href="#cb13-6"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-7"><a href="#cb13-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb13-8"><a href="#cb13-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb13-9"><a href="#cb13-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"marrom"</span>]]))</span>
 <span id="cb13-10"><a href="#cb13-10"></a><span class="co">#&gt; Joining, by = "word"</span></span>
@@ -981,7 +980,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-185"><a href="#cb13-185"></a><span class="co">#&gt; Warning in wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]):</span></span>
 <span id="cb13-186"><a href="#cb13-186"></a><span class="co">#&gt; através could not be fit on page. It will not be plotted.</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-me-resposta-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-me-resposta-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -994,8 +993,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb14-2"><a href="#cb14-2"></a>  <span class="fu">filter</span>(base <span class="sc">==</span> <span class="st">"Pedidos"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">select</span>(datasets) <span class="sc">%&gt;%</span></span>
 <span id="cb14-4"><a href="#cb14-4"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%notin%</span> ids_inss) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-6"><a href="#cb14-6"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%notin%</span> ids_me) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%notin%</span> ids_inss) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%notin%</span> ids_me) <span class="sc">%&gt;%</span></span>
 <span id="cb14-7"><a href="#cb14-7"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb14-8"><a href="#cb14-8"></a>    id_pedido,</span>
 <span id="cb14-9"><a href="#cb14-9"></a>    resumo,</span>
@@ -1018,9 +1017,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb15-3"><a href="#cb15-3"></a>    id_pedido,</span>
 <span id="cb15-4"><a href="#cb15-4"></a>    resumo</span>
-<span id="cb15-5"><a href="#cb15-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-6"><a href="#cb15-6"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-7"><a href="#cb15-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-5"><a href="#cb15-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb15-8"><a href="#cb15-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb15-9"><a href="#cb15-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"rosa"</span>]]))</span>
 <span id="cb15-10"><a href="#cb15-10"></a><span class="co">#&gt; Joining, by = "word"</span></span>
@@ -1053,7 +1052,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb15-37"><a href="#cb15-37"></a><span class="co">#&gt; Warning in wordcloud(word, n, max.words = 350, colors = cores_aep[["rosa"]]):</span></span>
 <span id="cb15-38"><a href="#cb15-38"></a><span class="co">#&gt; gostaria could not be fit on page. It will not be plotted.</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-demais-orgaos-resumo-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-demais-orgaos-resumo-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -1063,9 +1062,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb16-3"><a href="#cb16-3"></a>    id_pedido,</span>
 <span id="cb16-4"><a href="#cb16-4"></a>    detalhamento</span>
-<span id="cb16-5"><a href="#cb16-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb16-6"><a href="#cb16-6"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span> </span>
-<span id="cb16-7"><a href="#cb16-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-5"><a href="#cb16-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb16-8"><a href="#cb16-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb16-9"><a href="#cb16-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_tb[[<span class="st">"azul"</span>]]))</span>
 <span id="cb16-10"><a href="#cb16-10"></a><span class="co">#&gt; Joining, by = "word"</span></span>
@@ -1318,7 +1317,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb16-257"><a href="#cb16-257"></a><span class="co">#&gt; Warning in wordcloud(word, n, max.words = 350, colors = cores_tb[["azul"]]):</span></span>
 <span id="cb16-258"><a href="#cb16-258"></a><span class="co">#&gt; cidade could not be fit on page. It will not be plotted.</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-demais-orgaos-pedido-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-demais-orgaos-pedido-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -1328,9 +1327,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb17-3"><a href="#cb17-3"></a>    id_pedido,</span>
 <span id="cb17-4"><a href="#cb17-4"></a>    resposta</span>
-<span id="cb17-5"><a href="#cb17-5"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-6"><a href="#cb17-6"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-7"><a href="#cb17-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-5"><a href="#cb17-5"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb17-8"><a href="#cb17-8"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb17-9"><a href="#cb17-9"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"marrom"</span>]]))</span>
 <span id="cb17-10"><a href="#cb17-10"></a><span class="co">#&gt; Joining, by = "word"</span></span>
@@ -1469,7 +1468,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb17-143"><a href="#cb17-143"></a><span class="co">#&gt; Warning in wordcloud(word, n, max.words = 350, colors = cores_aep[["marrom"]]):</span></span>
 <span id="cb17-144"><a href="#cb17-144"></a><span class="co">#&gt; cadastro could not be fit on page. It will not be plotted.</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="2-negativas-artigo-31_files/figure-html/wordcloud-demais-orgaos-resposta-1.png" class="img-fluid" width="480"></p>
+<p><img src="02-negativas-artigo-31_files/figure-html/wordcloud-demais-orgaos-resposta-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </div>
@@ -1501,17 +1500,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb18-22"><a href="#cb18-22"></a>  <span class="fu">filter</span>(motivo_negativa <span class="sc">==</span> grp2, qtde_orgao <span class="sc">&gt;</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb18-23"><a href="#cb18-23"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"menciona"</span>), <span class="sc">-</span>motivo_negativa) <span class="sc">%&gt;%</span></span>
 <span id="cb18-24"><a href="#cb18-24"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>perc)</span>
-<span id="cb18-25"><a href="#cb18-25"></a>  </span>
+<span id="cb18-25"><a href="#cb18-25"></a></span>
 <span id="cb18-26"><a href="#cb18-26"></a>busca_pedidos_orgao <span class="sc">%&gt;%</span></span>
 <span id="cb18-27"><a href="#cb18-27"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb18-28"><a href="#cb18-28"></a>    <span class="fu">across</span>(<span class="fu">contains</span>(<span class="st">"qtde"</span>), number, <span class="at">big.mark =</span> <span class="st">" "</span>),</span>
 <span id="cb18-29"><a href="#cb18-29"></a>    <span class="at">perc =</span> <span class="fu">percent</span>(perc, <span class="at">decimal.mark =</span> <span class="st">","</span>, <span class="at">big.mark =</span> <span class="st">"."</span>, <span class="at">accuracy =</span> <span class="fl">1.00</span>)</span>
-<span id="cb18-30"><a href="#cb18-30"></a>  )  <span class="sc">%&gt;%</span> </span>
-<span id="cb18-31"><a href="#cb18-31"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb18-30"><a href="#cb18-30"></a>  )  <span class="sc">%&gt;%</span></span>
+<span id="cb18-31"><a href="#cb18-31"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb18-32"><a href="#cb18-32"></a>  <span class="fu">tab_header</span>(</span>
 <span id="cb18-33"><a href="#cb18-33"></a>    <span class="at">title =</span> <span class="st">""</span>,</span>
 <span id="cb18-34"><a href="#cb18-34"></a>    <span class="at">subtitle =</span> <span class="st">"Percentual em relação ao total de negativas emitidas pelo órgão"</span></span>
-<span id="cb18-35"><a href="#cb18-35"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-35"><a href="#cb18-35"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb18-36"><a href="#cb18-36"></a>  <span class="fu">cols_label</span>(</span>
 <span id="cb18-37"><a href="#cb18-37"></a>    <span class="at">orgao =</span> <span class="fu">md</span>(<span class="st">"**Órgão**"</span>),</span>
 <span id="cb18-38"><a href="#cb18-38"></a>    <span class="at">qtde_motivo_negativa =</span> <span class="fu">md</span>(<span class="st">"**Citação&lt;br/&gt;Art. 31 - Lei 12.527**"</span>),</span>
@@ -2279,7 +2278,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb19-12"><a href="#cb19-12"></a>    <span class="at">menciona_beneficio =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(resumo, <span class="st">"beneficio"</span>), <span class="st">"benefício"</span>, <span class="st">""</span>),</span>
 <span id="cb19-13"><a href="#cb19-13"></a>    <span class="at">menciona_cnis =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(resumo, <span class="st">"cnis"</span>), <span class="st">"CNIS"</span>, <span class="st">""</span>),</span>
 <span id="cb19-14"><a href="#cb19-14"></a>    <span class="at">menciona_segunda_via =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(resumo, <span class="st">"segunda via"</span>), <span class="st">"2ª via"</span>, <span class="st">""</span>)</span>
-<span id="cb19-15"><a href="#cb19-15"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-15"><a href="#cb19-15"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb19-16"><a href="#cb19-16"></a>  <span class="fu">left_join</span>(pedidos_inss)</span>
 <span id="cb19-17"><a href="#cb19-17"></a></span>
 <span id="cb19-18"><a href="#cb19-18"></a>name_glue <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">select</span>(resultado_busca, <span class="fu">starts_with</span>(<span class="st">"menciona"</span>))) <span class="sc">%&gt;%</span></span>
@@ -2293,7 +2292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb19-26"><a href="#cb19-26"></a>  )</span>
 <span id="cb19-27"><a href="#cb19-27"></a></span>
 <span id="cb19-28"><a href="#cb19-28"></a>resultado_busca <span class="sc">%&gt;%</span></span>
-<span id="cb19-29"><a href="#cb19-29"></a>    <span class="fu">select</span>(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-29"><a href="#cb19-29"></a>    <span class="fu">select</span>(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span></span>
 <span id="cb19-30"><a href="#cb19-30"></a>    googlesheets4<span class="sc">::</span><span class="fu">write_sheet</span>(<span class="st">"1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs"</span>, <span class="at">sheet =</span> <span class="st">"INSS"</span>)</span>
 <span id="cb19-31"><a href="#cb19-31"></a></span>
 <span id="cb19-32"><a href="#cb19-32"></a><span class="co"># Resultados Ministério Economia</span></span>
@@ -2305,9 +2304,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb19-38"><a href="#cb19-38"></a>    <span class="at">link =</span> <span class="fu">str_glue</span>(<span class="st">"http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"</span>),</span>
 <span id="cb19-39"><a href="#cb19-39"></a>    <span class="at">link =</span> <span class="fu">str_glue</span>(<span class="st">'=HIPERLINK("{link}"; "lINK")'</span>),</span>
 <span id="cb19-40"><a href="#cb19-40"></a>    <span class="at">termos_mencionados =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(resumo, <span class="st">"acordao"</span>), <span class="st">"acordão"</span>, <span class="st">""</span>)</span>
-<span id="cb19-41"><a href="#cb19-41"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-42"><a href="#cb19-42"></a>  <span class="fu">left_join</span>(pedidos_me) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-43"><a href="#cb19-43"></a>  <span class="fu">select</span>(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-41"><a href="#cb19-41"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-42"><a href="#cb19-42"></a>  <span class="fu">left_join</span>(pedidos_me) <span class="sc">%&gt;%</span></span>
+<span id="cb19-43"><a href="#cb19-43"></a>  <span class="fu">select</span>(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span></span>
 <span id="cb19-44"><a href="#cb19-44"></a>  googlesheets4<span class="sc">::</span><span class="fu">write_sheet</span>(<span class="st">"1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs"</span>, <span class="at">sheet =</span> <span class="st">"Ministério da Economia"</span>)</span>
 <span id="cb19-45"><a href="#cb19-45"></a></span>
 <span id="cb19-46"><a href="#cb19-46"></a><span class="co"># Resultados Todos os órgãos</span></span>
@@ -2319,9 +2318,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb19-52"><a href="#cb19-52"></a>    id_pedido,</span>
 <span id="cb19-53"><a href="#cb19-53"></a>    <span class="at">link =</span> <span class="fu">str_glue</span>(<span class="st">"http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"</span>),</span>
 <span id="cb19-54"><a href="#cb19-54"></a>    <span class="at">link =</span> <span class="fu">str_glue</span>(<span class="st">'=HIPERLINK("{link}"; "lINK")'</span>)</span>
-<span id="cb19-55"><a href="#cb19-55"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-56"><a href="#cb19-56"></a>  <span class="fu">left_join</span>(pedidos_demais_orgaos) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-57"><a href="#cb19-57"></a>  <span class="fu">select</span>(id_pedido, link, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-55"><a href="#cb19-55"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-56"><a href="#cb19-56"></a>  <span class="fu">left_join</span>(pedidos_demais_orgaos) <span class="sc">%&gt;%</span></span>
+<span id="cb19-57"><a href="#cb19-57"></a>  <span class="fu">select</span>(id_pedido, link, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span></span>
 <span id="cb19-58"><a href="#cb19-58"></a>  googlesheets4<span class="sc">::</span><span class="fu">write_sheet</span>(<span class="st">"1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs"</span>, <span class="at">sheet =</span> <span class="st">"Demais órgãos"</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -2497,12 +2496,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-19"><a href="#cb20-19"></a><span class="co">    comments:</span></span>
 <span id="cb20-20"><a href="#cb20-20"></a><span class="co">      hypothesis: true</span></span>
 <span id="cb20-21"><a href="#cb20-21"></a><span class="an">knitr:</span></span>
-<span id="cb20-22"><a href="#cb20-22"></a><span class="co">  opts_chunk: </span></span>
+<span id="cb20-22"><a href="#cb20-22"></a><span class="co">  opts_chunk:</span></span>
 <span id="cb20-23"><a href="#cb20-23"></a><span class="co">    collapse: true</span></span>
-<span id="cb20-24"><a href="#cb20-24"></a><span class="co">    comment: "#&gt;" </span></span>
-<span id="cb20-25"><a href="#cb20-25"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb20-24"><a href="#cb20-24"></a><span class="co">    comment: "#&gt;"</span></span>
+<span id="cb20-25"><a href="#cb20-25"></a><span class="an">editor_options:</span></span>
 <span id="cb20-26"><a href="#cb20-26"></a><span class="co">  chunk_output_type: console</span></span>
-<span id="cb20-27"><a href="#cb20-27"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb20-27"><a href="#cb20-27"></a><span class="an">execute:</span></span>
 <span id="cb20-28"><a href="#cb20-28"></a><span class="co">  cache: false</span></span>
 <span id="cb20-29"><a href="#cb20-29"></a><span class="co">---</span></span>
 <span id="cb20-30"><a href="#cb20-30"></a></span>
@@ -2538,7 +2537,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-62"><a href="#cb20-62"></a><span class="fu">library</span>(gt)</span>
 <span id="cb20-63"><a href="#cb20-63"></a><span class="fu">library</span>(tidytext)</span>
 <span id="cb20-64"><a href="#cb20-64"></a><span class="fu">library</span>(wordcloud)</span>
-<span id="cb20-65"><a href="#cb20-65"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/0-plot-aesthetics.R"</span>), <span class="at">encoding =</span> <span class="st">"utf-8"</span>)</span>
+<span id="cb20-65"><a href="#cb20-65"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"src/00-plot-aesthetics.R"</span>), <span class="at">encoding =</span> <span class="st">"utf-8"</span>)</span>
 <span id="cb20-66"><a href="#cb20-66"></a><span class="st">`</span><span class="at">%notin%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y) <span class="sc">!</span>(x <span class="sc">%in%</span> y)</span>
 <span id="cb20-67"><a href="#cb20-67"></a><span class="in">```</span></span>
 <span id="cb20-68"><a href="#cb20-68"></a></span>
@@ -2617,7 +2616,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-147"><a href="#cb20-147"></a>pedidos_busca <span class="sc">%&gt;%</span></span>
 <span id="cb20-148"><a href="#cb20-148"></a>  <span class="fu">count</span>(</span>
 <span id="cb20-149"><a href="#cb20-149"></a>    menciona_art_31_lei_12527,</span>
-<span id="cb20-150"><a href="#cb20-150"></a>    menciona_art_60_dec_7724, </span>
+<span id="cb20-150"><a href="#cb20-150"></a>    menciona_art_60_dec_7724,</span>
 <span id="cb20-151"><a href="#cb20-151"></a>    <span class="at">name =</span> <span class="st">"qtde"</span></span>
 <span id="cb20-152"><a href="#cb20-152"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb20-153"><a href="#cb20-153"></a>  <span class="fu">mutate</span>(</span>
@@ -2735,14 +2734,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-269"><a href="#cb20-269"></a></span>
 <span id="cb20-270"><a href="#cb20-270"></a>ids_inss <span class="ot">&lt;-</span> pedidos_busca <span class="sc">%&gt;%</span></span>
 <span id="cb20-271"><a href="#cb20-271"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(orgao, <span class="st">"^INSS"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb20-272"><a href="#cb20-272"></a>  <span class="fu">filter</span>(menciona_art_31_lei_12527 <span class="sc">&amp;</span> <span class="sc">!</span>menciona_art_60_dec_7724) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-272"><a href="#cb20-272"></a>  <span class="fu">filter</span>(menciona_art_31_lei_12527 <span class="sc">&amp;</span> <span class="sc">!</span>menciona_art_60_dec_7724) <span class="sc">%&gt;%</span></span>
 <span id="cb20-273"><a href="#cb20-273"></a>  <span class="fu">pull</span>(id_pedido)</span>
 <span id="cb20-274"><a href="#cb20-274"></a></span>
 <span id="cb20-275"><a href="#cb20-275"></a>pedidos_inss <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span></span>
 <span id="cb20-276"><a href="#cb20-276"></a>  <span class="fu">filter</span>(base <span class="sc">==</span> <span class="st">"Pedidos"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-277"><a href="#cb20-277"></a>  <span class="fu">select</span>(datasets) <span class="sc">%&gt;%</span></span>
 <span id="cb20-278"><a href="#cb20-278"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb20-279"><a href="#cb20-279"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%in%</span> ids_inss) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-279"><a href="#cb20-279"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%in%</span> ids_inss) <span class="sc">%&gt;%</span></span>
 <span id="cb20-280"><a href="#cb20-280"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb20-281"><a href="#cb20-281"></a>    id_pedido,</span>
 <span id="cb20-282"><a href="#cb20-282"></a>    resumo,</span>
@@ -2772,9 +2771,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-308"><a href="#cb20-308"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-309"><a href="#cb20-309"></a>    id_pedido,</span>
 <span id="cb20-310"><a href="#cb20-310"></a>    resumo</span>
-<span id="cb20-311"><a href="#cb20-311"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-312"><a href="#cb20-312"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-313"><a href="#cb20-313"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-311"><a href="#cb20-311"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-312"><a href="#cb20-312"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span></span>
+<span id="cb20-313"><a href="#cb20-313"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-314"><a href="#cb20-314"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-315"><a href="#cb20-315"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"rosa"</span>]]))</span>
 <span id="cb20-316"><a href="#cb20-316"></a><span class="in">```</span></span>
@@ -2790,9 +2789,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-328"><a href="#cb20-328"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-329"><a href="#cb20-329"></a>    id_pedido,</span>
 <span id="cb20-330"><a href="#cb20-330"></a>    detalhamento</span>
-<span id="cb20-331"><a href="#cb20-331"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-332"><a href="#cb20-332"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-333"><a href="#cb20-333"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-331"><a href="#cb20-331"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-332"><a href="#cb20-332"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span></span>
+<span id="cb20-333"><a href="#cb20-333"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-334"><a href="#cb20-334"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-335"><a href="#cb20-335"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_tb[[<span class="st">"azul"</span>]]))</span>
 <span id="cb20-336"><a href="#cb20-336"></a><span class="in">```</span></span>
@@ -2808,9 +2807,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-348"><a href="#cb20-348"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-349"><a href="#cb20-349"></a>    id_pedido,</span>
 <span id="cb20-350"><a href="#cb20-350"></a>    resposta</span>
-<span id="cb20-351"><a href="#cb20-351"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-352"><a href="#cb20-352"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-353"><a href="#cb20-353"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-351"><a href="#cb20-351"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-352"><a href="#cb20-352"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span></span>
+<span id="cb20-353"><a href="#cb20-353"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-354"><a href="#cb20-354"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-355"><a href="#cb20-355"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"marrom"</span>]]))</span>
 <span id="cb20-356"><a href="#cb20-356"></a><span class="in">```</span></span>
@@ -2824,14 +2823,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-366"><a href="#cb20-366"></a></span>
 <span id="cb20-367"><a href="#cb20-367"></a>ids_me <span class="ot">&lt;-</span> pedidos_busca <span class="sc">%&gt;%</span></span>
 <span id="cb20-368"><a href="#cb20-368"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(orgao, <span class="st">"^ME "</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb20-369"><a href="#cb20-369"></a>  <span class="fu">filter</span>(menciona_art_31_lei_12527 <span class="sc">&amp;</span> <span class="sc">!</span>menciona_art_60_dec_7724) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-369"><a href="#cb20-369"></a>  <span class="fu">filter</span>(menciona_art_31_lei_12527 <span class="sc">&amp;</span> <span class="sc">!</span>menciona_art_60_dec_7724) <span class="sc">%&gt;%</span></span>
 <span id="cb20-370"><a href="#cb20-370"></a>  <span class="fu">pull</span>(id_pedido)</span>
 <span id="cb20-371"><a href="#cb20-371"></a></span>
 <span id="cb20-372"><a href="#cb20-372"></a>pedidos_me <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span></span>
 <span id="cb20-373"><a href="#cb20-373"></a>  <span class="fu">filter</span>(base <span class="sc">==</span> <span class="st">"Pedidos"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-374"><a href="#cb20-374"></a>  <span class="fu">select</span>(datasets) <span class="sc">%&gt;%</span></span>
 <span id="cb20-375"><a href="#cb20-375"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb20-376"><a href="#cb20-376"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%in%</span> ids_me) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-376"><a href="#cb20-376"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%in%</span> ids_me) <span class="sc">%&gt;%</span></span>
 <span id="cb20-377"><a href="#cb20-377"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb20-378"><a href="#cb20-378"></a>    id_pedido,</span>
 <span id="cb20-379"><a href="#cb20-379"></a>    resumo,</span>
@@ -2855,9 +2854,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-399"><a href="#cb20-399"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-400"><a href="#cb20-400"></a>    id_pedido,</span>
 <span id="cb20-401"><a href="#cb20-401"></a>    resumo</span>
-<span id="cb20-402"><a href="#cb20-402"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-403"><a href="#cb20-403"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-404"><a href="#cb20-404"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-402"><a href="#cb20-402"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-403"><a href="#cb20-403"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span></span>
+<span id="cb20-404"><a href="#cb20-404"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-405"><a href="#cb20-405"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-406"><a href="#cb20-406"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"rosa"</span>]]))</span>
 <span id="cb20-407"><a href="#cb20-407"></a><span class="in">```</span></span>
@@ -2873,9 +2872,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-419"><a href="#cb20-419"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-420"><a href="#cb20-420"></a>    id_pedido,</span>
 <span id="cb20-421"><a href="#cb20-421"></a>    detalhamento</span>
-<span id="cb20-422"><a href="#cb20-422"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-423"><a href="#cb20-423"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-424"><a href="#cb20-424"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-422"><a href="#cb20-422"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-423"><a href="#cb20-423"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span></span>
+<span id="cb20-424"><a href="#cb20-424"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-425"><a href="#cb20-425"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-426"><a href="#cb20-426"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_tb[[<span class="st">"azul"</span>]]))</span>
 <span id="cb20-427"><a href="#cb20-427"></a><span class="in">```</span></span>
@@ -2891,9 +2890,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-439"><a href="#cb20-439"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-440"><a href="#cb20-440"></a>    id_pedido,</span>
 <span id="cb20-441"><a href="#cb20-441"></a>    resposta</span>
-<span id="cb20-442"><a href="#cb20-442"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-443"><a href="#cb20-443"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-444"><a href="#cb20-444"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-442"><a href="#cb20-442"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-443"><a href="#cb20-443"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span></span>
+<span id="cb20-444"><a href="#cb20-444"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-445"><a href="#cb20-445"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-446"><a href="#cb20-446"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"marrom"</span>]]))</span>
 <span id="cb20-447"><a href="#cb20-447"></a><span class="in">```</span></span>
@@ -2911,8 +2910,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-461"><a href="#cb20-461"></a>  <span class="fu">filter</span>(base <span class="sc">==</span> <span class="st">"Pedidos"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-462"><a href="#cb20-462"></a>  <span class="fu">select</span>(datasets) <span class="sc">%&gt;%</span></span>
 <span id="cb20-463"><a href="#cb20-463"></a>  <span class="fu">unnest</span>(datasets) <span class="sc">%&gt;%</span></span>
-<span id="cb20-464"><a href="#cb20-464"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%notin%</span> ids_inss) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-465"><a href="#cb20-465"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%notin%</span> ids_me) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-464"><a href="#cb20-464"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%notin%</span> ids_inss) <span class="sc">%&gt;%</span></span>
+<span id="cb20-465"><a href="#cb20-465"></a>  <span class="fu">filter</span>(id_pedido <span class="sc">%notin%</span> ids_me) <span class="sc">%&gt;%</span></span>
 <span id="cb20-466"><a href="#cb20-466"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb20-467"><a href="#cb20-467"></a>    id_pedido,</span>
 <span id="cb20-468"><a href="#cb20-468"></a>    resumo,</span>
@@ -2936,9 +2935,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-488"><a href="#cb20-488"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-489"><a href="#cb20-489"></a>    id_pedido,</span>
 <span id="cb20-490"><a href="#cb20-490"></a>    resumo</span>
-<span id="cb20-491"><a href="#cb20-491"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-492"><a href="#cb20-492"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-493"><a href="#cb20-493"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-491"><a href="#cb20-491"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-492"><a href="#cb20-492"></a>  <span class="fu">unnest_tokens</span>(word, resumo) <span class="sc">%&gt;%</span></span>
+<span id="cb20-493"><a href="#cb20-493"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-494"><a href="#cb20-494"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-495"><a href="#cb20-495"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"rosa"</span>]]))</span>
 <span id="cb20-496"><a href="#cb20-496"></a><span class="in">```</span></span>
@@ -2954,9 +2953,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-508"><a href="#cb20-508"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-509"><a href="#cb20-509"></a>    id_pedido,</span>
 <span id="cb20-510"><a href="#cb20-510"></a>    detalhamento</span>
-<span id="cb20-511"><a href="#cb20-511"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-512"><a href="#cb20-512"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-513"><a href="#cb20-513"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-511"><a href="#cb20-511"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-512"><a href="#cb20-512"></a>  <span class="fu">unnest_tokens</span>(word, detalhamento) <span class="sc">%&gt;%</span></span>
+<span id="cb20-513"><a href="#cb20-513"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-514"><a href="#cb20-514"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-515"><a href="#cb20-515"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_tb[[<span class="st">"azul"</span>]]))</span>
 <span id="cb20-516"><a href="#cb20-516"></a><span class="in">```</span></span>
@@ -2972,9 +2971,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-528"><a href="#cb20-528"></a>  <span class="fu">select</span>(</span>
 <span id="cb20-529"><a href="#cb20-529"></a>    id_pedido,</span>
 <span id="cb20-530"><a href="#cb20-530"></a>    resposta</span>
-<span id="cb20-531"><a href="#cb20-531"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-532"><a href="#cb20-532"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-533"><a href="#cb20-533"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-531"><a href="#cb20-531"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-532"><a href="#cb20-532"></a>  <span class="fu">unnest_tokens</span>(word, resposta) <span class="sc">%&gt;%</span></span>
+<span id="cb20-533"><a href="#cb20-533"></a>  <span class="fu">anti_join</span>(stopwords) <span class="sc">%&gt;%</span></span>
 <span id="cb20-534"><a href="#cb20-534"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-535"><a href="#cb20-535"></a>  <span class="fu">with</span>(<span class="fu">wordcloud</span>(word, n, <span class="at">max.words =</span> <span class="dv">350</span>, <span class="at">colors =</span> cores_aep[[<span class="st">"marrom"</span>]]))</span>
 <span id="cb20-536"><a href="#cb20-536"></a><span class="in">```</span></span>
@@ -3011,17 +3010,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-569"><a href="#cb20-569"></a>  <span class="fu">filter</span>(motivo_negativa <span class="sc">==</span> grp2, qtde_orgao <span class="sc">&gt;</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-570"><a href="#cb20-570"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"menciona"</span>), <span class="sc">-</span>motivo_negativa) <span class="sc">%&gt;%</span></span>
 <span id="cb20-571"><a href="#cb20-571"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>perc)</span>
-<span id="cb20-572"><a href="#cb20-572"></a>  </span>
+<span id="cb20-572"><a href="#cb20-572"></a></span>
 <span id="cb20-573"><a href="#cb20-573"></a>busca_pedidos_orgao <span class="sc">%&gt;%</span></span>
 <span id="cb20-574"><a href="#cb20-574"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb20-575"><a href="#cb20-575"></a>    <span class="fu">across</span>(<span class="fu">contains</span>(<span class="st">"qtde"</span>), number, <span class="at">big.mark =</span> <span class="st">" "</span>),</span>
 <span id="cb20-576"><a href="#cb20-576"></a>    <span class="at">perc =</span> <span class="fu">percent</span>(perc, <span class="at">decimal.mark =</span> <span class="st">","</span>, <span class="at">big.mark =</span> <span class="st">"."</span>, <span class="at">accuracy =</span> <span class="fl">1.00</span>)</span>
-<span id="cb20-577"><a href="#cb20-577"></a>  )  <span class="sc">%&gt;%</span> </span>
-<span id="cb20-578"><a href="#cb20-578"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb20-577"><a href="#cb20-577"></a>  )  <span class="sc">%&gt;%</span></span>
+<span id="cb20-578"><a href="#cb20-578"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb20-579"><a href="#cb20-579"></a>  <span class="fu">tab_header</span>(</span>
 <span id="cb20-580"><a href="#cb20-580"></a>    <span class="at">title =</span> <span class="st">""</span>,</span>
 <span id="cb20-581"><a href="#cb20-581"></a>    <span class="at">subtitle =</span> <span class="st">"Percentual em relação ao total de negativas emitidas pelo órgão"</span></span>
-<span id="cb20-582"><a href="#cb20-582"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-582"><a href="#cb20-582"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb20-583"><a href="#cb20-583"></a>  <span class="fu">cols_label</span>(</span>
 <span id="cb20-584"><a href="#cb20-584"></a>    <span class="at">orgao =</span> <span class="fu">md</span>(<span class="st">"**Órgão**"</span>),</span>
 <span id="cb20-585"><a href="#cb20-585"></a>    <span class="at">qtde_motivo_negativa =</span> <span class="fu">md</span>(<span class="st">"**Citação&lt;br/&gt;Art. 31 - Lei 12.527**"</span>),</span>
@@ -3050,7 +3049,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-610"><a href="#cb20-610"></a>    <span class="at">menciona_beneficio =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(resumo, <span class="st">"beneficio"</span>), <span class="st">"benefício"</span>, <span class="st">""</span>),</span>
 <span id="cb20-611"><a href="#cb20-611"></a>    <span class="at">menciona_cnis =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(resumo, <span class="st">"cnis"</span>), <span class="st">"CNIS"</span>, <span class="st">""</span>),</span>
 <span id="cb20-612"><a href="#cb20-612"></a>    <span class="at">menciona_segunda_via =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(resumo, <span class="st">"segunda via"</span>), <span class="st">"2ª via"</span>, <span class="st">""</span>)</span>
-<span id="cb20-613"><a href="#cb20-613"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-613"><a href="#cb20-613"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb20-614"><a href="#cb20-614"></a>  <span class="fu">left_join</span>(pedidos_inss)</span>
 <span id="cb20-615"><a href="#cb20-615"></a></span>
 <span id="cb20-616"><a href="#cb20-616"></a>name_glue <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">select</span>(resultado_busca, <span class="fu">starts_with</span>(<span class="st">"menciona"</span>))) <span class="sc">%&gt;%</span></span>
@@ -3064,7 +3063,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-624"><a href="#cb20-624"></a>  )</span>
 <span id="cb20-625"><a href="#cb20-625"></a></span>
 <span id="cb20-626"><a href="#cb20-626"></a>resultado_busca <span class="sc">%&gt;%</span></span>
-<span id="cb20-627"><a href="#cb20-627"></a>    <span class="fu">select</span>(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-627"><a href="#cb20-627"></a>    <span class="fu">select</span>(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span></span>
 <span id="cb20-628"><a href="#cb20-628"></a>    googlesheets4<span class="sc">::</span><span class="fu">write_sheet</span>(<span class="st">"1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs"</span>, <span class="at">sheet =</span> <span class="st">"INSS"</span>)</span>
 <span id="cb20-629"><a href="#cb20-629"></a></span>
 <span id="cb20-630"><a href="#cb20-630"></a><span class="co"># Resultados Ministério Economia</span></span>
@@ -3076,9 +3075,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-636"><a href="#cb20-636"></a>    <span class="at">link =</span> <span class="fu">str_glue</span>(<span class="st">"http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"</span>),</span>
 <span id="cb20-637"><a href="#cb20-637"></a>    <span class="at">link =</span> <span class="fu">str_glue</span>(<span class="st">'=HIPERLINK("{link}"; "lINK")'</span>),</span>
 <span id="cb20-638"><a href="#cb20-638"></a>    <span class="at">termos_mencionados =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(resumo, <span class="st">"acordao"</span>), <span class="st">"acordão"</span>, <span class="st">""</span>)</span>
-<span id="cb20-639"><a href="#cb20-639"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-640"><a href="#cb20-640"></a>  <span class="fu">left_join</span>(pedidos_me) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-641"><a href="#cb20-641"></a>  <span class="fu">select</span>(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-639"><a href="#cb20-639"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-640"><a href="#cb20-640"></a>  <span class="fu">left_join</span>(pedidos_me) <span class="sc">%&gt;%</span></span>
+<span id="cb20-641"><a href="#cb20-641"></a>  <span class="fu">select</span>(id_pedido, link, termos_mencionados, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span></span>
 <span id="cb20-642"><a href="#cb20-642"></a>  googlesheets4<span class="sc">::</span><span class="fu">write_sheet</span>(<span class="st">"1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs"</span>, <span class="at">sheet =</span> <span class="st">"Ministério da Economia"</span>)</span>
 <span id="cb20-643"><a href="#cb20-643"></a></span>
 <span id="cb20-644"><a href="#cb20-644"></a><span class="co"># Resultados Todos os órgãos</span></span>
@@ -3090,9 +3089,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-650"><a href="#cb20-650"></a>    id_pedido,</span>
 <span id="cb20-651"><a href="#cb20-651"></a>    <span class="at">link =</span> <span class="fu">str_glue</span>(<span class="st">"http://www.consultaesic.cgu.gov.br/busca/_layouts/15/DetalhePedido/DetalhePedido.aspx?nup={protocolo}"</span>),</span>
 <span id="cb20-652"><a href="#cb20-652"></a>    <span class="at">link =</span> <span class="fu">str_glue</span>(<span class="st">'=HIPERLINK("{link}"; "lINK")'</span>)</span>
-<span id="cb20-653"><a href="#cb20-653"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-654"><a href="#cb20-654"></a>  <span class="fu">left_join</span>(pedidos_demais_orgaos) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-655"><a href="#cb20-655"></a>  <span class="fu">select</span>(id_pedido, link, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-653"><a href="#cb20-653"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-654"><a href="#cb20-654"></a>  <span class="fu">left_join</span>(pedidos_demais_orgaos) <span class="sc">%&gt;%</span></span>
+<span id="cb20-655"><a href="#cb20-655"></a>  <span class="fu">select</span>(id_pedido, link, resumo, detalhamento, resposta) <span class="sc">%&gt;%</span></span>
 <span id="cb20-656"><a href="#cb20-656"></a>  googlesheets4<span class="sc">::</span><span class="fu">write_sheet</span>(<span class="st">"1WP_pGGV6OoJcGgg-9j00V2h2HgrKEJ3aSvw5bHxqUrs"</span>, <span class="at">sheet =</span> <span class="st">"Demais órgãos"</span>)</span>
 <span id="cb20-657"><a href="#cb20-657"></a><span class="in">```</span></span>
 </code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3101,5 +3100,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<script src="2-negativas-artigo-31_files/libs/quarto-html/zenscroll-min.js"></script>
+<script src="02-negativas-artigo-31_files/libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
