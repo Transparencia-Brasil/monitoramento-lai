@@ -53,7 +53,7 @@ base_bert <- "data" %>%
 # Base de pedidos --------------------------------------------------------------
 
 # Função para reduzir número de colunas e tornar base de pedidos mais leve
-remove_colunas_não_usadas_da_tabela_pedidos <- function(df) {
+remove_colunas_nao_usadas_da_tabela_pedidos <- function(df) {
   df %>%
     select(id_pedido, protocolo, orgao, data_registro, decisao) %>%
     distinct()
@@ -64,7 +64,7 @@ pedidos_full <- "data/base-cgu-filtrada.rds" %>%
   here() %>%
   readRDS() %>%
   filter(base == "Pedidos") %>%
-  transmute(datasets = map(datasets, remove_colunas_não_usadas_da_tabela_pedidos)) %>%
+  transmute(datasets = map(datasets, remove_colunas_nao_usadas_da_tabela_pedidos)) %>%
   unnest(datasets) %>%
   filter(year(data_registro) %in% c("2021", "2022")) %>%
   mutate(decisao_valida = decisao %in% c(
