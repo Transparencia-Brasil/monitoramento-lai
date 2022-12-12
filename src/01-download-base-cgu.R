@@ -12,11 +12,11 @@ years <- 2012:2022
 zip_regex <- c("Recursos_Reclamacoes", "Pedidos")
 url_base <- "https://dadosabertos-download.cgu.gov.br/FalaBR/Arquivos_FalaBR"
 
-zips_cgu <- tibble(year = rep(years, 2)) %>% 
-  expand(year, zip_regex) %>% 
+zips_cgu <- tibble(year = rep(years, 2)) %>%
+  expand(year, zip_regex) %>%
   mutate(zip_file = str_glue("{zip_regex}_csv_{year}.zip"),
          url = str_glue("{url_base}/{zip_file}"),
-         destfile = str_glue("{exdir}/{zip_file}")) 
+         destfile = str_glue("{exdir}/{zip_file}"))
 
 #' download !
 download.file_safe <- safely(download.file)
@@ -26,9 +26,9 @@ walk2(zips_cgu$url, zips_cgu$destfile, download.file_safe, mode = "wb")
 unzip_safe <- safely(unzip)
 walk(zips_cgu$destfile, unzip_safe, exdir = exdir)
 
-files_cgu <- here("data/temp") %>% 
-  list.files(pattern = "csv$",full.names = TRUE) %>% 
-  as_tibble_col(column_name = "csv") %>% 
+files_cgu <- here("data/temp") %>%
+  list.files(pattern = "csv$",full.names = TRUE) %>%
+  as_tibble_col(column_name = "csv") %>%
   mutate(ano = as.integer(str_extract(csv, "\\d+(?=\\.csv)")),
          interacao = str_extract(csv, "(?<=\\d{8}_).+(?=_csv)"),
          base = case_when(
@@ -39,9 +39,9 @@ files_cgu <- here("data/temp") %>%
 
 #' extract data !
 read_lai <- function(arquivo) {
-  
+
   message(glue::glue("get {arquivo}"))
-  
+
   if (stringr::str_detect(arquivo, "_Pedidos")) {
     colunas <- c(
       "id_pedido",
@@ -101,7 +101,7 @@ read_lai <- function(arquivo) {
   } else {
     stop(glue::glue("{arquivo} is not a LAI file!"))
   }
-  
+
   df <- read_delim(
     delim = ";",
     file = arquivo,
@@ -111,10 +111,10 @@ read_lai <- function(arquivo) {
     na = c("", " ", "NA"),
     locale = locale(encoding = "UTF-16LE")
   )
-  
+
   #' Base de dados de pedidos/recursos pronta para uso
   if (!str_detect(arquivo, "Solicitantes")) {
-    df <- df %>% 
+    df <- df %>%
       mutate(
         ts_registro = data_registro,
         ts_resposta = data_resposta,
@@ -136,53 +136,53 @@ read_lai <- function(arquivo) {
         governo_que_registrou = factor(governo_que_registrou, levels = c("Dilma I", "Dilma II", "Temer", "Bolsonaro"))
       )
   }
-  
+
   return(df)
-  
+
 }
 
 #' Base de dados simplificada da CGU:
-#' * pedidos              
-#' * solicitantes_pedidos 
-#' * recursos_reclamacoes 
+#' * pedidos
+#' * solicitantes_pedidos
+#' * recursos_reclamacoes
 #' * solicitantes_recursos
-base_cgu <- files_cgu %>% 
-  mutate(datasets = map(csv, read_lai)) %>% 
+base_cgu <- files_cgu %>%
+  mutate(datasets = map(csv, read_lai)) %>%
   transmute(
     base,
     datasets = map2(datasets, interacao, ~ mutate(.x, interacao = .y)),
     datasets = map2(datasets, ano, ~ mutate(.x, ano = .y))
-  ) %>% 
-  group_by(base) %>% 
-  nest() %>% 
-  ungroup() %>% 
+  ) %>%
+  group_by(base) %>%
+  nest() %>%
+  ungroup() %>%
   transmute(base, datasets = map(data, unnest, datasets))
 
 #' metadados
 read_metadados <- function (txt) {
-  read_delim(txt, "\n", col_names = "texto", 
-             col_types = cols(.default = col_character()), 
+  read_delim(txt, "\n", col_names = "texto",
+             col_types = cols(.default = col_character()),
              locale = locale(encoding = "Latin1"))
 }
 
-meta <- "https://falabr.cgu.gov.br/publico/DownloadDados/{base_cgu$base}-Formato.txt" %>% 
-  str_glue() %>% 
-  map_df(read_metadados) %>% 
+meta <- "https://falabr.cgu.gov.br/publico/DownloadDados/{base_cgu$base}-Formato.txt" %>%
+  str_glue() %>%
+  map_df(read_metadados) %>%
   mutate(base = str_extract(texto, "(?<=-- CAMPOS: ).+$"),
-         texto = str_remove(texto, "-")) %>% 
-  fill(base) %>% 
-  filter(str_detect(texto, "\\w"), !str_detect(texto, base)) %>% 
-  separate(texto, into = c("coluna", "tipo", "descricao"), sep = "(-|:)\\s") %>% 
-  mutate(across(everything(), str_squish), base = str_to_title(base)) %>% 
-  transmute(base, coluna, tipo, descricao) %>% 
-  group_by(base) %>% 
-  nest() %>% 
-  ungroup() %>% 
+         texto = str_remove(texto, "-")) %>%
+  fill(base) %>%
+  filter(str_detect(texto, "\\w"), !str_detect(texto, base)) %>%
+  separate(texto, into = c("coluna", "tipo", "descricao"), sep = "(-|:)\\s") %>%
+  mutate(across(everything(), str_squish), base = str_to_title(base)) %>%
+  transmute(base, coluna, tipo, descricao) %>%
+  group_by(base) %>%
+  nest() %>%
+  ungroup() %>%
   rename(metadados = data)
 
 #' salva
-base_cgu %>% 
-  left_join(meta) %>% 
+base_cgu %>%
+  left_join(meta) %>%
   saveRDS(here("data/base-cgu-atual.rds"))
 
 #' remove temp dir
